@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LearnEnglish - Guía Interactiva de Sustantivos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* 1. CONFIGURACIÓN ESTRUCTURAL HD (1280x720) */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            background-color: #e2e8f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            font-family: 'Lato', sans-serif;
+        }
+
+        .slide-viewer {
+            width: 1280px;
+            height: 720px;
+            background-color: #ffffff;
+            color: #1d2e5c;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
+            border-radius: 16px;
+            border: 4px solid white;
+        }
+
+        /* Fondo Abstracto de Marca con el Verde de Verbs Mastery */
+        .slide-viewer::before {
+            content: '';
+            position: absolute;
+            top: -50px; right: -50px;
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(163, 230, 53, 0.15) 0%, transparent 70%);
+            z-index: 0;
+        }
+
+        /* SISTEMA DE CONTENEDORES ACTIVOS */
+        .slide-container {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+            width: 100%;
+            padding: 60px;
+            position: relative;
+            z-index: 1;
+            background-color: #ffffff;
+        }
+
+        .slide-container.active { 
+            display: flex; 
+            animation: fadeIn 0.4s ease-out forwards; 
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 2. TIPOGRAFÍA Y DISEÑO GRÁFICO CORPORATIVO */
+        h1, h2, h3 { font-family: 'Poppins', sans-serif; color: #1d2e5c; margin: 0; }
+        h1 { font-size: 85px; line-height: 1.1; text-transform: uppercase; margin-bottom: 10px; text-align: center; }
+        .slide-title { font-size: 42px; font-weight: 700; border-left: 10px solid #a3e635; padding-left: 20px; margin-bottom: 40px; text-transform: uppercase; letter-spacing: 1px; }
+        p { font-size: 24px; line-height: 1.5; color: #334155; }
+        .pronunciation { color: #a3e635; font-weight: 700; font-size: 19px; display: block; margin-bottom: 5px; }
+        .translation-tag { font-size: 19px; color: #94a3b8; font-style: italic; margin-top: 15px; display: block; }
+
+        /* LAYOUTS MULTIPÁGINA */
+        .content-area { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; width: 100%; }
+        .title-layout { text-align: center; margin: auto 0; width: 100%; }
+        .divider { height: 8px; width: 160px; background-color: #a3e635; margin: 35px auto; border-radius: 4px; }
+        
+        .two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; width: 100%; }
+        .tile-grid { display: flex; gap: 25px; width: 100%; }
+        .tile-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; width: 100%; }
+        
+        .tile { flex: 1; background: #f8fafc; padding: 35px 20px; border-radius: 24px; text-align: center; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .tile i { font-size: 60px; color: #a3e635; margin-bottom: 25px; }
+        
+        /* TABLA DE CONTENIDO */
+        .table-layout { width: 100%; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        table { width: 100%; border-collapse: collapse; background: white; }
+        th { background-color: #1d2e5c; color: white; padding: 22px; text-align: left; font-size: 24px; font-family: 'Poppins'; }
+        td { padding: 14px 25px; border-bottom: 1px solid #f1f5f9; font-size: 20px; font-weight: 700; color: #1d2e5c; }
+        td span { font-weight: 400; color: #64748b; margin-left: 10px; }
+
+        /* 3. SISTEMA DE BOTONES (ESTILO CAJA MINIMALISTA) */
+        .nav-container-centered {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 40px;
+        }
+
+        .nav-container-corner {
+            position: absolute;
+            bottom: 40px;
+            right: 60px;
+            display: flex;
+            gap: 15px;
+            z-index: 100;
+        }
+
+        .btn-arrow {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            width: 65px;
+            height: 65px;
+            border-radius: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.05);
+            transition: all 0.2s ease;
+        }
+
+        .btn-arrow i { color: #94a3b8; font-size: 24px; transition: color 0.2s; }
+
+        .btn-arrow:hover:not(:disabled) {
+            transform: translateY(-4px);
+            border-color: #a3e635;
+            box-shadow: 0 12px 20px rgba(0,0,0,0.1);
+        }
+
+        .btn-arrow:hover:not(:disabled) i { color: #a3e635; }
+        .btn-arrow:disabled { opacity: 0.25; cursor: not-allowed; background-color: #f1f5f9; }
+
+        /* Contador de páginas */
+        .page-counter { 
+            position: absolute; 
+            bottom: 60px; 
+            left: 60px; 
+            font-family: 'Poppins';
+            font-weight: 600; 
+            color: #94a3b8; 
+            font-size: 18px; 
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+
+<div class="slide-viewer">
+    
+    <div class="slide-container active">
+        <div class="title-layout">
+            <h1>GUÍA DE<br><span style="color: #a3e635;">SUSTANTIVOS INTERACTIVOS</span></h1>
+            <p style="color: #64748b; font-size: 28px;">Domina los objetos y entornos esenciales de la vida diaria</p>
+            <div class="divider"></div>
+            
+            <div class="nav-container-centered">
+                <button class="btn-arrow" onclick="nav(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+                <button class="btn-arrow" onclick="nav(1)"><i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-container">
+        <div class="content-area" style="text-align: center;">
+            <h2 style="font-size: 75px; margin-bottom: 25px; line-height: 1.1;">MÓDULO 1:<br><span style="color: #a3e635;">ENTORNO Y OBJETOS</span></h2>
+            <div style="max-width: 900px; margin: 0 auto;">
+                <p style="font-size: 28px;">Identify, name, and visualize the vital components of your home, travel destinations, and everyday devices.</p>
+                <span class="translation-tag">Identifica, nombra y visualiza los componentes vitales de tu hogar, destinos de viaje y dispositivos diarios.</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-container">
+        <h2 class="slide-title">Lugares y Situaciones</h2>
+        <div class="content-area">
+            <div class="tile-grid-4">
+                <div class="tile">
+                    <i class="fa-solid fa-plane-departure"></i>
+                    <span class="pronunciation">(/ˈeə.pɔːt/)</span>
+                    <h3>AIRPORT</h3>
+                    <p style="margin-top: 10px; font-weight: 700; color: #a3e635;">Aeropuerto</p>
+                </div>
+                <div class="tile">
+                    <i class="fa-solid fa-shop"></i>
+                    <span class="pronunciation">(/stɔːr/)</span>
+                    <h3>STORE</h3>
+                    <p style="margin-top: 10px; font-weight: 700; color: #a3e635;">Tienda / Almacén</p>
+                </div>
+                <div class="tile">
+                    <i class="fa-solid fa-earth-americas"></i>
+                    <span class="pronunciation">(/wɜːld/)</span>
+                    <h3>WORLD</h3>
+                    <p style="margin-top: 10px; font-weight: 700; color: #a3e635;">Mundo</p>
+                </div>
+                <div class="tile">
+                    <i class="fa-solid fa-car-burst"></i>
+                    <span class="pronunciation">(/ˈæk.sɪ.dənt/)</span>
+                    <h3>ACCIDENT</h3>
+                    <p style="margin-top: 10px; font-weight: 700; color: #a3e635;">Accidente</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-container">
+        <h2 class="slide-title">Elementos Personales y Transporte</h2>
+        <div class="content-area">
+            <div class="tile-grid-4">
+                <div class="tile">
+                    <i class="fa-solid fa-car"></i>
+                    <span class="pronunciation">(/kɑːr/)</span>
+                    <h3>CAR</h3>
+                    <p style="margin-top: 10px; font-weight: 700; color: #a3e635;">Coche / Carro</p>
+                </div>
+                <div class="tile">
+                    <i class="fa-solid fa-mobile-screen-button"></i>
+                    <span class="pronunciation">(/ˈsel.fəʊn/)</span>
+                    <h3>CELLPHONE</h3>
+                    <p style="margin-top: 10px; font-weight: 700; color: #a3e635;">Teléfono Celular</p>
+                </div>
+                <div class="tile">
+                    <i class="fa-solid fa-circle-dot"></i>
+                    <span class="pronunciation">(/ˈmɪr.ər/)</span>
+                    <h3>MIRROR</h3>
+                    <p style="margin-top: 10px; font-weight: 700; color: #a3e635;">Espejo</p>
+                </div>
+                <div class="tile">
+                    <i class="fa-solid fa-lightbulb"></i>
+                    <span class="pronunciation">(/laɪt/)</span>
+                    <h3>LIGHT</h3>
+                    <p style="margin-top: 10px; font-weight: 700; color: #a3e635;">Luz</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-container">
+        <h2 class="slide-title">Estilo de Vida y Ocio</h2>
+        <div class="content-area">
+            <div class="tile-grid-4">
+                <div class="tile">
+                    <i class="fa-solid fa-book"></i>
+                    <span class="pronunciation">(/bʊk/)</span>
+                    <h3>BOOK</h3>
+                    <p style="margin-top: 10px; font-weight: 700; color: #a3e635;">Libro</p>
+                </div>
+                <div class="tile">
+                    <i class="fa-solid fa-bottle-water"></i>
+                    <span class="pronunciation">(/ˈbɒt.əl/)</span>
+                    <h3>BOTTLE</h3>
+                    <p style="margin-top: 10px; font-weight: 700; color: #a3e635;">Botella</p>
+                </div>
+                <div class="tile">
+                    <i class="fa-solid fa-shirt"></i>
+                    <span class="pronunciation">(/kləʊðz/)</span>
+                    <h3>CLOTHES</h3>
+                    <p style="margin-top: 10px; font-weight: 700; color: #a3e635;">Ropa</p>
+                </div>
+                <div class="tile">
+                    <i class="fa-solid fa-baseball"></i>
+                    <span class="pronunciation">(/bɔːl/)</span>
+                    <h3>BALL</h3>
+                    <p style="margin-top: 10px; font-weight: 700; color: #a3e635;">Pelota</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-container">
+        <h2 class="slide-title">Cultura y Eventos Sociales</h2>
+        <div class="content-area">
+            <div class="tile-grid-4">
+                <div class="tile">
+                    <i class="fa-solid fa-clapperboard"></i>
+                    <span class="pronunciation">(/ˈmuː.vi/)</span>
+                    <h3>MOVIE</h3>
+                    <p style="margin-top: 10px; font-weight: 700; color: #a3e635;">Película</p>
+                </div>
+                <div class="tile">
+                    <i class="fa-solid fa-cake-candles"></i>
+                    <span class="pronunciation">(/ˈpɑː.ti/)</span>
+                    <h3>PARTY</h3>
+                    <p style="margin-top: 10px; font-weight: 700; color: #a3e635;">Fiesta</p>
+                </div>
+                <div class="tile">
+                    <i class="fa-solid fa-chair"></i>
+                    <span class="pronunciation">(/tʃeər/)</span>
+                    <h3>CHAIR</h3>
+                    <p style="margin-top: 10px; font-weight: 700; color: #a3e635;">Silla</p>
+                </div>
+                <div class="tile">
+                    <i class="fa-solid fa-table"></i>
+                    <span class="pronunciation">(/ˈteɪ.bəl/)</span>
+                    <h3>TABLE</h3>
+                    <p style="margin-top: 10px; font-weight: 700; color: #a3e635;">Mesa</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-container">
+        <h2 class="slide-title">Electrodomésticos de Cocina</h2>
+        <div class="content-area">
+            <div class="tile-grid-4">
+                <div class="tile">
+                    <i class="fa-solid fa-fire-burner"></i>
+                    <span class="pronunciation">(/ˈʌv.ən/)</span>
+                    <h3>OVEN</h3>
+                    <p style="margin-top: 10px; font-weight: 700; color: #a3e635;">Horno</p>
+                </div>
+                <div class="tile">
+                    <i class="fa-solid fa-soap"></i>
+                    <span class="pronunciation">(/ˈdɪʃˌwɒʃ.ər/)</span>
+                    <h3>DISHWASHER</h3>
+                    <p style="margin-top: 10px; font-weight: 700; color: #a3e635;">Lavaplatos</p>
+                </div>
+                <div class="tile">
+                    <i class="fa-solid fa-bread-slice"></i>
+                    <span class="pronunciation">(/ˈtəʊ.stər/)</span>
+                    <h3>TOASTER</h3>
+                    <p style="margin-top: 10px; font-weight: 700; color: #a3e635;">Tostadora</p>
+                </div>
+                <div class="tile">
+                    <i class="fa-solid fa-clock"></i>
+                    <span class="pronunciation">(/klɒk/)</span>
+                    <h3>CLOCK</h3>
+                    <p style="margin-top: 10px; font-weight: 700; color: #a3e635;">Reloj</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-container">
+        <h2 class="slide-title">Tecnología en el Espacio de Vida</h2>
+        <div class="content-area">
+            <div class="two-column">
+                <div class="tile" style="padding: 40px 20px;">
+                    <i class="fa-solid fa-desktop" style="font-size: 70px;"></i>
+                    <span class="pronunciation" style="font-size: 22px;">(/kəmˈpjuː.tər/)</span>
+                    <h3 style="font-size: 38px;">COMPUTER</h3>
+                    <p style="font-size: 24px; color: #a3e635; font-weight: 700; margin-top: 10px;">Computadora</p>
+                </div>
+                <div class="tile" style="padding: 40px 20px;">
+                    <i class="fa-solid fa-tv" style="font-size: 70px;"></i>
+                    <span class="pronunciation" style="font-size: 22px;">(/ˈtel.ɪ.vɪʒ.ən/)</span>
+                    <h3 style="font-size: 38px;">TELEVISION</h3>
+                    <p style="font-size: 24px; color: #a3e635; font-weight: 700; margin-top: 10px;">Televisión</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-container">
+        <h2 class="slide-title">Vocabulario Completo de Sustantivos</h2>
+        <div class="content-area">
+            <div class="table-layout">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Sustantivo</th>
+                            <th>Traducción</th>
+                            <th>Sustantivo</th>
+                            <th>Traducción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>ACCIDENT <span>(Accidente)</span></td><td>OVEN <span>(Horno)</span></td><td>CAR <span>(Carro)</span></td><td>COMPUTER <span>(Computadora)</span></td></tr>
+                        <tr><td>AIRPORT <span>(Aeropuerto)</span></td><td>DISHWASHER <span>(Lavaplatos)</span></td><td>CELLPHONE <span>(Celular)</span></td><td>TELEVISION <span>(Televisión)</span></td></tr>
+                        <tr><td>STORE <span>(Tienda)</span></td><td>TOASTER <span>(Tostadora)</span></td><td>MIRROR <span>(Espejo)</span></td><td>CHAIR <span>(Silla)</span></td></tr>
+                        <tr><td>WORLD <span>(Mundo)</span></td><td>CLOCK <span>(Reloj)</span></td><td>LIGHT <span>(Luz)</span></td><td>TABLE <span>(Mesa)</span></td></tr>
+                        <tr><td>BOOK <span>(Libro)</span></td><td>BOTTLE <span>(Botella)</span></td><td>CLOTHES <span>(Ropa)</span></td><td>BALL / MOVIE / PARTY</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-container">
+        <div class="content-area" style="text-align: center;">
+            <h2 style="font-size: 85px; margin-bottom: 25px;">¡FANTÁSTICO PROGRESO!</h2>
+            <p style="font-size: 30px; color: #64748b; margin: 0 auto 30px;">Continúa expandiendo tu vocabulario base día a día.</p>
+            <div>
+                <p style="font-weight: 700; color: #1d2e5c; font-size: 28px; letter-spacing: 1px;">WWW.LEARNENGLISH.COM</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-counter" id="pgText">1 / 10</div>
+    
+    <div class="nav-container-corner" id="cornerNav" style="display:none;">
+        <button class="btn-arrow" id="bPrev" onclick="nav(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+        <button class="btn-arrow" id="bNext" onclick="nav(1)"><i class="fa-solid fa-chevron-right"></i></button>
+    </div>
+
+</div>
+
+<script>
+    const slides = document.querySelectorAll('.slide-container');
+    const pgText = document.getElementById('pgText');
+    const cornerNav = document.getElementById('cornerNav');
+    const bNext = document.getElementById('bNext');
+    let current = 0;
+
+    function nav(step) {
+        slides[current].classList.remove('active');
+        current += step;
+
+        if (current >= slides.length) current = 0;
+        if (current < 0) current = slides.length - 1;
+
+        slides[current].classList.add('active');
+        pgText.innerText = (current + 1) + " / " + slides.length;
+        
+        if (current === 0) {
+            cornerNav.style.display = 'none';
+        } else {
+            cornerNav.style.display = 'flex';
+        }
+
+        if (current === slides.length - 1) {
+            bNext.innerHTML = '<i class="fa-solid fa-rotate-right"></i>';
+        } else {
+            bNext.innerHTML = '<i class="fa-solid fa-chevron-right"></i>';
+        }
+    }
+</script>
+
+</body>
+</html>

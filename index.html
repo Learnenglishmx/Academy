@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LearnEnglish - Portal Protegido</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            background-color: #e2e8f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Lato', sans-serif;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        /* CAPA DEL CANDADO (PROTECCIÓN AL INICIO) */
+        #lock-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #1d2e5c;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease, visibility 0.5s;
+        }
+
+        .lock-box {
+            background: white;
+            padding: 50px;
+            border-radius: 24px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            max-width: 450px;
+            width: 100%;
+            border-bottom: 8px solid #a3e635;
+        }
+
+        .lock-box i { font-size: 65px; color: #1d2e5c; margin-bottom: 20px; }
+        .lock-box h2 { font-family: 'Poppins'; color: #1d2e5c; margin-bottom: 10px; font-size: 28px; }
+        .lock-box p { font-size: 16px; color: #64748b; margin-bottom: 25px; }
+        
+        .lock-box input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+            text-align: center;
+            margin-bottom: 20px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .lock-box input:focus { border-color: #a3e635; }
+
+        .lock-box button {
+            background: #a3e635;
+            color: #1d2e5c;
+            border: none;
+            padding: 15px 40px;
+            font-family: 'Poppins';
+            font-weight: 700;
+            font-size: 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.2s;
+        }
+        .lock-box button:hover { background: #1d2e5c; color: white; }
+
+        /* CONTENEDOR PRINCIPAL DEL HUB */
+        .hub-container {
+            width: 1200px;
+            background-color: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            position: relative;
+            padding: 50px 60px;
+            border: 4px solid white;
+        }
+
+        .hub-container::before {
+            content: '';
+            position: absolute;
+            top: -100px; right: -100px;
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(163, 230, 53, 0.15) 0%, transparent 70%);
+            z-index: 0;
+        }
+
+        .header { text-align: center; position: relative; z-index: 1; margin-bottom: 40px; }
+        h1 { font-family: 'Poppins', sans-serif; font-size: 55px; color: #1d2e5c; text-transform: uppercase; line-height: 1.1; }
+        .accent { color: #a3e635; }
+        .subtitle { font-size: 20px; color: #64748b; margin-top: 10px; }
+        .divider { width: 100px; height: 6px; background-color: #a3e635; margin: 20px auto; border-radius: 3px; }
+
+        /* SISTEMA DE REJILLA DINÁMICA (3 ARRIBA, 2 ABAJO) */
+        .modules-grid { 
+            display: grid; 
+            grid-template-columns: repeat(6, 1fr); 
+            gap: 25px; 
+            position: relative; 
+            z-index: 1; 
+        }
+        
+        .module-card {
+            background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 20px; padding: 30px 25px;
+            display: flex; align-items: center; gap: 20px; transition: all 0.3s ease; text-decoration: none; color: inherit;
+        }
+        .module-card:hover { transform: translateY(-5px); border-color: #a3e635; box-shadow: 0 15px 30px rgba(0,0,0,0.08); background: #ffffff; }
+
+        /* Posicionamiento en grid para acomodar 3 arriba y 2 abajo centrados */
+        .grid-3 { grid-column: span 2; }
+        .grid-2-left { grid-column: 2 / span 2; }
+        .grid-2-right { grid-column: 4 / span 2; }
+
+        .icon-container {
+            width: 75px; height: 75px; background: #1d2e5c; border-radius: 18px;
+            display: flex; align-items: center; justify-content: center; font-size: 32px; color: #a3e635; flex-shrink: 0; transition: all 0.3s ease;
+        }
+        .module-card:hover .icon-container { background: #a3e635; color: #1d2e5c; transform: scale(1.05) rotate(5deg); }
+
+        .module-info h2 { font-family: 'Poppins'; font-size: 22px; color: #1d2e5c; margin-bottom: 5px; }
+        .module-info p { font-size: 15px; color: #64748b; line-height: 1.3; }
+        .enter-btn { margin-top: 10px; display: inline-flex; align-items: center; gap: 6px; color: #a3e635; font-weight: bold; font-size: 14px; text-transform: uppercase; }
+    </style>
+</head>
+<body>
+
+    <div id="lock-screen">
+        <div class="lock-box">
+            <i class="fa-solid fa-lock" id="lock-icon"></i>
+            <h2>PORTAL PRIVADO</h2>
+            <p>Ingresa tu clave de estudiante autorizada para desbloquear los módulos interactivos de LearnEnglish.</p>
+            <input type="password" id="pass-input" placeholder="Introduce la contraseña aquí" onkeypress="checkEnter(event)">
+            <button onclick="validateAccess()">DESBLOQUEAR ACCESO</button>
+        </div>
+    </div>
+
+    <div class="hub-container">
+        <div class="header">
+            <p style="font-weight: 700; color: #a3e635; letter-spacing: 3px; margin-bottom: 5px;">WELCOME TO</p>
+            <h1>LearnEnglish <span class="accent">Academy</span></h1>
+            <p class="subtitle">Selecciona un módulo interactivo para comenzar tu lección de hoy.</p>
+            <div class="divider"></div>
+        </div>
+
+        <div class="modules-grid">
+            <a href="verbs_guide.html" class="module-card grid-3">
+                <div class="icon-container"><i class="fa-solid fa-person-running"></i></div>
+                <div class="module-info">
+                    <h2>Verbs Mastery</h2>
+                    <p>Acciones cotidianas, verbos modales y vocabulario esencial.</p>
+                    <div class="enter-btn">Entrar <i class="fa-solid fa-arrow-right"></i></div>
+                </div>
+            </a>
+
+            <a href="verb_tenses_guide.html" class="module-card grid-3">
+                <div class="icon-container"><i class="fa-solid fa-clock"></i></div>
+                <div class="module-info">
+                    <h2>Verb Tenses</h2>
+                    <p>Estructuras y líneas del tiempo completas: Pasado, Presente y Futuro.</p>
+                    <div class="enter-btn">Entrar <i class="fa-solid fa-arrow-right"></i></div>
+                </div>
+            </a>
+
+            <a href="nouns_guide.html" class="module-card grid-3">
+                <div class="icon-container"><i class="fa-solid fa-building"></i></div>
+                <div class="module-info">
+                    <h2>Interactive Nouns</h2>
+                    <p>Objetos, lugares y sustantivos clave del entorno diario.</p>
+                    <div class="enter-btn">Entrar <i class="fa-solid fa-arrow-right"></i></div>
+                </div>
+            </a>
+
+            <a href="pronouns_guide.html" class="module-card grid-2-left">
+                <div class="icon-container"><i class="fa-solid fa-users"></i></div>
+                <div class="module-info">
+                    <h2>Pronouns Guide</h2>
+                    <p>Sujetos, objetos directos y cómo referirse a las personas.</p>
+                    <div class="enter-btn">Entrar <i class="fa-solid fa-arrow-right"></i></div>
+                </div>
+            </a>
+
+            <a href="adjectives_guide.html" class="module-card grid-2-right">
+                <div class="icon-container"><i class="fa-solid fa-palette"></i></div>
+                <div class="module-info">
+                    <h2>Adjectives</h2>
+                    <p>Rasgos de personalidad, descripciones físicas y dimensiones.</p>
+                    <div class="enter-btn">Entrar <i class="fa-solid fa-arrow-right"></i></div>
+                </div>
+            </a>
+        </div>
+        
+        <div style="text-align: center; margin-top: 40px;">
+            <p style="color: #94a3b8; font-weight: 700;">© WWW.LEARNENGLISH.COM</p>
+        </div>
+    </div>
+
+    <script>
+        // CONFIGURACIÓN DE TU CLAVE DE ESTUDIANTE GLOBALES
+        const CLAVE_CORRECTA = "InglesOmar2024"; 
+
+        function validateAccess() {
+            const inputVal = document.getElementById("pass-input").value;
+            const lockScreen = document.getElementById("lock-screen");
+            const lockIcon = document.getElementById("lock-icon");
+
+            if (inputVal === CLAVE_CORRECTA) {
+                lockIcon.className = "fa-solid fa-lock-open";
+                lockIcon.style.color = "#a3e635";
+                
+                setTimeout(() => {
+                    lockScreen.style.opacity = "0";
+                    lockScreen.style.visibility = "hidden";
+                    document.body.style.overflow = "auto"; 
+                }, 400);
+            } else {
+                alert("❌ Clave incorrecta. Por favor, verifica con tu profesor tu acceso vigente.");
+                document.getElementById("pass-input").value = ""; 
+            }
+        }
+
+        function checkEnter(event) {
+            if (event.key === "Enter") {
+                validateAccess();
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LearnEnglish - Verb Tenses Interactive Guide</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* 1. CONFIGURACIÓN ESTRUCTURAL */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            background-color: #e2e8f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Lato', sans-serif;
+            overflow: hidden;
+            padding: 20px;
+        }
+
+        .slide-viewer {
+            position: relative;
+            width: 1280px;
+            height: 720px;
+            background-color: #ffffff;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
+            border-radius: 20px;
+            border: 4px solid white;
+            overflow: hidden;
+            transform-origin: center center;
+            transition: transform 0.2s ease-out;
+        }
+
+        /* SISTEMA DE CONTENEDORES ACTIVOS */
+        .slide-container {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+            width: 100%;
+            padding: 60px 80px;
+            position: relative;
+            z-index: 1;
+            background-color: #ffffff;
+        }
+
+        .slide-container.active { 
+            display: flex; 
+            animation: fadeIn 0.4s ease-out forwards; 
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Fondo decorativo sutil */
+        .slide-viewer::before {
+            content: '';
+            position: absolute;
+            top: -50px; right: -50px;
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(163, 230, 53, 0.1) 0%, transparent 70%);
+            z-index: 0;
+        }
+
+        /* 2. TIPOGRAFÍA CORPORATIVA */
+        h1, h2, h3, h4 { font-family: 'Poppins', sans-serif; color: #1d2e5c; margin: 0; }
+        h1 { font-size: 75px; line-height: 1.1; text-transform: uppercase; text-align: center; }
+        .slide-title { font-size: 40px; font-weight: 700; border-left: 10px solid #a3e635; padding-left: 25px; margin-bottom: 35px; text-transform: uppercase; letter-spacing: 1px; }
+        
+        p { font-size: 22px; line-height: 1.5; color: #334155; }
+        .translation { font-size: 18px; color: #94a3b8; font-style: italic; display: block; margin-top: 4px; }
+        .accent-green { color: #a3e635; }
+
+        /* TABLAS DE TIEMPOS */
+        .tense-table { width: 100%; border-collapse: collapse; margin-top: 20px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .tense-table th { background-color: #1d2e5c; color: #ffffff; padding: 18px; text-align: left; font-size: 20px; font-family: 'Poppins'; }
+        .tense-table td { padding: 15px 18px; border-bottom: 1px solid #f1f5f9; font-size: 18px; background: white; color: #1d2e5c; }
+        .tense-table tr:last-child td { border-bottom: none; }
+        .structure-tag { background: #f0fdf4; border: 1px solid #a3e635; color: #1d2e5c; padding: 4px 10px; border-radius: 6px; font-family: monospace; font-size: 16px; font-weight: bold; }
+
+        /* GRID LAYOUTS */
+        .grid-layout { display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; margin-top: 20px; }
+        .card { background: #f8fafc; border: 1px solid #e2e8f0; padding: 25px; border-radius: 15px; position: relative; }
+        .card h3 { margin-bottom: 10px; font-size: 24px; color: #1d2e5c; }
+        .card::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 5px; background: #a3e635; border-radius: 15px 15px 0 0; }
+
+        /* LÍNEA DE TIEMPO VISUAL */
+        .timeline-box { display: flex; align-items: center; justify-content: space-between; background: #1d2e5c; padding: 20px; border-radius: 10px; margin-top: 15px; color: white; }
+        .dot { width: 15px; height: 15px; background: #a3e635; border-radius: 50%; display: inline-block; margin: 0 10px; }
+
+        /* 3. NAVEGACIÓN */
+        .controls { position: absolute; bottom: 40px; right: 60px; display: flex; gap: 15px; z-index: 100; }
+        .nav-btn {
+            background-color: #ffffff; border: 1px solid #e2e8f0; width: 60px; height: 60px; border-radius: 12px;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.05); transition: all 0.2s ease;
+        }
+        .nav-btn i { color: #1d2e5c; font-size: 22px; }
+        .nav-btn:hover { transform: translateY(-3px); border-color: #a3e635; box-shadow: 0 12px 20px rgba(163, 230, 53, 0.2); }
+        .nav-btn:hover i { color: #a3e635; }
+
+        .start-btn {
+            background-color: #a3e635; color: #1d2e5c; border: none; padding: 20px 45px; border-radius: 12px;
+            font-family: 'Poppins'; font-weight: 700; font-size: 20px; cursor: pointer; margin-top: 40px;
+            box-shadow: 0 10px 20px rgba(163, 230, 53, 0.3); transition: all 0.3s ease;
+        }
+        .start-btn:hover { background-color: #1d2e5c; color: #ffffff; transform: scale(1.05); }
+
+        .page-counter { position: absolute; bottom: 60px; left: 60px; color: #94a3b8; font-weight: 700; font-size: 18px; }
+        .progress-bar { position: absolute; bottom: 0; left: 0; height: 8px; background: #a3e635; transition: width 0.3s ease; }
+    </style>
+</head>
+<body>
+
+<div class="slide-viewer">
+    
+    <div class="slide-container active">
+        <div style="text-align: center; margin-top: 50px;">
+            <p style="text-transform: uppercase; letter-spacing: 4px; font-weight: 700; color: #a3e635;">Grammar Mastery Series</p>
+            <h1>VERB TENSES<br><span style="color: #a3e635;">INTERACTIVE GUIDE</span></h1>
+            <p style="margin-top: 20px; font-size: 28px;">Guía Completa de Tiempos Verbales en Inglés</p>
+            <div style="height: 10px; width: 120px; background: #a3e635; margin: 30px auto; border-radius: 5px;"></div>
+            <button class="start-btn" onclick="nav(1)">COMENZAR APRENDIZAJE <i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+    </div>
+
+    <div class="slide-container">
+        <h2 class="slide-title">The Big Picture <span class="translation">(La Visión General)</span></h2>
+        <div class="grid-layout">
+            <div class="card">
+                <h3><i class="fa-solid fa-clock-rotate-left"></i> PAST</h3>
+                <p>Actions that already happened.</p>
+                <span class="translation">Acciones que ya ocurrieron.</span>
+                <div class="timeline-box"><div class="dot"></div> —————— Hoy</div>
+            </div>
+            <div class="card">
+                <h3><i class="fa-solid fa-calendar-day"></i> PRESENT</h3>
+                <p>Actions happening now or habits.</p>
+                <span class="translation">Acciones ocurriendo ahora o hábitos.</span>
+                <div class="timeline-box">Ayer ——— <div class="dot"></div> ——— Mañana</div>
+            </div>
+            <div class="card">
+                <h3><i class="fa-solid fa-bolt"></i> FUTURE</h3>
+                <p>Actions that will occur later.</p>
+                <span class="translation">Acciones que ocurrirán después.</span>
+                <div class="timeline-box">Hoy —————— <div class="dot"></div></div>
+            </div>
+            <div class="card" style="background-color: #1d2e5c; color: white;">
+                <h3 style="color: #a3e635;">TIP: Conjugation</h3>
+                <p style="color: white; font-size: 18px;">Every tense uses a specific auxiliary (do, be, have, will).</p>
+                <span class="translation" style="color: #cbd5e1;">Cada tiempo usa un auxiliar específico.</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-container">
+        <h2 class="slide-title">Present Tenses <span class="translation">(Tiempos de Presente)</span></h2>
+        <table class="tense-table">
+            <thead>
+                <tr>
+                    <th>Tense</th>
+                    <th>Structure</th>
+                    <th>Example & Translation</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><b>Simple</b></td>
+                    <td><span class="structure-tag">S + V(s/es)</span></td>
+                    <td>I write books.<br><span class="translation">Yo escribo libros.</span></td>
+                </tr>
+                <tr>
+                    <td><b>Continuous</b></td>
+                    <td><span class="structure-tag">am/is/are + V-ing</span></td>
+                    <td>I am writing a book.<br><span class="translation">Estoy escribiendo un libro.</span></td>
+                </tr>
+                <tr>
+                    <td><b>Perfect</b></td>
+                    <td><span class="structure-tag">have/has + V3 (Past Part)</span></td>
+                    <td>I have written a book.<br><span class="translation">He escrito un libro.</span></td>
+                </tr>
+                <tr>
+                    <td><b>Perfect Cont.</b></td>
+                    <td><span class="structure-tag">have/has + been + V-ing</span></td>
+                    <td>I have been writing a book.<br><span class="translation">He estado escribiendo un libro.</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="slide-container">
+        <h2 class="slide-title">Past Tenses <span class="translation">(Tiempos de Pasado)</span></h2>
+        <table class="tense-table">
+            <thead>
+                <tr>
+                    <th>Tense</th>
+                    <th>Structure</th>
+                    <th>Example & Translation</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><b>Simple</b></td>
+                    <td><span class="structure-tag">S + V-ed / Irregular</span></td>
+                    <td>I wrote a book yesterday.<br><span class="translation">Escribí un libro ayer.</span></td>
+                </tr>
+                <tr>
+                    <td><b>Continuous</b></td>
+                    <td><span class="structure-tag">was/were + V-ing</span></td>
+                    <td>I was writing a book all day.<br><span class="translation">Estaba escribiendo un libro todo el día.</span></td>
+                </tr>
+                <tr>
+                    <td><b>Perfect</b></td>
+                    <td><span class="structure-tag">had + V3</span></td>
+                    <td>I had written a book.<br><span class="translation">Yo había escrito un libro.</span></td>
+                </tr>
+                <tr>
+                    <td><b>Perfect Cont.</b></td>
+                    <td><span class="structure-tag">had + been + V-ing</span></td>
+                    <td>I had been writing for hours.<br><span class="translation">Había estado escribiendo por horas.</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="slide-container">
+        <h2 class="slide-title">Future Tenses <span class="translation">(Tiempos de Futuro)</span></h2>
+        <table class="tense-table">
+            <thead>
+                <tr>
+                    <th>Tense</th>
+                    <th>Structure</th>
+                    <th>Example & Translation</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><b>Simple</b></td>
+                    <td><span class="structure-tag">S + will + V</span></td>
+                    <td>I will write a book.<br><span class="translation">Escribiré un libro.</span></td>
+                </tr>
+                <tr>
+                    <td><b>Continuous</b></td>
+                    <td><span class="structure-tag">will + be + V-ing</span></td>
+                    <td>I will be writing tomorrow.<br><span class="translation">Estaré escribiendo mañana.</span></td>
+                </tr>
+                <tr>
+                    <td><b>Perfect</b></td>
+                    <td><span class="structure-tag">will + have + V3</span></td>
+                    <td>I will have written it by May.<br><span class="translation">Habré escrito el libro para Mayo.</span></td>
+                </tr>
+                <tr>
+                    <td><b>Perfect Cont.</b></td>
+                    <td><span class="structure-tag">will + have been + V-ing</span></td>
+                    <td>I will have been writing for a year.<br><span class="translation">Habré estado escribiendo durante un año.</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="slide-container">
+        <h2 class="slide-title">Graphical Overview <span class="translation">(Visualización Gráfica)</span></h2>
+        <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
+            <div style="background: #1d2e5c; color: white; padding: 20px; border-radius: 12px; width: 45%;">
+                <h4>Continuous (Progress)</h4>
+                <div style="height: 4px; background: white; margin: 15px 0; position: relative;">
+                    <div style="position: absolute; left: 20%; top: -10px; background: #a3e635; width: 60%; height: 25px; border-radius: 10px; opacity: 0.6;"></div>
+                </div>
+                <p style="color: #a3e635; font-size: 16px;">Indicates an action in progress over time.</p>
+            </div>
+            <div style="background: #f8fafc; border: 1px solid #1d2e5c; padding: 20px; border-radius: 12px; width: 45%;">
+                <h4>Simple (One Point)</h4>
+                <div style="height: 4px; background: #1d2e5c; margin: 15px 0; position: relative;">
+                    <div class="dot" style="position: absolute; left: 40%; top: -6px;"></div>
+                </div>
+                <p style="color: #1d2e5c; font-size: 16px;">Indicates a specific completed or habitual point.</p>
+            </div>
+        </div>
+        <div style="text-align: center; margin-top: 40px; padding: 30px; background: #f0fdf4; border: 2px dashed #a3e635; border-radius: 15px;">
+            <h3 style="color: #1d2e5c;">TOP 8 ACTION VERBS</h3>
+            <p style="font-size: 18px;"><b>DO • MAKE • TAKE • GET • SAY • TALK • READ • WRITE</b></p>
+            <span class="translation">Practica estos 8 verbos principales en todos los tiempos para lograr fluidez.</span>
+        </div>
+    </div>
+
+    <div class="slide-container">
+        <div style="text-align: center; margin-top: 80px;">
+            <i class="fa-solid fa-graduation-cap" style="font-size: 100px; color: #a3e635; margin-bottom: 20px;"></i>
+            <h2>¡EXCELENTE TRABAJO!</h2>
+            <p style="max-width: 800px; margin: 20px auto;">Has explorado la estructura de los tiempos verbales. La clave es la práctica constante de los auxiliares.</p>
+            <div style="margin-top: 40px;">
+                <p style="font-weight: 700; color: #1d2e5c; font-size: 24px; letter-spacing: 2px;">WWW.LEARNENGLISH.COM</p>
+                <button class="start-btn" style="background-color: #1d2e5c; color: white;" onclick="nav(-100)">REINICIAR GUÍA <i class="fa-solid fa-rotate-right"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-counter" id="pageText">1 / 7</div>
+    <div class="controls">
+        <button class="nav-btn" onclick="nav(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+        <button class="nav-btn" id="nextBtn" onclick="nav(1)"><i class="fa-solid fa-chevron-right"></i></button>
+    </div>
+    <div class="progress-bar" id="progress"></div>
+
+</div>
+
+<script>
+    const slides = document.querySelectorAll('.slide-container');
+    const pgText = document.getElementById('pageText');
+    const prgBar = document.getElementById('progress');
+    const nextBtn = document.getElementById('nextBtn');
+    let current = 0;
+
+    function nav(step) {
+        slides[current].classList.remove('active');
+        current += step;
+
+        // Limites y ciclo
+        if (current >= slides.length) current = 0;
+        if (current < 0) current = 0;
+
+        slides[current].classList.add('active');
+        
+        // Actualizar UI
+        pgText.innerText = (current + 1) + " / " + slides.length;
+        prgBar.style.width = ((current + 1) / slides.length * 100) + "%";
+
+        // Cambio de icono en la última slide
+        if (current === slides.length - 1) {
+            nextBtn.innerHTML = '<i class="fa-solid fa-rotate-right"></i>';
+        } else {
+            nextBtn.innerHTML = '<i class="fa-solid fa-chevron-right"></i>';
+        }
+    }
+
+    // Auto-escalado para diferentes pantallas
+    function autoFit() {
+        const viewer = document.querySelector('.slide-viewer');
+        const scale = Math.min((window.innerWidth - 40) / 1280, (window.innerHeight - 40) / 720);
+        if (scale < 1) viewer.style.transform = `scale(${scale})`;
+        else viewer.style.transform = 'scale(1)';
+    }
+
+    window.addEventListener('resize', autoFit);
+    autoFit();
+
+    // Soporte Teclado
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight') nav(1);
+        if (e.key === 'ArrowLeft') nav(-1);
+    });
+</script>
+
+</body>
+</html>

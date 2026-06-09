@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pronouns Interactive Guide</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* 1. CONFIGURACIÓN ESTRUCTURAL */
+        * { box-sizing: border-box; }
+        p { margin: 0; margin-bottom: 15px; }
+
+        body {
+            background-color: #e2e8f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            min-height: 100vh;
+            font-family: 'Lato', sans-serif;
+            overflow: hidden;
+            padding: 20px;
+        }
+
+        .slide-viewer {
+            position: relative;
+            width: 1280px;
+            height: 720px;
+            background-color: #ffffff;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
+            border-radius: 16px;
+            border: 4px solid white;
+            overflow: hidden;
+            transform-origin: center center;
+            transition: transform 0.2s ease-out;
+        }
+
+        .slide-container {
+            background-color: #ffffff;
+            display: none;
+            flex-direction: column;
+            height: 100%;
+            justify-content: center;
+            padding: 60px;
+            position: absolute;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        .slide-container.active { 
+            display: flex; 
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Fondo Decorativo Superior */
+        .slide-viewer::before {
+            content: '';
+            position: absolute;
+            top: -50px; right: -50px;
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(163, 230, 53, 0.15) 0%, transparent 70%);
+            z-index: 0;
+        }
+
+        /* 2. TIPOGRAFÍA CORPORATIVA */
+        h1, h2, h3 { color: #1D2E5C; font-family: 'Poppins', sans-serif; font-weight: 700; margin: 0; }
+        h1 { font-size: 70px; line-height: 1.1; }
+        .slide-title { font-size: 40px; margin-bottom: 40px; text-align: left; width: 100%; border-left: 8px solid #A3E635; padding-left: 20px; text-transform: uppercase;}
+        h3 { font-size: 30px; margin-bottom: 15px; color: #1D2E5C; }
+        p, li, th, td, .subtitle { color: #475569; font-size: 18px; line-height: 1.5; }
+        .subtitle { font-size: 24px; color: #64748b; margin-top: 20px; }
+        .divider { height: 8px; width: 160px; background-color: #a3e635; margin: 35px auto; border-radius: 4px; }
+
+        /* 3. DISEÑOS (LAYOUTS) */
+        .title-layout { text-align: center; z-index: 2; position: relative;}
+        .title-layout h1 { color: #1D2E5C; }
+
+        .section-title-layout { text-align: center; background-color: #1D2E5C; width: 100%; height: 100%; left: 0; top: 0; position: absolute; padding: 60px; display: flex; flex-direction: column; justify-content: center; z-index: 2;}
+        .section-title-layout h2 { font-size: 85px; color: #fff; margin-bottom: 20px; }
+        .section-title-layout hr { border: none; height: 8px; width: 160px; background-color: #A3E635; margin: 0 auto 30px; border-radius: 4px;}
+        .section-title-layout p { color: #cbd5e1; font-size: 28px; margin-top: 20px; }
+
+        .content-area { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; width: 100%; z-index: 2; position: relative;}
+
+        .tile-grid { display: flex; gap: 30px; width: 100%; }
+        .tile { flex: 1; background-color: #f8fafc; border-radius: 24px; border: 1px solid #e2e8f0; padding: 30px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: transform 0.3s; }
+        .tile:hover { transform: translateY(-5px); border-color: #A3E635; }
+        .tile .icon-box { background: #A3E635; color: #1D2E5C; width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: bold; margin: 0 auto 20px; }
+        .tile h3 { font-size: 24px; margin-bottom: 10px; }
+        .tile p { font-size: 18px; margin: 0; }
+
+        .table-layout { width: 100%; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        table { border-collapse: collapse; width: 100%; background: white;}
+        th { background-color: #1D2E5C; color: #fff; padding: 22px; text-align: left; font-size: 24px; font-family: 'Poppins';}
+        td { padding: 14px 25px; border-bottom: 1px solid #f1f5f9; font-size: 20px; color: #1d2e5c; }
+        tr:last-child td { border-bottom: none; }
+        .accent-text { color: #A3E635; font-weight: 700; }
+
+        .two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; }
+        
+        .highlight-numbers-layout { display: flex; align-items: center; gap: 40px; }
+        .number-big { font-size: 120px; font-weight: 700; color: #A3E635; line-height: 1; }
+        .number-label { font-size: 24px; font-weight: 700; color: #1D2E5C; }
+
+        /* 4. NAVEGACIÓN Y BOTONES */
+        .controls {
+            position: absolute;
+            bottom: 40px;
+            right: 60px;
+            display: flex;
+            gap: 15px;
+            z-index: 100;
+        }
+
+        .btn-arrow {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            width: 65px;
+            height: 65px;
+            border-radius: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.05);
+            transition: all 0.2s ease;
+        }
+
+        .btn-arrow i { color: #94a3b8; font-size: 24px; transition: color 0.2s; }
+        
+        .btn-arrow:hover:not(:disabled) {
+            transform: translateY(-4px);
+            border-color: #a3e635;
+            box-shadow: 0 12px 20px rgba(0,0,0,0.1);
+        }
+
+        .btn-arrow:hover:not(:disabled) i { color: #a3e635; }
+        .btn-arrow:disabled { opacity: 0.25; cursor: not-allowed; background-color: #f1f5f9; }
+
+        .page-counter { 
+            position: absolute; 
+            bottom: 60px; 
+            left: 60px; 
+            font-family: 'Poppins';
+            font-weight: 600; 
+            color: #94a3b8; 
+            font-size: 18px; 
+            z-index: 100;
+        }
+
+        .progress-bar {
+            position: absolute;
+            bottom: 0; left: 0; height: 6px;
+            background-color: #A3E635;
+            z-index: 101;
+            transition: width 0.3s;
+        }
+
+        /* Q&A specific */
+        .qa-layout { text-align: center; z-index: 2; position: relative;}
+        .qa-layout i { color: #A3E635; font-size: 80px; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="slide-viewer">
+    
+    <div class="slide-container active" id="slide1">
+        <div class="title-layout">
+            <h1>PRONOUNS<br><span style="color: #A3E635;">INTERACTIVE GUIDE</span></h1>
+            <p class="subtitle">Mastering the Building Blocks of English Communication</p>
+            <div class="divider"></div>
+        </div>
+    </div>
+
+    <div class="slide-container" id="slide2">
+        <div class="section-title-layout">
+            <hr>
+            <h2>MODULE 1</h2>
+            <p>Subject & Personal Pronouns</p>
+        </div>
+    </div>
+
+    <div class="slide-container" id="slide3">
+        <h2 class="slide-title">Common Subject Pronouns (Part 1)</h2>
+        <div class="content-area">
+            <div class="tile-grid">
+                <div class="tile">
+                    <div class="icon-box">I</div>
+                    <h3>First Person</h3>
+                    <p>Refer to yourself.<br><strong>Example:</strong> <span class="accent-text">I</span> am a student.</p>
+                </div>
+                <div class="tile">
+                    <div class="icon-box">You</div>
+                    <h3>Second Person</h3>
+                    <p>One person or more.<br><strong>Example:</strong> <span class="accent-text">You</span> are my friend.</p>
+                </div>
+                <div class="tile">
+                    <div class="icon-box">He</div>
+                    <h3>Masculine</h3>
+                    <p>A man or boy.<br><strong>Example:</strong> <span class="accent-text">He</span> is a teacher.</p>
+                </div>
+                <div class="tile">
+                    <div class="icon-box">She</div>
+                    <h3>Feminine</h3>
+                    <p>A woman or girl.<br><strong>Example:</strong> <span class="accent-text">She</span> is a nurse.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-container" id="slide4">
+        <h2 class="slide-title">Common Subject Pronouns (Part 2)</h2>
+        <div class="content-area">
+            <div class="tile-grid">
+                <div class="tile">
+                    <div class="icon-box">It</div>
+                    <h3>Neutral</h3>
+                    <p>Things, animals, or places.<br><strong>Example:</strong> <span class="accent-text">It</span> is a backpack.</p>
+                </div>
+                <div class="tile">
+                    <div class="icon-box">We</div>
+                    <h3>Plural (Incl)</h3>
+                    <p>Me and other people.<br><strong>Example:</strong> <span class="accent-text">We</span> are classmates.</p>
+                </div>
+                <div class="tile">
+                    <div class="icon-box">They</div>
+                    <h3>Plural (Excl)</h3>
+                    <p>Other people (no me).<br><strong>Example:</strong> <span class="accent-text">They</span> are friends.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-container" id="slide5">
+        <h2 class="slide-title">Usage & Quick Tips</h2>
+        <div class="content-area">
+            <div class="two-column">
+                <div class="table-layout">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Pronoun</th>
+                                <th>Meaning</th>
+                                <th>Example</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>I</strong></td><td>Self (always Capitalized)</td><td><span class="accent-text">I</span> study English.</td></tr>
+                            <tr><td><strong>He/She</strong></td><td>Male / Female</td><td><span class="accent-text">He</span> works hard.</td></tr>
+                            <tr><td><strong>It</strong></td><td>Objects / Situations</td><td><span class="accent-text">It</span> is raining.</td></tr>
+                            <tr><td><strong>They</strong></td><td>Groups (plural)</td><td><span class="accent-text">They</span> play soccer.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div>
+                    <h3 style="color: #a3e635; font-size: 40px;"><i class="fa-solid fa-lightbulb"></i> Quick Tip</h3>
+                    <p style="font-size: 22px;">Subject pronouns always come <strong>before the verb</strong>. They are the doers of the action.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-container" id="slide6">
+        <div class="section-title-layout">
+            <hr>
+            <h2>MODULE 2</h2>
+            <p>Categorization & Types</p>
+        </div>
+    </div>
+
+    <div class="slide-container" id="slide7">
+        <h2 class="slide-title">Main Pronoun Categories</h2>
+        <div class="content-area">
+            <div class="tile-grid">
+                <div class="tile" style="text-align: left;">
+                    <h3>Personal</h3>
+                    <p>Refer to specific persons or things.<br><strong style="color:#a3e635;">Ex:</strong> He, she, it, they...</p>
+                </div>
+                <div class="tile" style="text-align: left;">
+                    <h3>Demonstrative</h3>
+                    <p>Used to indicate something specifically.<br><strong style="color:#a3e635;">Ex:</strong> This, That, These...</p>
+                </div>
+            </div>
+            <div class="tile-grid" style="margin-top: 30px;">
+                <div class="tile" style="text-align: left;">
+                    <h3>Interrogative</h3>
+                    <p>Used when we ask a question.<br><strong style="color:#a3e635;">Ex:</strong> Which, What, Whom...</p>
+                </div>
+                <div class="tile" style="text-align: left;">
+                    <h3>Possessive</h3>
+                    <p>Used to indicate ownership of something.<br><strong style="color:#a3e635;">Ex:</strong> Yours, Hers, Mine...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-container" id="slide8">
+        <h2 class="slide-title">Specific Use Categories</h2>
+        <div class="content-area">
+            <div class="tile-grid">
+                <div class="tile" style="text-align: left;">
+                    <h3>Reflexive</h3>
+                    <p>End in "-self" or "-selves".<br><strong style="color:#a3e635;">Ex:</strong> Myself, Himself...</p>
+                </div>
+                <div class="tile" style="text-align: left;">
+                    <h3>Relative</h3>
+                    <p>Supply more info about a clause.<br><strong style="color:#a3e635;">Ex:</strong> Whichever, Whatever...</p>
+                </div>
+            </div>
+            <div class="tile-grid" style="margin-top: 30px;">
+                <div class="tile" style="text-align: left;">
+                    <h3>Indefinite</h3>
+                    <p>Refer to unspecified things.<br><strong style="color:#a3e635;">Ex:</strong> Anyone, Someone...</p>
+                </div>
+                <div class="tile" style="text-align: left;">
+                    <h3>Reciprocal</h3>
+                    <p>Indicate relationship/task sharing.<br><strong style="color:#a3e635;">Ex:</strong> Each other, one another...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-container" id="slide9">
+        <div class="section-title-layout">
+            <hr>
+            <h2>MODULE 3</h2>
+            <p>Advanced & Modern Usage</p>
+        </div>
+    </div>
+
+    <div class="slide-container" id="slide10">
+        <h2 class="slide-title">Relative Pronouns Deep Dive</h2>
+        <div class="content-area">
+            <div class="table-layout">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Pronoun</th>
+                            <th>Function</th>
+                            <th>Example</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>Who</strong></td><td>People (Subject)</td><td>The child <span class="accent-text">who</span> has a blue hat is Canadian.</td></tr>
+                        <tr><td><strong>Whom</strong></td><td>People (Object)</td><td>This is the girl <span class="accent-text">whom</span> I talked to.</td></tr>
+                        <tr><td><strong>Which</strong></td><td>Objects / Animals</td><td>The dog <span class="accent-text">which</span> sits on the sofa is old.</td></tr>
+                        <tr><td><strong>When</strong></td><td>Time</td><td>I miss the times <span class="accent-text">when</span> we were together.</td></tr>
+                        <tr><td><strong>Where</strong></td><td>Places</td><td>This is the hotel <span class="accent-text">where</span> we are going.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-container" id="slide11">
+        <h2 class="slide-title">Grammar Forms</h2>
+        <div class="content-area">
+            <div class="two-column">
+                <div class="highlight-numbers-layout">
+                    <div class="number-big">4</div>
+                    <div class="number-label">Main<br>Forms</div>
+                </div>
+                <div>
+                    <ul style="list-style: none; padding: 0; font-size: 22px;">
+                        <li style="margin-bottom: 15px;"><i class="fa-solid fa-circle-check" style="color:#A3E635;"></i> <strong>Subjective:</strong> He, She, They, It</li>
+                        <li style="margin-bottom: 15px;"><i class="fa-solid fa-circle-check" style="color:#A3E635;"></i> <strong>Objective:</strong> Him, Her, Them, It</li>
+                        <li style="margin-bottom: 15px;"><i class="fa-solid fa-circle-check" style="color:#A3E635;"></i> <strong>Possessive:</strong> His, Hers, Theirs, Its</li>
+                        <li><i class="fa-solid fa-circle-check" style="color:#A3E635;"></i> <strong>Reflexive:</strong> Himself, Herself, Themselves</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-container" id="slide12">
+        <div class="qa-layout">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <h2 style="font-size: 60px;">Excellent Work!</h2>
+            <p style="font-size: 24px; max-width: 800px; margin: 20px auto;">You've navigated through the essentials of English pronouns.</p>
+            <div class="tile-grid" style="margin-top: 30px; max-width: 900px; margin-left: auto; margin-right: auto;">
+                <div class="tile">
+                    <p style="font-size: 20px;"><strong>Practice:</strong> Create 3 sentences using Relative Pronouns.</p>
+                </div>
+                <div class="tile">
+                    <p style="font-size: 20px;"><strong>Next Steps:</strong> Master Objective Pronouns in context.</p>
+                </div>
+            </div>
+            <p style="margin-top: 50px; font-weight: 700; color: #1D2E5C; font-size: 24px;">Interactive Pronouns Guide | WWW.LEARNENGLISH.COM</p>
+        </div>
+    </div>
+
+    <div class="page-counter" id="pgText">1 / 12</div>
+    
+    <div class="controls" id="cornerNav">
+        <button class="btn-arrow" id="prevBtn" onclick="nav(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+        <button class="btn-arrow" id="nextBtn" onclick="nav(1)"><i class="fa-solid fa-chevron-right"></i></button>
+    </div>
+
+    <div class="progress-bar" id="progress"></div>
+</div>
+
+<script>
+    const slides = document.querySelectorAll('.slide-container');
+    const pgText = document.getElementById('pgText');
+    const nextBtn = document.getElementById('nextBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const progressBar = document.getElementById('progress');
+    let current = 0;
+
+    // Inicializa textos y barras
+    function updateUI() {
+        pgText.innerText = (current + 1) + " / " + slides.length;
+        
+        const progressWidth = ((current + 1) / slides.length) * 100;
+        progressBar.style.width = progressWidth + '%';
+
+        if (current === slides.length - 1) {
+            nextBtn.innerHTML = '<i class="fa-solid fa-rotate-right"></i>';
+        } else {
+            nextBtn.innerHTML = '<i class="fa-solid fa-chevron-right"></i>';
+        }
+    }
+
+    function nav(step) {
+        slides[current].classList.remove('active');
+        
+        current += step;
+
+        // Loop Infinito
+        if (current >= slides.length) current = 0;
+        if (current < 0) current = slides.length - 1;
+
+        slides[current].classList.add('active');
+        updateUI();
+    }
+
+    // Auto-escalado Responsivo
+    function autoFitScreen() {
+        const viewer = document.querySelector('.slide-viewer');
+        const scaleWidth = (window.innerWidth - 40) / 1280;
+        const scaleHeight = (window.innerHeight - 40) / 720;
+        const scale = Math.min(scaleWidth, scaleHeight);
+
+        if (scale < 1) {
+            viewer.style.transform = `scale(${scale})`;
+        } else {
+            viewer.style.transform = 'scale(1)';
+        }
+    }
+
+    window.addEventListener('resize', autoFitScreen);
+    
+    // Llamada inicial
+    autoFitScreen();
+    updateUI();
+
+    // Soporte para teclado (Flechas)
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight') nav(1);
+        if (e.key === 'ArrowLeft') nav(-1);
+    });
+</script>
+
+</body>
+</html>
