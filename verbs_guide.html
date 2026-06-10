@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        /* 1. CONFIGURACIÓN ESTRUCTURAL HD (1280x720) */
+        /* 1. CONFIGURACIÓN ESTRUCTURAL ADAPTABLE (MÓVIL-FIRST A DESKTOP HD) */
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
         body {
@@ -18,25 +18,24 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            padding: 20px;
+            padding: 10px;
             font-family: 'Lato', sans-serif;
-            overflow: hidden;
         }
 
         .slide-viewer {
-            width: 1280px;
-            height: 720px;
+            width: 100%;
+            max-width: 1280px;
+            height: auto;
+            min-height: 720px;
             background-color: #ffffff;
             color: #1d2e5c;
-            overflow: hidden;
             position: relative;
             display: flex;
             flex-direction: column;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
             border-radius: 16px;
             border: 4px solid white;
-            transform-origin: center center;
-            transition: transform 0.2s ease-out;
+            overflow: hidden;
         }
 
         /* Fondo Abstracto Corporativo */
@@ -47,18 +46,21 @@
             width: 400px; height: 400px;
             background: radial-gradient(circle, rgba(163, 230, 53, 0.12) 0%, transparent 70%);
             z-index: 0;
+            pointer-events: none;
         }
 
-        /* SISTEMA DE CONTENEDORES ACTIVOS */
+        /* SISTEMA DE CONTENEDORES ACTIVOS CON SCROLL INDEPENDIENTE EN MÓVIL */
         .slide-container {
             display: none;
             flex-direction: column;
             height: 100%;
+            min-height: 712px;
             width: 100%;
-            padding: 60px;
+            padding: 40px 20px 100px 20px; /* Espacio inferior para no tapar con botones */
             position: relative;
             z-index: 1;
             background-color: #ffffff;
+            overflow-y: auto;
         }
 
         .slide-container.active { 
@@ -73,52 +75,58 @@
 
         /* 2. TIPOGRAFÍA Y DISEÑO GRÁFICO CORPORATIVO */
         h1, h2, h3 { font-family: 'Poppins', sans-serif; color: #1d2e5c; margin: 0; }
-        h1 { font-size: 85px; line-height: 1.1; text-transform: uppercase; margin-bottom: 10px; text-align: center; }
-        .slide-title { font-size: 42px; font-weight: 700; border-left: 10px solid #a3e635; padding-left: 20px; margin-bottom: 40px; text-transform: uppercase; letter-spacing: 1px; }
-        p { font-size: 24px; line-height: 1.5; color: #334155; }
-        .pronunciation { color: #a3e635; font-weight: 700; font-size: 19px; display: block; margin-bottom: 5px; }
-        .translation-tag { font-size: 19px; color: #94a3b8; font-style: italic; margin-top: 15px; display: block; }
+        h1 { font-size: 42px; line-height: 1.1; text-transform: uppercase; margin-bottom: 15px; text-align: center; }
+        .slide-title { font-size: 28px; font-weight: 700; border-left: 10px solid #a3e635; padding-left: 15px; margin-bottom: 30px; text-transform: uppercase; letter-spacing: 1px; }
+        p { font-size: 18px; line-height: 1.5; color: #334155; }
+        .pronunciation { color: #a3e635; font-weight: 700; font-size: 16px; display: block; margin-bottom: 5px; }
+        .translation-tag { font-size: 16px; color: #94a3b8; font-style: italic; margin-top: 15px; display: block; }
 
         /* LAYOUTS MULTIPÁGINA */
         .content-area { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; width: 100%; }
-        .title-layout { text-align: center; margin: auto 0; width: 100%; }
-        .divider { height: 8px; width: 160px; background-color: #a3e635; margin: 35px auto; border-radius: 4px; }
+        .title-layout { text-align: center; margin: auto 0; width: 100%; padding: 20px 0; }
+        .divider { height: 6px; width: 120px; background-color: #a3e635; margin: 25px auto; border-radius: 4px; }
         
-        .tile-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; width: 100%; }
+        /* CUADRÍCULA COMPLETAMENTE RESPONSIVA */
+        .tile-grid-4 { 
+            display: grid; 
+            grid-template-columns: 1fr; 
+            gap: 15px; 
+            width: 100%; 
+        }
         
-        .tile { flex: 1; background: #f8fafc; padding: 35px 20px; border-radius: 24px; text-align: center; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: all 0.2s ease; }
+        .tile { background: #f8fafc; padding: 25px 15px; border-radius: 24px; text-align: center; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: all 0.2s ease; }
         .tile:hover { border-color: #a3e635; transform: translateY(-4px); }
-        .tile i { font-size: 60px; color: #a3e635; margin-bottom: 25px; }
+        .tile i { font-size: 45px; color: #a3e635; margin-bottom: 15px; }
         
-        /* TABLA DE CONTENIDO */
-        .table-layout { width: 100%; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        table { width: 100%; border-collapse: collapse; background: white; }
-        th { background-color: #1d2e5c; color: white; padding: 22px; text-align: left; font-size: 24px; font-family: 'Poppins'; }
-        td { padding: 14px 25px; border-bottom: 1px solid #f1f5f9; font-size: 20px; font-weight: 700; color: #1d2e5c; }
-        td span { font-weight: 400; color: #64748b; margin-left: 10px; }
+        /* TABLA DE CONTENIDO OPTIMIZADA */
+        .table-layout { width: 100%; border-radius: 16px; overflow-x: auto; box-shadow: 0 4px 10px rgba(0,0,0,0.05); -webkit-overflow-scrolling: touch; }
+        table { width: 100%; border-collapse: collapse; background: white; min-width: 600px; }
+        th { background-color: #1d2e5c; color: white; padding: 16px; text-align: left; font-size: 18px; font-family: 'Poppins'; }
+        td { padding: 12px 18px; border-bottom: 1px solid #f1f5f9; font-size: 16px; font-weight: 700; color: #1d2e5c; }
+        td span { font-weight: 400; color: #64748b; margin-left: 5px; display: inline-block; }
 
-        /* 3. SISTEMA DE BOTONES COMPACTOS DE MARCA */
+        /* 3. SISTEMA DE BOTONES MULTIDISPOSITIVO */
         .nav-container-centered {
             display: flex;
             gap: 20px;
             justify-content: center;
-            margin-top: 40px;
+            margin-top: 30px;
         }
 
         .nav-container-corner {
             position: absolute;
-            bottom: 40px;
-            right: 60px;
+            bottom: 25px;
+            right: 25px;
             display: flex;
-            gap: 15px;
+            gap: 12px;
             z-index: 100;
         }
 
         .btn-arrow {
             background-color: #ffffff;
             border: 1px solid #e2e8f0;
-            width: 65px;
-            height: 65px;
+            width: 55px;
+            height: 55px;
             border-radius: 14px;
             cursor: pointer;
             display: flex;
@@ -128,7 +136,7 @@
             transition: all 0.2s ease;
         }
 
-        .btn-arrow i { color: #94a3b8; font-size: 24px; transition: color 0.2s; }
+        .btn-arrow i { color: #94a3b8; font-size: 20px; transition: color 0.2s; }
 
         .btn-arrow:hover:not(:disabled) {
             transform: translateY(-4px);
@@ -142,13 +150,40 @@
         /* Contador de páginas */
         .page-counter { 
             position: absolute; 
-            bottom: 60px; 
-            left: 60px; 
+            bottom: 40px; 
+            left: 25px; 
             font-family: 'Poppins';
             font-weight: 600; 
             color: #94a3b8; 
-            font-size: 18px; 
+            font-size: 16px; 
             z-index: 100;
+        }
+
+        /* 4. MEDIA QUERIES PARA PANTALLAS MEDIANAS Y ESCRITORIO */
+        @media (min-width: 640px) {
+            .tile-grid-4 { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+            h1 { font-size: 60px; }
+            .slide-title { font-size: 36px; }
+            p { font-size: 22px; }
+            .slide-container { padding: 60px 40px 100px 40px; }
+        }
+
+        @media (min-width: 1024px) {
+            .tile-grid-4 { grid-template-columns: repeat(4, 1fr); }
+            h1 { font-size: 85px; }
+            .slide-title { font-size: 42px; padding-left: 20px; }
+            p { font-size: 24px; }
+            .pronunciation { font-size: 19px; }
+            .translation-tag { font-size: 19px; }
+            .slide-container { padding: 60px; }
+            .tile i { font-size: 60px; }
+            th { font-size: 24px; padding: 22px; }
+            td { font-size: 20px; padding: 14px 25px; }
+            .btn-arrow { width: 65px; height: 65px; }
+            .btn-arrow i { font-size: 24px; }
+            .page-counter { bottom: 60px; left: 60px; font-size: 18px; }
+            .nav-container-corner { bottom: 40px; right: 60px; gap: 15px; }
+            .divider { height: 8px; width: 160px; margin: 35px auto; }
         }
     </style>
 </head>
@@ -159,7 +194,7 @@
     <div class="slide-container active">
         <div class="title-layout">
             <h1>GUÍA DE<br><span style="color: #a3e635;">VERBOS INTERACTIVOS</span></h1>
-            <p style="color: #64748b; font-size: 28px;">Domina las acciones, tiempos gramaticales y modales en inglés</p>
+            <p style="color: #64748b; font-size: 1.2em;">Domina las acciones, tiempos gramaticales y modales en inglés</p>
             <div class="divider"></div>
             
             <div class="nav-container-centered">
@@ -171,9 +206,9 @@
 
     <div class="slide-container">
         <div class="content-area" style="text-align: center;">
-            <h2 style="font-size: 75px; margin-bottom: 25px; line-height: 1.1;">MÓDULO 1:<br><span style="color: #a3e635;">ACTION VERBS</span></h2>
+            <h2 style="font-size: 2.8em; margin-bottom: 25px; line-height: 1.1; font-family: 'Poppins';">MÓDULO 1:<br><span style="color: #a3e635;">ACTION VERBS</span></h2>
             <div style="max-width: 900px; margin: 0 auto;">
-                <p style="font-size: 28px;">The foundation of communication. These verbs describe physical or mental actions we perform daily.</p>
+                <p style="font-size: 1.2em;">The foundation of communication. These verbs describe physical or mental actions we perform daily.</p>
                 <span class="translation-tag">La base de la comunicación. Estos verbos describen acciones físicas o mentales que realizamos a diario.</span>
             </div>
         </div>
@@ -213,9 +248,9 @@
 
     <div class="slide-container">
         <div class="content-area" style="text-align: center;">
-            <h2 style="font-size: 75px; margin-bottom: 25px; line-height: 1.1;">MÓDULO 2:<br><span style="color: #a3e635;">REGULAR vs IRREGULAR</span></h2>
+            <h2 style="font-size: 2.8em; margin-bottom: 25px; line-height: 1.1; font-family: 'Poppins';">MÓDULO 2:<br><span style="color: #a3e635;">REGULAR vs IRREGULAR</span></h2>
             <div style="max-width: 900px; margin: 0 auto;">
-                <p style="font-size: 28px;">Understand how actions change when we talk about the past. Rules vs Exceptions.</p>
+                <p style="font-size: 1.2em;">Understand how actions change when we talk about the past. Rules vs Exceptions.</p>
                 <span class="translation-tag">Comprende cómo cambian las acciones cuando hablamos en pasado. Reglas frente a excepciones.</span>
             </div>
         </div>
@@ -224,7 +259,7 @@
     <div class="slide-container">
         <h2 class="slide-title">Verbos Regulares (Regla -ED)</h2>
         <div class="content-area">
-            <p style="margin-bottom: 30px; font-size: 22px; color: #64748b;">Simply add <strong style="color: #a3e635;">-ed</strong> to the base form to express past actions.</p>
+            <p style="margin-bottom: 30px; font-size: 1em; color: #64748b;">Simply add <strong style="color: #a3e635;">-ed</strong> to the base form to express past actions.</p>
             <div class="tile-grid-4">
                 <div class="tile">
                     <i class="fa-solid fa-gamepad"></i>
@@ -257,7 +292,7 @@
     <div class="slide-container">
         <h2 class="slide-title">Verbos Irregulares (Cambio Total)</h2>
         <div class="content-area">
-            <p style="margin-bottom: 30px; font-size: 22px; color: #64748b;">These verbs do not follow rules; they completely change their structure in the past form.</p>
+            <p style="margin-bottom: 30px; font-size: 1em; color: #64748b;">These verbs do not follow rules; they completely change their structure in the past form.</p>
             <div class="tile-grid-4">
                 <div class="tile">
                     <i class="fa-solid fa-route"></i>
@@ -289,9 +324,9 @@
 
     <div class="slide-container">
         <div class="content-area" style="text-align: center;">
-            <h2 style="font-size: 75px; margin-bottom: 25px; line-height: 1.1;">MÓDULO 3:<br><span style="color: #a3e635;">MODAL VERBS</span></h2>
+            <h2 style="font-size: 2.8em; margin-bottom: 25px; line-height: 1.1; font-family: 'Poppins';">MÓDULO 3:<br><span style="color: #a3e635;">MODAL VERBS</span></h2>
             <div style="max-width: 900px; margin: 0 auto;">
-                <p style="font-size: 28px;">Auxiliary elements used to express abilities, obligations, permissions, or friendly recommendations.</p>
+                <p style="font-size: 1.2em;">Auxiliary elements used to express abilities, obligations, permissions, or friendly recommendations.</p>
                 <span class="translation-tag">Elementos auxiliares utilizados para expresar habilidades, obligaciones, permisos o recomendaciones amigables.</span>
             </div>
         </div>
@@ -305,25 +340,25 @@
                     <i class="fa-solid fa-bolt"></i>
                     <span class="pronunciation">(kæn) - Habilidad</span>
                     <h3>CAN</h3>
-                    <p style="margin-top: 10px; font-size:18px; color: #64748b;">Poder<br><i>"I can study"</i></p>
+                    <p style="margin-top: 10px; font-size:16px; color: #64748b;">Poder<br><i>"I can study"</i></p>
                 </div>
                 <div class="tile">
                     <i class="fa-solid fa-triangle-exclamation"></i>
                     <span class="pronunciation">(mʌst) - Obligación</span>
                     <h3>MUST</h3>
-                    <p style="margin-top: 10px; font-size:18px; color: #64748b;">Deber fuerte<br><i>"You must practice"</i></p>
+                    <p style="margin-top: 10px; font-size:16px; color: #64748b;">Deber fuerte<br><i>"You must practice"</i></p>
                 </div>
                 <div class="tile">
                     <i class="fa-solid fa-hand-holding-hand"></i>
                     <span class="pronunciation">(ʃʊd) - Consejo</span>
                     <h3>SHOULD</h3>
-                    <p style="margin-top: 10px; font-size:18px; color: #64748b;">Deberías<br><i>"You should learn"</i></p>
+                    <p style="margin-top: 10px; font-size:16px; color: #64748b;">Deberías<br><i>"You should learn"</i></p>
                 </div>
                 <div class="tile">
                     <i class="fa-solid fa-user-shield"></i>
                     <span class="pronunciation">(meɪ) - Permiso</span>
                     <h3>MAY</h3>
-                    <p style="margin-top: 10px; font-size:18px; color: #64748b;">Poder formal<br><i>"May I come in?"</i></p>
+                    <p style="margin-top: 10px; font-size:16px; color: #64748b;">Poder formal<br><i>"May I come in?"</i></p>
                 </div>
             </div>
         </div>
@@ -331,9 +366,9 @@
 
     <div class="slide-container">
         <div class="content-area" style="text-align: center;">
-            <h2 style="font-size: 75px; margin-bottom: 25px; line-height: 1.1;">MÓDULO 4:<br><span style="color: #a3e635;">ESTRUCTURAS Y AUXILIARES</span></h2>
+            <h2 style="font-size: 2.8em; margin-bottom: 25px; line-height: 1.1; font-family: 'Poppins';">MÓDULO 4:<br><span style="color: #a3e635;">ESTRUCTURAS Y AUXILIARES</span></h2>
             <div style="max-width: 900px; margin: 0 auto;">
-                <p style="font-size: 28px;">Mastering how to build correct positive statements, negative phrases, and interrogative sentences.</p>
+                <p style="font-size: 1.2em;">Mastering how to build correct positive statements, negative phrases, and interrogative sentences.</p>
                 <span class="translation-tag">Dominar cómo construir afirmaciones correctas, frases negativas y oraciones interrogativas.</span>
             </div>
         </div>
@@ -367,10 +402,10 @@
 
     <div class="slide-container">
         <div class="content-area" style="text-align: center;">
-            <h2 style="font-size: 85px; margin-bottom: 25px;">¡EXCELENTE PROGRESO!</h2>
-            <p style="font-size: 30px; color: #64748b; margin: 0 auto 30px;">Las acciones dan vida al idioma. ¡Sigue practicando diariamente!</p>
+            <h2 style="font-size: 3em; margin-bottom: 25px; font-family: 'Poppins';">¡EXCELENTE PROGRESO!</h2>
+            <p style="font-size: 1.3em; color: #64748b; margin: 0 auto 30px;">Las acciones dan vida al idioma. ¡Sigue practicando diariamente!</p>
             <div>
-                <p style="font-weight: 700; color: #1d2e5c; font-size: 28px; letter-spacing: 1px;">WWW.LEARNENGLISH.COM</p>
+                <p style="font-weight: 700; color: #1d2e5c; font-size: 1.2em; letter-spacing: 1px;">WWW.LEARNENGLISH.COM</p>
             </div>
         </div>
     </div>
@@ -392,34 +427,35 @@
     const bNext = document.getElementById('bNext');
     let current = 0;
 
-    // Inicializa contador total
+    // Inicializa el indicador de páginas totales
     pgText.innerText = "1 / " + slides.length;
 
     function nav(step) {
-        // Apagar lámina actual
+        // Ocultar slide actual
         slides[current].classList.remove('active');
         
-        // Calcular siguiente posición
+        // Calcular siguiente índice
         current += step;
 
-        // Bucle circular infinito
+        // Comportamiento cíclico infinito
         if (current >= slides.length) current = 0;
         if (current < 0) current = slides.length - 1;
 
-        // Encender nueva lámina
+        // Mostrar nuevo slide
         slides[current].classList.add('active');
+        slides[current].scrollTop = 0; // Regresa el scroll arriba en móviles
         
-        // Actualizar el número de página inferior
+        // Actualizar número de página inferior
         pgText.innerText = (current + 1) + " / " + slides.length;
         
-        // Mostrar u ocultar la botonera de la esquina según la slide
+        // Mostrar u ocultar la botonera de la esquina según corresponda
         if (current === 0) {
             cornerNav.style.display = 'none'; 
         } else {
             cornerNav.style.display = 'flex'; 
         }
 
-        // Si llega al final, cambia el icono para reiniciar el ciclo
+        // Si llega al final, cambia el ícono a un símbolo de reinicio/recarga
         if (current === slides.length - 1) {
             bNext.innerHTML = '<i class="fa-solid fa-rotate-right"></i>';
         } else {
@@ -427,30 +463,11 @@
         }
     }
 
-    // --- SISTEMA DE AUTO-ESCALADO RESPONSIVO ---
-    function autoFitScreen() {
-        const viewer = document.querySelector('.slide-viewer');
-        const scaleWidth = (window.innerWidth - 40) / 1280;
-        const scaleHeight = (window.innerHeight - 40) / 720;
-        
-        const scale = Math.min(scaleWidth, scaleHeight);
-
-        if (scale < 1) {
-            viewer.style.transform = `scale(${scale})`;
-        } else {
-            viewer.style.transform = 'scale(1)';
-        }
-    }
-
-    // Eventos de redimensión y teclado
-    window.addEventListener('resize', autoFitScreen);
+    // Navegación mediante flechas físicas del teclado en PC
     document.addEventListener('keydown', (e) => {
         if (e.key === 'ArrowRight') nav(1);
         if (e.key === 'ArrowLeft') nav(-1);
     });
-
-    // Ejecución inicial de escalado
-    autoFitScreen();
 </script>
 
 </body>
