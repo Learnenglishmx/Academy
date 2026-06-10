@@ -346,4 +346,65 @@
             <h2 style="font-size: 75px; margin-bottom: 25px;">¡EXCELENTE TRABAJO!</h2>
             <p style="font-size: 30px; color: #64748b; margin: 0 auto 30px;">Has explorado la estructura de los tiempos verbales. La clave es la práctica constante.</p>
             <div>
-                <p style="font-weight: 700; color: #1d2e5c; font-size: 28px; letter-spacing:
+                <p style="font-weight: 700; color: #1d2e5c; font-size: 28px; letter-spacing: 1px;">WWW.LEARNENGLISH.COM</p>
+                <button class="start-btn" style="background-color: #1d2e5c; color: white;" onclick="nav(-100)">REINICIAR GUÍA <i class="fa-solid fa-rotate-right"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-nav-bar">
+        <div class="page-counter" id="pgText">1 / 7</div>
+        <div class="global-controls">
+            <button class="btn-arrow" onclick="nav(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+            <button class="btn-arrow" id="bNext" onclick="nav(1)"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // --- LÓGICA DE NAVEGACIÓN IDÉNTICA A NOUNS ---
+    const slides = document.querySelectorAll('.slide-container');
+    const pgText = document.getElementById('pgText');
+    const bNext = document.getElementById('bNext');
+    let current = 0;
+
+    pgText.innerText = "1 / " + slides.length;
+
+    function nav(step) {
+        slides[current].classList.remove('active');
+        if(step === -100) current = 0;
+        else current += step;
+
+        if (current >= slides.length) current = 0;
+        if (current < 0) current = 0;
+
+        slides[current].classList.add('active');
+        pgText.innerText = (current + 1) + " / " + slides.length;
+
+        if (current === slides.length - 1) {
+            bNext.innerHTML = '<i class="fa-solid fa-rotate-right"></i>';
+        } else {
+            bNext.innerHTML = '<i class="fa-solid fa-chevron-right"></i>';
+        }
+    }
+
+    // --- SISTEMA DE AUTO-ESCALADO RESPONSIVO ---
+    function autoFitScreen() {
+        const viewer = document.querySelector('.slide-viewer');
+        const scale = Math.min((window.innerWidth - 30) / 1280, (window.innerHeight - 30) / 720);
+        if (scale < 1) viewer.style.transform = `scale(${scale})`;
+        else viewer.style.transform = 'scale(1)';
+    }
+
+    window.addEventListener('resize', autoFitScreen);
+    autoFitScreen();
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight') nav(1);
+        if (e.key === 'ArrowLeft') nav(-1);
+    });
+</script>
+
+</body>
+</html>
