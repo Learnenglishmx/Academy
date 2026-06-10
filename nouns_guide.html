@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LearnEnglish - Guía Interactiva de Sustantivos</title>
+    <title>LearnEnglish - Guía Interactive de Sustantivos</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
@@ -16,10 +16,7 @@
             margin: 0;
             padding: 0;
             overflow: hidden;
-            position: fixed; /* Evita que el navegador estire o salte la pantalla al deslizar */
-        }
-        
-        body {
+            position: fixed;
             background-color: #e2e8f0;
             display: flex;
             justify-content: center;
@@ -60,7 +57,7 @@
             flex-direction: column;
             height: 100%;
             width: 100%;
-            padding: 60px 80px;
+            padding: 60px 80px 140px 80px; /* Espacio libre abajo para que no choque con los botones */
             position: relative;
             z-index: 1;
             background-color: #ffffff;
@@ -71,13 +68,12 @@
             animation: fadeIn 0.3s ease-out forwards; 
         }
 
-        /* Animación limpia sin alteraciones de posición en pantallas móviles */
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
         }
 
-        /* TIPOGRAFÍA Y DISEÑO GRÁFICO CORPORATIVO */
+        /* TIPOGRAFÍA Y DISEÑO CORPORATIVO */
         h1, h2, h3 { font-family: 'Poppins', sans-serif; color: #1d2e5c; margin: 0; }
         h1 { font-size: 75px; line-height: 1.1; text-transform: uppercase; text-align: center; }
         .slide-title { font-size: 42px; font-weight: 700; border-left: 10px solid #a3e635; padding-left: 20px; margin-bottom: 40px; text-transform: uppercase; letter-spacing: 1px; }
@@ -87,7 +83,7 @@
 
         /* LAYOUTS */
         .content-area { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; width: 100%; }
-        .title-layout { text-align: center; margin-top: 50px; width: 100%; }
+        .title-layout { text-align: center; margin-top: 40px; width: 100%; }
         .divider { height: 8px; width: 160px; background-color: #a3e635; margin: 35px auto; border-radius: 4px; }
         
         .two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; width: 100%; }
@@ -103,15 +99,25 @@
         td { padding: 14px 25px; border-bottom: 1px solid #f1f5f9; font-size: 20px; font-weight: 700; color: #1d2e5c; }
         td span { font-weight: 400; color: #64748b; margin-left: 10px; }
 
-        /* BOTONES FIJADOS Y CONGELADOS AL CENTRO BAJO */
-        .controls {
+        /* BARRA INFERIOR DE NAVEGACIÓN TOTALMENTE INAMOVIBLE Y BLINDADA */
+        .bottom-nav-bar {
             position: absolute;
-            bottom: 40px;
-            left: 50%;
-            transform: translateX(-50%);
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 130px;
+            z-index: 9999;
+            display: flex;
+            justify-content: center; /* Centra los botones de forma matemática exacta */
+            align-items: center;
+            background: transparent;
+            pointer-events: none; /* Permite clicks detrás si fuera necesario, pero activaremos los hijos */
+        }
+
+        .global-controls {
             display: flex;
             gap: 15px;
-            z-index: 100;
+            pointer-events: auto; /* Reactiva los clicks para los botones */
         }
 
         .btn-arrow {
@@ -139,16 +145,15 @@
         }
         .start-btn:hover { background-color: #1d2e5c; color: #ffffff; transform: scale(1.05); }
 
-        /* Contador de páginas */
+        /* Contador fijado a la izquierda mediante padding de la barra padre */
         .page-counter { 
             position: absolute; 
-            bottom: 60px; 
             left: 60px; 
             font-family: 'Poppins';
             font-weight: 700; 
             color: #94a3b8; 
             font-size: 18px; 
-            z-index: 100;
+            pointer-events: auto;
         }
     </style>
 </head>
@@ -350,4 +355,99 @@
                     <i class="fa-solid fa-tv" style="font-size: 70px;"></i>
                     <span class="pronunciation" style="font-size: 22px;">(/ˈtel.ɪ.vɪʒ.ən/)</span>
                     <h3 style="font-size: 38px;">TELEVISION</h3>
-                    <p style="font-size: 24px; color: #a3e635; font-weight:
+                    <p style="font-size: 24px; color: #a3e635; font-weight: 700; margin-top: 10px;">Televisión</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-container">
+        <h2 class="slide-title">Vocabulario Completo de Sustantivos</h2>
+        <div class="content-area">
+            <div class="table-layout">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Sustantivo</th>
+                            <th>Traducción</th>
+                            <th>Sustantivo</th>
+                            <th>Traducción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>ACCIDENT <span>(Accidente)</span></td><td>OVEN <span>(Horno)</span></td><td>CAR <span>(Carro)</span></td><td>COMPUTER <span>(Computadora)</span></td></tr>
+                        <tr><td>AIRPORT <span>(Aeropuerto)</span></td><td>DISHWASHER <span>(Lavaplatos)</span></td><td>CELLPHONE <span>(Celular)</span></td><td>TELEVISION <span>(Televisión)</span></td></tr>
+                        <tr><td>STORE <span>(Tienda)</span></td><td>TOASTER <span>(Tostadora)</span></td><td>MIRROR <span>(Espejo)</span></td><td>CHAIR <span>(Silla)</span></td></tr>
+                        <tr><td>WORLD <span>(Mundo)</span></td><td>CLOCK <span>(Reloj)</span></td><td>LIGHT <span>(Luz)</span></td><td>TABLE <span>(Mesa)</span></td></tr>
+                        <tr><td>BOOK <span>(Libro)</span></td><td>BOTTLE <span>(Botella)</span></td><td>CLOTHES <span>(Ropa)</span></td><td>BALL / MOVIE / PARTY</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-container">
+        <div class="content-area" style="text-align: center;">
+            <i class="fa-solid fa-graduation-cap" style="font-size: 100px; color: #a3e635; margin-bottom: 20px;"></i>
+            <h2 style="font-size: 75px; margin-bottom: 25px;">¡FANTÁSTICO PROGRESO!</h2>
+            <p style="font-size: 30px; color: #64748b; margin: 0 auto 30px;">Continúa expandiendo tu vocabulario base día a día.</p>
+            <div>
+                <p style="font-weight: 700; color: #1d2e5c; font-size: 28px; letter-spacing: 1px;">WWW.LEARNENGLISH.COM</p>
+                <button class="start-btn" style="background-color: #1d2e5c; color: white;" onclick="nav(-100)">REINICIAR GUÍA <i class="fa-solid fa-rotate-right"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-nav-bar">
+        <div class="page-counter" id="pgText">1 / 10</div>
+        <div class="global-controls">
+            <button class="btn-arrow" onclick="nav(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+            <button class="btn-arrow" id="bNext" onclick="nav(1)"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const slides = document.querySelectorAll('.slide-container');
+    const pgText = document.getElementById('pgText');
+    const bNext = document.getElementById('bNext');
+    let current = 0;
+
+    pgText.innerText = "1 / " + slides.length;
+
+    function nav(step) {
+        slides[current].classList.remove('active');
+        if(step === -100) current = 0;
+        else current += step;
+
+        if (current >= slides.length) current = 0;
+        if (current < 0) current = 0;
+
+        slides[current].classList.add('active');
+        pgText.innerText = (current + 1) + " / " + slides.length;
+
+        if (current === slides.length - 1) {
+            bNext.innerHTML = '<i class="fa-solid fa-rotate-right"></i>';
+        } else {
+            bNext.innerHTML = '<i class="fa-solid fa-chevron-right"></i>';
+        }
+    }
+
+    function autoFitScreen() {
+        const viewer = document.querySelector('.slide-viewer');
+        const scale = Math.min((window.innerWidth - 30) / 1280, (window.innerHeight - 30) / 720);
+        if (scale < 1) viewer.style.transform = `scale(${scale})`;
+        else viewer.style.transform = 'scale(1)';
+    }
+
+    window.addEventListener('resize', autoFitScreen);
+    autoFitScreen();
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight') nav(1);
+        if (e.key === 'ArrowLeft') nav(-1);
+    });
+</script>
+</body>
+</html>
