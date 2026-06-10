@@ -40,7 +40,7 @@
             transform-origin: center center;
         }
 
-        /* Fondo Abstracto */
+        /* Fondo Abstracto de Marca */
         .slide-viewer::before {
             content: '';
             position: absolute;
@@ -56,21 +56,23 @@
             flex-direction: column;
             height: 100%;
             width: 100%;
-            padding: 60px 80px 140px 80px; /* Espacio libre abajo para los botones globales */
+            padding: 60px 80px 140px 80px; /* Margen inferior blindado contra superposiciones */
             position: relative;
             z-index: 1;
             background-color: #ffffff;
         }
+
         .slide-container.active { 
             display: flex; 
             animation: fadeIn 0.3s ease-out forwards; 
         }
+
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
         }
 
-        /* TIPOGRAFÍA Y DISEÑO CORPORATIVO */
+        /* TIPOGRAFÍA Y DISEÑO GRÁFICO CORPORATIVO */
         h1, h2, h3 { font-family: 'Poppins', sans-serif; color: #1d2e5c; margin: 0; }
         h1 { font-size: 75px; line-height: 1.1; text-transform: uppercase; text-align: center; }
         .slide-title { font-size: 42px; font-weight: 700; border-left: 10px solid #a3e635; padding-left: 20px; margin-bottom: 40px; text-transform: uppercase; letter-spacing: 1px; }
@@ -78,7 +80,7 @@
         .pronunciation { color: #a3e635; font-weight: 700; font-size: 19px; display: block; margin-bottom: 5px; }
         .translation-tag { font-size: 19px; color: #94a3b8; font-style: italic; margin-top: 15px; display: block; }
 
-        /* LAYOUTS */
+        /* LAYOUTS MULTIPÁGINA */
         .content-area { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; width: 100%; }
         .title-layout { text-align: center; margin-top: 40px; width: 100%; }
         .divider { height: 8px; width: 160px; background-color: #a3e635; margin: 35px auto; border-radius: 4px; }
@@ -103,16 +105,18 @@
             height: 130px;
             z-index: 9999;
             display: flex;
-            justify-content: center; /* Centrado matemático exacto de la botonera */
+            justify-content: center; /* Centrado matemático absoluto */
             align-items: center;
             background: transparent;
-            pointer-events: none; /* Permite clicks detrás si fuera necesario */
+            pointer-events: none;
         }
+
         .global-controls {
             display: flex;
             gap: 15px;
-            pointer-events: auto; /* Reactiva los clicks dentro de la botonera */
+            pointer-events: auto;
         }
+
         .btn-arrow {
             background-color: #ffffff;
             border: 1px solid #e2e8f0;
@@ -126,6 +130,7 @@
             box-shadow: 0 8px 15px rgba(0,0,0,0.05);
             transition: all 0.2s ease;
         }
+
         .btn-arrow i { color: #1d2e5c; font-size: 22px; }
         .btn-arrow:hover { transform: translateY(-3px); border-color: #a3e635; box-shadow: 0 12px 20px rgba(163, 230, 53, 0.2); }
         .btn-arrow:hover i { color: #a3e635; }
@@ -157,28 +162,3 @@
         <div class="title-layout">
             <p style="text-transform: uppercase; letter-spacing: 4px; font-weight: 700; color: #a3e635;">Grammar Mastery Series</p>
             <h1>GUÍA DE<br><span style="color: #a3e635;">ADJETIVOS INTERACTIVOS</span></h1>
-            <p style="margin-top: 20px; font-size: 28px; color: #334155;">Domina las descripciones esenciales para tu inglés diario</p>
-            <div class="divider"></div>
-            <button class="start-btn" onclick="nav(1)">COMENZAR APRENDIZAJE <i class="fa-solid fa-arrow-right"></i></button>
-        </div>
-    </div>
-
-    <div class="slide-container">
-        <div class="content-area" style="text-align: center;">
-            <h2 style="font-size: 75px; margin-bottom: 25px; line-height: 1.1;">MÓDULO 1:<br><span style="color: #a3e635;">PERSONALIDAD Y EMOCIONES</span></h2>
-            <div style="max-width: 900px; margin: 0 auto;">
-                <p style="font-size: 28px;">Describe how people are, how they feel, and express internal characteristics with confidence.</p>
-                <span class="translation-tag">Describe cómo son las personas, cómo se sienten y expresa características internas con confianza.</span>
-            </div>
-        </div>
-    </div>
-
-    <div class="slide-container">
-        <h2 class="slide-title">Rasgos de Personalidad</h2>
-        <div class="content-area">
-            <div class="tile-grid-4">
-                <div class="tile">
-                    <i class="fa-solid fa-heart"></i>
-                    <span class="pronunciation">(kaɪnd)</span>
-                    <h3>KIND</h3>
-                    <p style="margin-top: 10px; font-weight: 700; color: #a3e635;">
