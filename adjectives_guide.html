@@ -56,7 +56,7 @@
             flex-direction: column;
             height: 100%;
             width: 100%;
-            padding: 60px 80px 140px 80px; /* Mismo espacio libre abajo */
+            padding: 60px 80px 140px 80px; /* Espacio libre abajo blindado */
             position: relative;
             z-index: 1;
             background-color: #ffffff;
@@ -137,6 +137,7 @@
         }
         .start-btn:hover { background-color: #1d2e5c; color: #ffffff; transform: scale(1.05); }
 
+        /* Contador de páginas fijado a la izquierda */
         .page-counter { 
             position: absolute; 
             left: 60px; 
@@ -151,144 +152,3 @@
 <body>
 
 <div class="slide-viewer">
-    
-    <div class="slide-container active">
-        <div class="title-layout">
-            <p style="text-transform: uppercase; letter-spacing: 4px; font-weight: 700; color: #a3e635;">Grammar Mastery Series</p>
-            <h1>GUÍA DE<br><span style="color: #a3e635;">ADJETIVOS INTERACTIVOS</span></h1>
-            <p style="margin-top: 20px; font-size: 28px; color: #334155;">Aprende a calificar y describir el mundo que te rodea con precisión</p>
-            <div class="divider"></div>
-            <button class="start-btn" onclick="nav(1)">COMENZAR APRENDIZAJE <i class="fa-solid fa-arrow-right"></i></button>
-        </div>
-    </div>
-
-    <div class="slide-container">
-        <div class="content-area" style="text-align: center;">
-            <h2 style="font-size: 75px; margin-bottom: 25px; line-height: 1.1;">MÓDULO 1:<br><span style="color: #a3e635;">DESCRIPTIVE ADJECTIVES</span></h2>
-            <div style="max-width: 900px; margin: 0 auto;">
-                <p style="font-size: 28px;">Descriptive adjectives add color, details, and qualities to your nouns. They are essential to express sizes, states, and opinions.</p>
-                <span class="translation-tag">Los adjetivos descriptivos aportan color, detalles y cualidades a los sustantivos. Son esenciales para expresar tamaños, estados y opiniones.</span>
-            </div>
-        </div>
-    </div>
-
-    <div class="slide-container">
-        <h2 class="slide-title">Cualidades y Estados Físicos</h2>
-        <div class="content-area">
-            <div class="tile-grid-4">
-                <div class="tile">
-                    <i class="fa-solid fa-up-long"></i>
-                    <span class="pronunciation">(/tɔːl/)</span>
-                    <h3>TALL</h3>
-                    <p style="margin-top: 10px; font-weight: 700; color: #a3e635;">Alto</p>
-                </div>
-                <div class="tile">
-                    <i class="fa-solid fa-baby"></i>
-                    <span class="pronunciation">(/jʌŋ/)</span>
-                    <h3>YOUNG</h3>
-                    <p style="margin-top: 10px; font-weight: 700; color: #a3e635;">Joven</p>
-                </div>
-                <div class="tile">
-                    <i class="fa-solid fa-gem"></i>
-                    <span class="pronunciation">(/ˈbjuː.tɪ.fəl/)</span>
-                    <h3>BEAUTIFUL</h3>
-                    <p style="margin-top: 10px; font-weight: 700; color: #a3e635;">Hermoso / Bello</p>
-                </div>
-                <div class="tile">
-                    <i class="fa-solid fa-dumbbell"></i>
-                    <span class="pronunciation">(/strɒŋ/)</span>
-                    <h3>STRONG</h3>
-                    <p style="margin-top: 10px; font-weight: 700; color: #a3e635;">Fuerte</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="slide-container">
-        <h2 class="slide-title">Estados de Ánimo y Características</h2>
-        <div class="content-area">
-            <div class="tile-grid-4">
-                <div class="tile">
-                    <i class="fa-solid fa-face-smile"></i>
-                    <span class="pronunciation">(/ˈhæp.i/)</span>
-                    <h3>HAPPY</h3>
-                    <p style="margin-top: 10px; font-weight: 700; color: #a3e635;">Feliz</p>
-                </div>
-                <div class="tile">
-                    <i class="fa-solid fa-brain"></i>
-                    <span class="pronunciation">(/ˈsmɑːt/)</span>
-                    <h3>SMART</h3>
-                    <p style="margin-top: 10px; font-weight: 700; color: #a3e635;">Inteligente</p>
-                </div>
-                <div class="tile">
-                    <i class="fa-solid fa-bolt"></i>
-                    <span class="pronunciation">(/fɑːst/)</span>
-                    <h3>FAST</h3>
-                    <p style="margin-top: 10px; font-weight: 700; color: #a3e635;">Rápido</p>
-                </div>
-                <div class="tile">
-                    <i class="fa-solid fa-feather"></i>
-                    <span class="pronunciation">(/laɪt/)</span>
-                    <h3>LIGHT</h3>
-                    <p style="margin-top: 10px; font-weight: 700; color: #a3e635;">Ligero / Liviano</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="slide-container">
-        <div class="content-area" style="text-align: center;">
-            <h2 style="font-size: 75px; margin-bottom: 25px; line-height: 1.1;">MÓDULO 2:<br><span style="color: #a3e635;">ANTONYMS MATCH</span></h2>
-            <div style="max-width: 900px; margin: 0 auto;">
-                <p style="font-size: 28px;">Learning adjectives in opposing pairs is one of the fastest methods to double your functional vocabulary storage.</p>
-                <span class="translation-tag">Aprender adjetivos en parejas opuestas es uno de los métodos más rápidos para duplicar tu almacenamiento de vocabulario funcional.</span>
-            </div>
-        </div>
-    </div>
-
-    <div class="slide-container">
-        <h2 class="slide-title">Parejas de Opuestos Esenciales</h2>
-        <div class="content-area">
-            <div class="tile-grid-4">
-                <div class="tile">
-                    <i class="fa-solid fa-box"></i>
-                    <span class="pronunciation">(/bɪɡ/)</span>
-                    <h3>BIG</h3>
-                    <p style="margin-top: 10px; font-weight: 700; color: #a3e635;">Grande</p>
-                </div>
-                <div class="tile">
-                    <i class="fa-solid fa-cube"></i>
-                    <span class="pronunciation">(/smɔːl/)</span>
-                    <h3>SMALL</h3>
-                    <p style="margin-top: 10px; font-weight: 700; color: #a3e635;">Pequeño</p>
-                </div>
-                <div class="tile">
-                    <i class="fa-solid fa-sun"></i>
-                    <span class="pronunciation">(/hɒt/)</span>
-                    <h3>HOT</h3>
-                    <p style="margin-top: 10px; font-weight: 700; color: #a3e635;">Caliente</p>
-                </div>
-                <div class="tile">
-                    <i class="fa-solid fa-snowflake"></i>
-                    <span class="pronunciation">(/kəʊld/)</span>
-                    <h3>COLD</h3>
-                    <p style="margin-top: 10px; font-weight: 700; color: #a3e635;">Frío</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="slide-container">
-        <div class="content-area" style="text-align: center;">
-            <h2 style="font-size: 75px; margin-bottom: 25px; line-height: 1.1;">MÓDULO 3:<br><span style="color: #a3e635;">COMPARATIVES</span></h2>
-            <div style="max-width: 900px; margin: 0 auto;">
-                <p style="font-size: 28px;">Discover how to modify base short adjectives to set direct evaluations and comparisons between items or people.</p>
-                <span class="translation-tag">Descubre cómo modificar adjetivos base cortos para establecer evaluaciones directas y comparaciones entre objetos o personas.</span>
-            </div>
-        </div>
-    </div>
-
-    <div class="slide-container">
-        <h2 class="slide-title">Regla de Comparación (Sufijo -ER)</h2>
-        <div class="content-area">
-            <p style="margin-bottom: 30px
