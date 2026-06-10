@@ -152,11 +152,12 @@
             opacity: 0;
             transform: translateY(20px);
             transition: all 0.8s ease 0.2s;
+            align-self: flex-start; /* Permite scroll natural si hay mucho contenido */
         }
 
         .header {
             text-align: center;
-            margin-bottom: 50px;
+            margin-bottom: 40px;
         }
 
         .header h1 {
@@ -171,6 +172,77 @@
         .header p {
             color: var(--text-muted);
             font-size: 1.1rem;
+        }
+
+        /* NUEVO MENÚ DE BOTONES INTERACTIVOS */
+        .academy-menu {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 50px;
+        }
+
+        .menu-btn {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            padding: 14px 28px;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .menu-btn i {
+            color: var(--text-muted);
+            transition: color 0.3s;
+        }
+
+        .menu-btn:hover {
+            border-color: var(--accent);
+            background: rgba(59, 130, 246, 0.05);
+            transform: translateY(-2px);
+        }
+
+        /* Botón Activo */
+        .menu-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .menu-btn.active i {
+            color: white;
+        }
+
+        /* SECCIONES DE CONTENIDO */
+        .academy-section {
+            display: none; /* Ocultas por defecto */
+            animation: fadeInSection 0.5s ease forwards;
+        }
+
+        .academy-section.active {
+            display: block; /* Solo se muestra la sección activa */
+        }
+
+        @keyframes fadeInSection {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            text-align: center;
+            color: var(--text-light);
+            position: relative;
         }
 
         .grid {
@@ -272,6 +344,10 @@
         }
 
         /* ANIMACIÓN AL DESBLOQUEAR */
+        body.unlocked {
+            align-items: flex-start; /* Cambia el centrado vertical para permitir scroll */
+        }
+
         .unlocked #lockscreen {
             transform: translateY(-100%);
             opacity: 0;
@@ -286,88 +362,3 @@
 </head>
 <body>
 
-    <div id="lockscreen">
-        <div class="login-box">
-            <div class="lock-icon">
-                <i class="fa-solid fa-shield-halved"></i>
-            </div>
-            <h2>LearnEnglish Academy</h2>
-            <p>Introduce la clave de acceso de alumno para ingresar al portal educativo.</p>
-            
-            <div class="input-group">
-                <i class="fa-solid fa-key"></i>
-                <input type="password" id="access-password" placeholder="Clave de acceso..." onkeydown="if(event.key === 'Enter') checkPassword()">
-            </div>
-            
-            <button class="login-btn" onclick="checkPassword()">DESBLOQUEAR ACCESO</button>
-            <div class="error-msg" id="error-message">Contraseña incorrecta. Inténtalo de nuevo.</div>
-        </div>
-    </div>
-
-    <div id="main-content">
-        <div class="header">
-            <h1>Guías Interactivas de Aprendizaje</h1>
-            <p>Selecciona el módulo que deseas estudiar el día de hoy</p>
-        </div>
-
-        <div class="grid">
-            <div class="card">
-                <div class="card-icon"><i class="fa-solid fa-bolt"></i></div>
-                <h3>Verbs Mastery</h3>
-                <p>Domina los verbos esenciales en inglés, sus formas de conjugación y su uso práctico en conversaciones reales.</p>
-                <button onclick="window.location.href='verbs_guide.html'">Estudiar Módulo <i class="fa-solid fa-arrow-right"></i></button>
-            </div>
-
-            <div class="card">
-                <div class="card-icon"><i class="fa-solid fa-clock"></i></div>
-                <h3>Verb Tenses</h3>
-                <p>Línea de tiempo interactiva. Aprende a estructurar ideas perfectamente en pasado, presente y futuro de forma intuitiva.</p>
-                <button onclick="window.location.href='verb_tenses_guide.html'">Estudiar Módulo <i class="fa-solid fa-arrow-right"></i></button>
-            </div>
-
-            <div class="card">
-                <div class="card-icon"><i class="fa-solid fa-font"></i></div>
-                <h3>Interactive Nouns</h3>
-                <p>Aprende las reglas de los sustantivos contables e incontables, plurales irregulares y vocabulario clave cotidiano.</p>
-                <button onclick="window.location.href='nouns_guide.html'">Estudiar Módulo <i class="fa-solid fa-arrow-right"></i></button>
-            </div>
-
-            <div class="card">
-                <div class="card-icon"><i class="fa-solid fa-user-gear"></i></div>
-                <h3>Pronouns Guide</h3>
-                <p>Identifica y utiliza correctamente los pronombres de sujeto, objeto, posesivos y reflexivos sin volver a confundirlos.</p>
-                <button onclick="window.location.href='pronouns_guide.html'">Estudiar Módulo <i class="fa-solid fa-arrow-right"></i></button>
-            </div>
-
-            <div class="card">
-                <div class="card-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
-                <h3>Adjectives</h3>
-                <p>Mejora tus descripciones detalladas. Reglas de orden de los adjetivos, comparativos y superlativos profesionales.</p>
-                <button onclick="window.location.href='adjectives_guide.html'">Estudiar Módulo <i class="fa-solid fa-arrow-right"></i></button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        function checkPassword() {
-            const passwordInput = document.getElementById('access-password').value;
-            const errorMessage = document.getElementById('error-message');
-            
-            // CONTRASEÑA OFICIAL REQUERIDA
-            if (passwordInput === "InglesOmar2024") {
-                document.body.classList.add('unlocked');
-                errorMessage.style.display = 'none';
-            } else {
-                errorMessage.style.display = 'block';
-                // Pequeño efecto visual de vibración si falla
-                const box = document.querySelector('.login-box');
-                box.style.animation = 'none';
-                setTimeout(() => {
-                    box.style.transform = 'scale(0.98)';
-                    setTimeout(() => box.style.transform = 'none', 100);
-                }, 10);
-            }
-        }
-    </script>
-</body>
-</html>
