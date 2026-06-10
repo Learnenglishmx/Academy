@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        /* 1. CONFIGURACIÓN ESTRUCTURAL ADAPTABLE (MÓVIL-FIRST A DESKTOP HD) */
+        /* 1. CONFIGURACIÓN ESTRUCTURAL ADAPTABLE */
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
         body {
@@ -49,14 +49,14 @@
             pointer-events: none;
         }
 
-        /* SISTEMA DE CONTENEDORES ACTIVOS CON SCROLL INDEPENDIENTE EN MÓVIL */
+        /* SISTEMA DE CONTENEDORES ACTIVOS */
         .slide-container {
             display: none;
             flex-direction: column;
             height: 100%;
-            min-height: 712px;
+            min-height: 620px; /* Reducido para dejar espacio libre abajo a los botones */
             width: 100%;
-            padding: 40px 20px 100px 20px; /* Espacio inferior para no tapar con botones */
+            padding: 40px 20px 20px 20px;
             position: relative;
             z-index: 1;
             background-color: #ffffff;
@@ -105,21 +105,26 @@
         td { padding: 12px 18px; border-bottom: 1px solid #f1f5f9; font-size: 16px; font-weight: 700; color: #1d2e5c; }
         td span { font-weight: 400; color: #64748b; margin-left: 5px; display: inline-block; }
 
-        /* 3. SISTEMA DE BOTONES MULTIDISPOSITIVO */
+        /* 3. SISTEMA DE CONTROLES FIJOS Y CENTRADOS EN LA PARTE INFERIOR */
+        .controls-footer {
+            width: 100%;
+            padding: 20px;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+            z-index: 100;
+            border-top: 1px solid #f1f5f9;
+        }
+
         .nav-container-centered {
             display: flex;
             gap: 20px;
             justify-content: center;
-            margin-top: 30px;
-        }
-
-        .nav-container-corner {
-            position: absolute;
-            bottom: 25px;
-            right: 25px;
-            display: flex;
-            gap: 12px;
-            z-index: 100;
+            align-items: center;
         }
 
         .btn-arrow {
@@ -147,16 +152,12 @@
         .btn-arrow:hover:not(:disabled) i { color: #a3e635; }
         .btn-arrow:disabled { opacity: 0.25; cursor: not-allowed; background-color: #f1f5f9; }
 
-        /* Contador de páginas */
+        /* Contador de páginas centrado */
         .page-counter { 
-            position: absolute; 
-            bottom: 40px; 
-            left: 25px; 
             font-family: 'Poppins';
             font-weight: 600; 
             color: #94a3b8; 
             font-size: 16px; 
-            z-index: 100;
         }
 
         /* 4. MEDIA QUERIES PARA PANTALLAS MEDIANAS Y ESCRITORIO */
@@ -165,7 +166,7 @@
             h1 { font-size: 60px; }
             .slide-title { font-size: 36px; }
             p { font-size: 22px; }
-            .slide-container { padding: 60px 40px 100px 40px; }
+            .slide-container { padding: 40px 40px 20px 40px; }
         }
 
         @media (min-width: 1024px) {
@@ -175,14 +176,13 @@
             p { font-size: 24px; }
             .pronunciation { font-size: 19px; }
             .translation-tag { font-size: 19px; }
-            .slide-container { padding: 60px; }
+            .slide-container { padding: 60px 60px 20px 60px; min-height: 580px; }
             .tile i { font-size: 60px; }
             th { font-size: 24px; padding: 22px; }
             td { font-size: 20px; padding: 14px 25px; }
             .btn-arrow { width: 65px; height: 65px; }
             .btn-arrow i { font-size: 24px; }
-            .page-counter { bottom: 60px; left: 60px; font-size: 18px; }
-            .nav-container-corner { bottom: 40px; right: 60px; gap: 15px; }
+            .page-counter { font-size: 18px; }
             .divider { height: 8px; width: 160px; margin: 35px auto; }
         }
     </style>
@@ -196,11 +196,6 @@
             <h1>GUÍA DE<br><span style="color: #a3e635;">VERBOS INTERACTIVOS</span></h1>
             <p style="color: #64748b; font-size: 1.2em;">Domina las acciones, tiempos gramaticales y modales en inglés</p>
             <div class="divider"></div>
-            
-            <div class="nav-container-centered">
-                <button class="btn-arrow" onclick="nav(-1)"><i class="fa-solid fa-chevron-left"></i></button>
-                <button class="btn-arrow" onclick="nav(1)"><i class="fa-solid fa-chevron-right"></i></button>
-            </div>
         </div>
     </div>
 
@@ -410,20 +405,20 @@
         </div>
     </div>
 
-    <div class="page-counter" id="pgText">1 / 11</div>
-    
-    <div class="nav-container-corner" id="cornerNav" style="display:none;">
-        <button class="btn-arrow" id="bPrev" onclick="nav(-1)"><i class="fa-solid fa-chevron-left"></i></button>
-        <button class="btn-arrow" id="bNext" onclick="nav(1)"><i class="fa-solid fa-chevron-right"></i></button>
+    <div class="controls-footer">
+        <div class="nav-container-centered">
+            <button class="btn-arrow" id="bPrev" onclick="nav(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+            <div class="page-counter" id="pgText">1 / 11</div>
+            <button class="btn-arrow" id="bNext" onclick="nav(1)"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
     </div>
 
 </div>
 
 <script>
-    // --- LÓGICA DE NAVEGACIÓN COMPLETA ---
+    // --- LÓGICA DE NAVEGACIÓN FIJA ---
     const slides = document.querySelectorAll('.slide-container');
     const pgText = document.getElementById('pgText');
-    const cornerNav = document.getElementById('cornerNav');
     const bNext = document.getElementById('bNext');
     let current = 0;
 
@@ -445,15 +440,8 @@
         slides[current].classList.add('active');
         slides[current].scrollTop = 0; // Regresa el scroll arriba en móviles
         
-        // Actualizar número de página inferior
+        // Actualizar número de página inferior centrado
         pgText.innerText = (current + 1) + " / " + slides.length;
-        
-        // Mostrar u ocultar la botonera de la esquina según corresponda
-        if (current === 0) {
-            cornerNav.style.display = 'none'; 
-        } else {
-            cornerNav.style.display = 'flex'; 
-        }
 
         // Si llega al final, cambia el ícono a un símbolo de reinicio/recarga
         if (current === slides.length - 1) {
