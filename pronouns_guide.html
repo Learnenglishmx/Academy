@@ -2,55 +2,71 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LearnEnglish - Pronouns Interactive Guide</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LearnEnglish - Guía Interactiva de Pronombres</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        /* CONFIGURACIÓN ESTRUCTURAL */
-        html, body {
-            width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden; position: fixed;
-            background-color: #e2e8f0; display: flex; justify-content: center; align-items: center;
-            font-family: 'Lato', sans-serif;
-        }
-        * { box-sizing: border-box; }
+        /* 1. CONFIGURACIÓN ESTRUCTURAL HD (1280x720) */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         
+        body {
+            background-color: #e2e8f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            font-family: 'Lato', sans-serif;
+            overflow: hidden;
+        }
+
         .slide-viewer {
-            width: 1280px; height: 720px; background-color: #ffffff; color: #1d2e5c;
-            overflow: hidden; position: relative; display: flex; flex-direction: column;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2); border-radius: 16px;
-            border: 4px solid white; transform-origin: center center;
+            width: 1280px;
+            height: 720px;
+            background-color: #ffffff;
+            position: relative;
+            overflow: hidden;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            transform-origin: center center;
         }
 
-        .slide-viewer::before {
-            content: ''; position: absolute; top: -50px; right: -50px; width: 400px; height: 400px;
-            background: radial-gradient(circle, rgba(56, 189, 248, 0.15) 0%, transparent 70%); z-index: 0;
-        }
-
+        /* 2. SISTEMA DE CONTENEDORES ACTIVOS */
         .slide-container {
-            display: none; flex-direction: column; height: 100%; width: 100%;
-            padding: 60px 80px 140px 80px; position: relative; z-index: 1; background-color: #ffffff;
+            display: none;
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            padding: 60px 80px 130px 80px;
+            overflow-y: auto;
         }
-        .slide-container.active { display: flex; animation: fadeIn 0.3s ease-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .slide-container.active {
+            display: flex;
+            flex-direction: column;
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; } to { opacity: 1; }
+        }
 
-        /* TIPOGRAFÍA */
-        h1, h2, h3, h4 { font-family: 'Poppins', sans-serif; color: #1d2e5c; margin: 0; }
+        /* 3. TIPOGRAFÍA Y ESTILOS DE INTERFAZ */
+        h1, h2, h3, h4 { font-family: 'Poppins', sans-serif; color: #1d2e5c; }
         h1 { font-size: 75px; line-height: 1.1; text-transform: uppercase; text-align: center; }
-        .slide-title { font-size: 42px; font-weight: 700; border-left: 10px solid #38bdf8; padding-left: 20px; margin-bottom: 40px; text-transform: uppercase; }
+        .slide-title { font-size: 42px; font-weight: 700; border-left: 10px solid #38bdf8; padding-left: 20px; margin-bottom: 30px; text-transform: uppercase; }
         p { font-size: 24px; line-height: 1.5; color: #334155; }
+        .translation { font-size: 19px; color: #94a3b8; font-style: italic; display: block; margin-top: 4px; }
         .example-text { font-size: 20px; color: #64748b; font-style: italic; display: block; margin-top: 8px; }
 
-        /* LAYOUTS */
+        /* LAYOUTS Y COMPONENTES */
         .content-area { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; width: 100%; }
         .title-layout { text-align: center; margin-top: 40px; width: 100%; }
         .divider { height: 8px; width: 160px; background-color: #38bdf8; margin: 35px auto; border-radius: 4px; }
         
         .grid-layout { display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; }
-        .grid-layout-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
         .grid-layout-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; }
+        .grid-layout-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
         
         .card { background: #f8fafc; border: 1px solid #e2e8f0; padding: 25px; border-radius: 15px; position: relative; }
         .card h3 { margin-bottom: 10px; font-size: 28px; color: #1d2e5c; }
@@ -65,40 +81,68 @@
         .custom-table td { padding: 15px 20px; border-bottom: 1px solid #f1f5f9; font-size: 20px; color: #334155; }
         .highlight-td { font-weight: bold; color: #1d2e5c; font-size: 22px; }
 
-        /* MÓDULO BANNER */
+        /* BANNERS DE MÓDULOS */
         .module-banner { text-align: center; background: #1d2e5c; padding: 60px; border-radius: 20px; color: white; }
         .module-banner h2 { color: white; font-size: 60px; margin-bottom: 20px; }
         .module-banner p { color: #38bdf8; font-size: 30px; font-weight: bold; }
 
-        /* BARRA INFERIOR DE NAVEGACIÓN TOTALMENTE INAMOVIBLE */
+        /* 4. BOTONERA INFERIOR GLOBAL */
         .bottom-nav-bar {
-            position: absolute; bottom: 0; left: 0; width: 100%; height: 130px; z-index: 9999;
-            display: flex; justify-content: center; align-items: center; background: transparent; pointer-events: none;
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 110px;
+            z-index: 9999; display: flex; justify-content: center; align-items: center;
+            background: #ffffff; border-top: 1px solid #e2e8f0; padding: 0 60px;
         }
-        .global-controls { display: flex; gap: 15px; pointer-events: auto; }
+        .global-controls { display: flex; gap: 20px; }
         .btn-arrow {
-            background-color: #ffffff; border: 1px solid #e2e8f0; width: 60px; height: 60px;
+            background-color: #ffffff; border: 2px solid #e2e8f0; width: 55px; height: 55px;
             border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 8px 15px rgba(0,0,0,0.05); transition: all 0.2s ease;
+            transition: all 0.2s ease;
         }
-        .btn-arrow i { color: #1d2e5c; font-size: 22px; }
-        .btn-arrow:hover { transform: translateY(-3px); border-color: #38bdf8; box-shadow: 0 12px 20px rgba(56, 189, 248, 0.2); }
+        .btn-arrow i { color: #1d2e5c; font-size: 20px; }
+        .btn-arrow:hover { border-color: #38bdf8; background-color: #f0fdfa; transform: translateY(-2px); }
         .btn-arrow:hover i { color: #38bdf8; }
 
         .start-btn {
-            background-color: #38bdf8; color: #ffffff; border: none; padding: 20px 45px; border-radius: 12px;
+            background-color: #38bdf8; color: #ffffff; border: none; padding: 18px 40px; border-radius: 12px;
             font-family: 'Poppins'; font-weight: 700; font-size: 20px; cursor: pointer; margin-top: 40px;
             box-shadow: 0 10px 20px rgba(56, 189, 248, 0.3); transition: all 0.3s ease;
         }
         .start-btn:hover { background-color: #1d2e5c; transform: scale(1.05); }
 
-        .page-counter { position: absolute; left: 60px; font-family: 'Poppins'; font-weight: 700; color: #94a3b8; font-size: 18px; pointer-events: auto; }
+        .page-counter { position: absolute; left: 60px; font-family: 'Poppins'; font-weight: 700; color: #94a3b8; font-size: 18px; }
+
+        /* 5. BOTONERA ESQUINA SUPERIOR (CORNER NAV) */
+        .corner-nav {
+            position: absolute; top: 25px; right: 40px; z-index: 10000;
+            display: none; gap: 10px; background: rgba(255,255,255,0.9);
+            padding: 8px 15px; border-radius: 30px; border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        .btn-jump {
+            background: #1d2e5c; color: white; border: none; padding: 6px 14px;
+            font-family: 'Poppins'; font-weight: 700; font-size: 13px; border-radius: 20px;
+            cursor: pointer; transition: all 0.2s;
+        }
+        .btn-jump:hover { background: #38bdf8; transform: scale(1.05); }
+        .btn-home {
+            background: #64748b; color: white; border: none; width: 30px; height: 30px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: all 0.2s;
+        }
+        .btn-home:hover { background: #1d2e5c; }
     </style>
 </head>
 <body>
 
 <div class="slide-viewer">
     
+    <div class="corner-nav" id="cornerNav">
+        <button class="btn-jump" onclick="goToSlide(1)">Módulo 1</button>
+        <button class="btn-jump" onclick="goToSlide(5)">Módulo 2</button>
+        <button class="btn-jump" onclick="goToSlide(8)">Módulo 3</button>
+        <button class="btn-home" onclick="goToSlide(0)"><i class="fa-solid fa-house"></i></button>
+    </div>
+
     <div class="slide-container active">
         <div class="title-layout">
             <p style="text-transform: uppercase; letter-spacing: 4px; font-weight: 700; color: #38bdf8;">Grammar Mastery Series</p>
@@ -212,5 +256,259 @@
                     </tbody>
                 </table>
             </div>
-            <div style="background: #f0fdfa; border: 2px dashed #38bdf8; padding: 20px; border-radius: 12px;">
-                <h3 style="color: #1d2e5c; margin-bottom: 10px;"><i class
+            <div style="background: #f0fdf4; border: 2px dashed #38bdf8; padding: 20px; border-radius: 12px;">
+                <h3 style="color: #1d2e5c; margin-bottom: 10px;"><i class="fa-solid fa-lightbulb" style="color: #38bdf8;"></i> Quick Tip</h3>
+                <p style="font-size: 22px;">Subject pronouns always come <b>before the verb</b>. They are the doers of the action.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-container">
+        <div class="content-area">
+            <div class="module-banner">
+                <h2>MODULE 2</h2>
+                <p>Categorization & Types</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-container">
+        <h2 class="slide-title">Main Pronoun Categories</h2>
+        <div class="content-area">
+            <div class="grid-layout">
+                <div class="card">
+                    <h3><i class="fa-solid fa-user" style="color:#38bdf8; margin-right:10px;"></i> Personal</h3>
+                    <p>Refer to specific persons or things.</p>
+                    <span class="example-text"><b>Ex:</b> He, she, it, they...</span>
+                </div>
+                <div class="card">
+                    <h3><i class="fa-solid fa-hand-pointer" style="color:#38bdf8; margin-right:10px;"></i> Demonstrative</h3>
+                    <p>Used to indicate something specifically.</p>
+                    <span class="example-text"><b>Ex:</b> This, That, These...</span>
+                </div>
+                <div class="card">
+                    <h3><i class="fa-solid fa-circle-question" style="color:#38bdf8; margin-right:10px;"></i> Interrogative</h3>
+                    <p>Used when we ask a question.</p>
+                    <span class="example-text"><b>Ex:</b> Which, What, Whom...</span>
+                </div>
+                <div class="card">
+                    <h3><i class="fa-solid fa-key" style="color:#38bdf8; margin-right:10px;"></i> Possessive</h3>
+                    <p>Used to indicate ownership of something.</p>
+                    <span class="example-text"><b>Ex:</b> Yours, Hers, Mine...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-container">
+        <h2 class="slide-title">Specific Use Categories</h2>
+        <div class="content-area">
+            <div class="grid-layout">
+                <div class="card">
+                    <h3><i class="fa-solid fa-arrows-spin" style="color:#38bdf8; margin-right:10px;"></i> Reflexive</h3>
+                    <p>End in "-self" or "-selves".</p>
+                    <span class="example-text"><b>Ex:</b> Myself, Himself...</span>
+                </div>
+                <div class="card">
+                    <h3><i class="fa-solid fa-link" style="color:#38bdf8; margin-right:10px;"></i> Relative</h3>
+                    <p>Supply more info about a clause.</p>
+                    <span class="example-text"><b>Ex:</b> Whichever, Whatever...</span>
+                </div>
+                <div class="card">
+                    <h3><i class="fa-solid fa-infinity" style="color:#38bdf8; margin-right:10px;"></i> Indefinite</h3>
+                    <p>Refer to unspecified things.</p>
+                    <span class="example-text"><b>Ex:</b> Anyone, Someone...</span>
+                </div>
+                <div class="card">
+                    <h3><i class="fa-solid fa-arrows-turn-to-dots" style="color:#38bdf8; margin-right:10px;"></i> Reciprocal</h3>
+                    <p>Indicate relationship/task sharing.</p>
+                    <span class="example-text"><b>Ex:</b> Each other, one another...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-container">
+        <div class="content-area">
+            <div class="module-banner">
+                <h2>MODULE 3</h2>
+                <p>Advanced & Modern Usage</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-container">
+        <h2 class="slide-title">Relative Pronouns Deep Dive</h2>
+        <div class="content-area">
+            <div class="table-layout">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>Pronoun</th>
+                            <th>Function</th>
+                            <th>Example</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="highlight-td">Who</td>
+                            <td>People (Subject)</td>
+                            <td>The child who has a blue hat is Canadian.</td>
+                        </tr>
+                        <tr>
+                            <td class="highlight-td">Whom</td>
+                            <td>People (Object)</td>
+                            <td>This is the girl whom I talked to.</td>
+                        </tr>
+                        <tr>
+                            <td class="highlight-td">Which</td>
+                            <td>Objects / Animals</td>
+                            <td>The dog which sits on the sofa is old.</td>
+                        </tr>
+                        <tr>
+                            <td class="highlight-td">When</td>
+                            <td>Time</td>
+                            <td>I miss the times when we were together.</td>
+                        </tr>
+                        <tr>
+                            <td class="highlight-td">Where</td>
+                            <td>Places</td>
+                            <td>This is the hotel where we are going.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-container">
+        <h2 class="slide-title">Grammar Forms</h2>
+        <div class="content-area">
+            <div style="display: flex; align-items: center; justify-content: space-between; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; padding: 40px;">
+                <div style="text-align: center; width: 30%;">
+                    <div style="font-size: 80px; font-weight: 900; color: #38bdf8; line-height: 1;">4</div>
+                    <div style="font-size: 30px; font-weight: bold; color: #1d2e5c;">Main<br>Forms</div>
+                </div>
+                <div style="width: 65%;">
+                    <ul style="list-style: none; padding: 0; margin: 0; font-size: 24px; color: #334155;">
+                        <li style="margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
+                            <b style="color: #1d2e5c;">Subjective:</b> He, She, They, It
+                        </li>
+                        <li style="margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
+                            <b style="color: #1d2e5c;">Objective:</b> Him, Her, Them, It
+                        </li>
+                        <li style="margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
+                            <b style="color: #1d2e5c;">Possessive:</b> His, Hers, Theirs, Its
+                        </li>
+                        <li>
+                            <b style="color: #1d2e5c;">Reflexive:</b> Himself, Herself, Themselves
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-container">
+        <div class="content-area" style="text-align: center;">
+            <i class="fa-solid fa-ranking-star" style="font-size: 100px; color: #38bdf8; margin-bottom: 20px;"></i>
+            <h2 style="font-size: 75px; margin-bottom: 25px;">Excellent Work!</h2>
+            <p style="font-size: 30px; color: #64748b; margin: 0 auto 15px;">You've navigated through the essentials of English pronouns.</p>
+            
+            <div style="background: #f8fafc; display: inline-block; padding: 20px 40px; border-radius: 12px; margin-bottom: 30px; text-align: left;">
+                <p style="font-size: 20px; margin-bottom: 10px;"><b>Practice:</b> Create 3 sentences using Relative Pronouns.</p>
+                <p style="font-size: 20px;"><b>Next Steps:</b> Master Objective Pronouns in context.</p>
+            </div>
+
+            <div>
+                <p style="font-weight: 700; color: #1d2e5c; font-size: 28px; letter-spacing: 1px;">WWW.LEARNENGLISH.COM</p>
+                <button class="start-btn" style="background-color: #1d2e5c; color: white;" onclick="goToSlide(0)">REINICIAR GUÍA <i class="fa-solid fa-rotate-right"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-nav-bar">
+        <div class="page-counter" id="pgText">1 / 12</div>
+        <div class="global-controls">
+            <button class="btn-arrow" onclick="nav(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+            <button class="btn-arrow" id="bNext" onclick="nav(1)"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // --- LÓGICA DE NAVEGACIÓN REPARADA Y COMPATIBLE ---
+    const slides = document.querySelectorAll('.slide-container');
+    const pgText = document.getElementById('pgText');
+    const bNext = document.getElementById('bNext');
+    const cornerNav = document.getElementById('cornerNav');
+    let current = 0;
+
+    // Inicializar totalizador de páginas
+    pgText.innerText = "1 / " + slides.length;
+
+    function nav(step) {
+        slides[current].classList.remove('active');
+        current += step;
+
+        // Limitar ciclo infinito
+        if (current >= slides.length) current = 0;
+        if (current < 0) current = slides.length - 1;
+
+        updateUI();
+    }
+
+    function goToSlide(slideIndex) {
+        slides[current].classList.remove('active');
+        current = slideIndex;
+        updateUI();
+    }
+
+    function updateUI() {
+        slides[current].classList.add('active');
+        slides[current].scrollTop = 0; // Regresa arriba el scroll interno de la diapositiva
+
+        pgText.innerText = (current + 1) + " / " + slides.length;
+
+        // Ocultar o mostrar menú flotante según la slide activa
+        if (current === 0) {
+            cornerNav.style.display = 'none';
+        } else {
+            cornerNav.style.display = 'flex';
+        }
+
+        // Cambiar ícono si es el final de la presentación
+        if (current === slides.length - 1) {
+            bNext.innerHTML = '<i class="fa-solid fa-rotate-right"></i>';
+        } else {
+            bNext.innerHTML = '<i class="fa-solid fa-chevron-right"></i>';
+        }
+    }
+
+    // --- SISTEMA DE AUTO-ESCALADO RESPONSIVO ---
+    function autoFitScreen() {
+        const viewer = document.querySelector('.slide-viewer');
+        const scaleWidth = (window.innerWidth - 40) / 1280;
+        const scaleHeight = (window.innerHeight - 40) / 720;
+        const scale = Math.min(scaleWidth, scaleHeight);
+
+        if (scale < 1) {
+            viewer.style.transform = `scale(${scale})`;
+        } else {
+            viewer.style.transform = 'scale(1)';
+        }
+    }
+
+    window.addEventListener('resize', autoFitScreen);
+    autoFitScreen();
+
+    // Soporte para flechas del teclado
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight') nav(1);
+        if (e.key === 'ArrowLeft') nav(-1);
+    });
+</script>
+
+</body>
+</html>
