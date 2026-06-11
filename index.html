@@ -1,571 +1,723 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LearnEnglish Academy - Dashboard Premium</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        /* ==========================================================================
-           1. ESTILOS BASE Y CONFIGURACIÓN PANORÁMICA APP (ESTILO DUOLINGO)
-           ========================================================================== */
-        * { box-shadow: border-box; margin: 0; padding: 0; user-select: none; box-sizing: border-box; }
-        
-        body {
-            background-color: #e2e8f0;
-            display: flex; justify-content: center; align-items: center;
-            min-height: 100vh; padding: 20px;
-            font-family: 'Lato', sans-serif; overflow: hidden;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LearnEnglish Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{
+  --navy:#1a2444;--navy-mid:#253060;
+  --green:#58cc02;--green-dk:#46a302;
+  --blue:#1cb0f6;--blue-dk:#0e9cd8;
+  --pink:#ec4899;--pink-dk:#be185d;
+  --bg:#f7f7f7;--white:#fff;
+  --text:#3c3c3c;--mid:#6b7280;--light:#9ca3af;
+  --border:#e5e5e5;--shadow:#d1d1d1;
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif}
+body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+.screen{display:none;min-height:100vh;flex-direction:column}
+.screen.active{display:flex}
+@keyframes owlBob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-7px) rotate(2deg)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
 
-        .app-container {
-            width: 1280px; height: 720px;
-            background-color: #ffffff; position: relative; overflow: hidden;
-            border-radius: 24px; box-shadow: 0 20px 50px rgba(29, 46, 92, 0.25);
-            transform-origin: center center; border: 4px solid #e5e5e5;
-        }
+/* ═══ SHARED OWL CIRCLES ═══ */
+.owl-circ{border-radius:50%;overflow:hidden;background:#1a2444;display:flex;align-items:center;justify-content:center}
+.owl-circ img{width:95%;height:95%;object-fit:contain}
 
-        /* Vistas globales */
-        .view {
-            display: none; position: absolute; top: 0; left: 0;
-            width: 100%; height: 100%; padding: 40px 60px;
-            flex-direction: column; background: #ffffff;
-        }
-        .view.active { display: flex; animation: viewFadeIn 0.25s ease-out forwards; }
-        @keyframes viewFadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+/* ═══ TOAST ═══ */
+#toast{position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-20px);background:var(--navy);color:#fff;padding:14px 24px;border-radius:16px;font-size:.9rem;font-weight:600;box-shadow:0 6px 20px rgba(0,0,0,.25);z-index:9999;opacity:0;pointer-events:none;transition:all .3s;text-align:center;max-width:360px;line-height:1.5}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-        /* Botón tridimensional estilo Duolingo */
-        .duo-btn {
-            background-color: #58cc02; color: #ffffff; border: none;
-            border-bottom: 5px solid #46a302; border-radius: 16px;
-            padding: 16px 32px; font-family: 'Poppins', sans-serif;
-            font-weight: 800; font-size: 18px; cursor: pointer;
-            text-transform: uppercase; letter-spacing: 0.5px;
-            transition: all 0.1s ease; display: inline-flex;
-            align-items: center; justify-content: center; gap: 10px;
-        }
-        .duo-btn:hover { filter: brightness(1.05); }
-        .duo-btn:active { transform: translateY(4px); border-bottom-width: 1px; margin-bottom: 4px; }
+/* ═══ NAVBAR ═══ */
+.navbar{position:sticky;top:0;z-index:100;background:var(--white);border-bottom:2px solid var(--border);padding:0 28px;height:64px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 0 var(--shadow)}
+.nav-logo{font-size:1.4rem;font-weight:800;color:var(--navy);letter-spacing:-.5px}
+.nav-logo span{color:var(--green)}
+.nav-owl{width:44px;height:44px;box-shadow:0 3px 0 var(--navy-mid),0 0 0 3px #eaffd0}
 
-        /* Botón Volver al Menú */
-        .back-nav-bar { width: 100%; display: flex; margin-bottom: 20px; }
-        .btn-back {
-            background-color: #ffffff; color: #afafaf; border: 2px solid #e5e5e5;
-            border-bottom: 4px solid #e5e5e5; border-radius: 14px; padding: 10px 20px;
-            font-family: 'Poppins'; font-weight: 700; cursor: pointer; transition: all 0.1s;
-        }
-        .btn-back:hover { background-color: #f7f7f7; color: #4b4b4b; }
-        .btn-back:active { transform: translateY(2px); border-bottom-width: 2px; }
+/* ═══ BACK BTN ═══ */
+.back-btn{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;border:none;border-radius:50px;padding:14px 28px;font-size:.9rem;font-weight:700;box-shadow:0 5px 0 #0d1530,0 10px 30px rgba(26,36,68,.35);cursor:pointer;display:flex;align-items:center;gap:10px;transition:all .12s;z-index:200;white-space:nowrap}
+.back-btn:hover{transform:translateX(-50%) translateY(-2px)}
+.back-btn:active{transform:translateX(-50%) translateY(3px);box-shadow:0 2px 0 #0d1530}
 
-        /* ==========================================================================
-           2. PANTALLA DE ACCESO (LOCKSCREEN) CON MASCOTA CSS
-           ========================================================================== */
-        #lockscreen {
-            background: linear-gradient(135deg, #1d2e5c 0%, #111b38 100%);
-            justify-content: center; align-items: center; text-align: center; color: white;
-        }
-        
-        /* Mascota Interactiva: Búho LearnEnglish */
-        .owl-mascot {
-            width: 100px; height: 110px; background: #58cc02; margin-bottom: 15px;
-            border-radius: 50% 50% 40% 40%; position: relative;
-            border-bottom: 6px solid #46a302; animation: float 3s ease-in-out infinite;
-        }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-        .owl-eyes { display: flex; justify-content: space-around; padding: 25px 12px 0 12px; }
-        .owl-eye { width: 30px; height: 30px; background: white; border-radius: 50%; position: relative; display: flex; align-items: center; justify-content: center; }
-        .owl-pupil { width: 14px; height: 14px; background: #1d2e5c; border-radius: 50%; }
-        .owl-beak { width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-top: 14px solid #ff9f43; position: absolute; top: 50px; left: 40px; }
-        .owl-chest { width: 60px; height: 25px; background: #fffa65; position: absolute; bottom: 10px; left: 20px; border-radius: 50% 50% 30% 30%; }
+/* ═══ 3D BUTTONS ═══ */
+.btn-3d{width:100%;padding:15px;border:none;border-radius:16px;background:var(--green);box-shadow:0 5px 0 var(--green-dk);color:#fff;font-size:1rem;font-weight:700;letter-spacing:.5px;cursor:pointer;transition:all .1s;margin-top:6px;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-3d:hover{transform:translateY(-1px);box-shadow:0 6px 0 var(--green-dk)}
+.btn-3d:active{transform:translateY(4px);box-shadow:0 1px 0 var(--green-dk)}
+.btn-blue{background:var(--blue);box-shadow:0 5px 0 var(--blue-dk)}
+.btn-blue:hover{box-shadow:0 6px 0 var(--blue-dk)}
+.btn-blue:active{box-shadow:0 1px 0 var(--blue-dk)}
+.btn-pink{background:var(--pink);box-shadow:0 5px 0 var(--pink-dk)}
+.btn-pink:hover{box-shadow:0 6px 0 var(--pink-dk)}
+.btn-pink:active{box-shadow:0 1px 0 var(--pink-dk)}
 
-        .lock-title { font-family: 'Poppins'; font-size: 45px; font-weight: 800; color: #ffffff; line-height: 1.1; margin-bottom: 5px; }
-        .lock-subtitle { font-size: 20px; color: #38bdf8; font-weight: 700; margin-bottom: 25px; }
-        
-        .login-box {
-            background: #ffffff; padding: 30px; border-radius: 24px;
-            width: 420px; box-shadow: 0 15px 30px rgba(0,0,0,0.3); border-bottom: 6px solid #cbd5e1;
-        }
-        .login-box input {
-            width: 100%; padding: 14px 20px; border: 2px solid #e5e5e5; border-radius: 14px;
-            font-size: 18px; font-weight: bold; text-align: center; outline: none; margin-bottom: 18px; color: #1d2e5c;
-        }
-        .login-box input:focus { border-color: #38bdf8; }
-        
-        .demo-link {
-            display: inline-block; margin-top: 20px; font-family: 'Poppins'; font-weight: 700;
-            font-size: 18px; color: #38bdf8; text-decoration: none; transition: all 0.2s; cursor: pointer;
-        }
-        .demo-link:hover { color: #58cc02; transform: scale(1.05); text-shadow: 0 0 10px rgba(88,204,2,0.3); }
+/* ══════════════════════════════════════
+   SCREEN 1 · LOCK
+══════════════════════════════════════ */
+#screen-lock{background:linear-gradient(160deg,#eaffd0 0%,#d0f0ff 45%,#e8eeff 100%);justify-content:center;align-items:center}
+.login-box{background:var(--white);border-radius:24px;padding:44px 40px 40px;width:100%;max-width:420px;box-shadow:0 8px 0 var(--shadow),0 20px 50px rgba(0,0,0,.1);text-align:center;border:2px solid var(--border)}
+.owl-login{width:110px;height:110px;margin:0 auto 20px;box-shadow:0 6px 0 var(--navy-mid),0 0 0 5px #eaffd0,0 0 0 9px #d4f7a0;animation:owlBob 3s ease-in-out infinite}
+.login-box h2{font-size:1.75rem;font-weight:800;color:var(--navy);margin-bottom:6px}
+.login-box .sub{color:var(--mid);font-size:.9rem;margin-bottom:28px}
+.inp-g{position:relative;margin-bottom:16px}
+.inp-g i{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--light);font-size:.95rem}
+.inp-g input{width:100%;padding:14px 16px 14px 44px;border:2px solid var(--border);border-radius:16px;font-size:1rem;color:var(--text);background:#fafafa;outline:none;transition:all .2s}
+.inp-g input:focus{border-color:var(--green);background:#fff;box-shadow:0 0 0 4px rgba(88,204,2,.15)}
+.err-msg{color:#ef4444;font-size:.85rem;margin-top:12px;display:none;background:#fff1f1;border-radius:10px;padding:8px 12px;border:1.5px solid #fecaca}
+.divider{display:flex;align-items:center;gap:10px;margin:14px 0 0;color:var(--light);font-size:.78rem}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.lock-badge{display:inline-flex;align-items:center;gap:6px;background:#f0f0f0;border-radius:20px;padding:5px 14px;font-size:.78rem;color:var(--mid);margin-top:18px}
+.lock-badge i{color:var(--navy)}
 
-        /* ==========================================================================
-           3. MENÚ PRINCIPAL (DASHBOARD QUAD GRID 3D FLAT)
-           ========================================================================== */
-        .dash-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e5e5e5; padding-bottom: 15px; margin-bottom: 35px; }
-        .dash-logo { font-family: 'Poppins'; font-size: 28px; font-weight: 800; color: #1d2e5c; }
-        .user-badge { background: #f1f5f9; border: 2px solid #e5e5e5; padding: 6px 16px; border-radius: 30px; font-weight: bold; color: #64748b; font-size: 15px; display: flex; align-items: center; gap: 8px; }
-        .user-badge.premium { background: #fef9c3; border-color: #facc15; color: #a16207; }
+/* ══════════════════════════════════════
+   SCREEN 2 · DEMO PAGE (VITRINA)
+══════════════════════════════════════ */
+#screen-demo-page{background:linear-gradient(180deg,#eaffd0 0%,#f7f7f7 260px)}
+.demo-hero{display:flex;flex-direction:column;align-items:center;text-align:center;padding:44px 24px 32px;animation:fadeUp .5s ease}
+.demo-hero .owl-hero-lg{width:130px;height:130px;box-shadow:0 8px 0 #0d1530,0 0 0 8px #eaffd0,0 0 0 13px rgba(88,204,2,.2);margin-bottom:22px;animation:owlBob 4s ease-in-out infinite}
+.demo-free-badge{background:var(--blue);color:#fff;font-size:.72rem;font-weight:700;padding:4px 14px;border-radius:20px;letter-spacing:1.2px;box-shadow:0 3px 0 var(--blue-dk);margin-bottom:12px}
+.demo-hero h1{font-size:2rem;font-weight:800;color:var(--navy);margin-bottom:8px;line-height:1.2}
+.demo-hero p{color:var(--mid);font-size:.95rem;max-width:500px}
 
-        .dashboard-grid {
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
-            max-width: 1050px; margin: 0 auto; padding-top: 10px;
-        }
-        .grid-row-2 { grid-column: span 3; display: flex; justify-content: center; gap: 24px; }
+/* Demo section wrapper */
+.demo-sections{max-width:780px;margin:0 auto;padding:0 24px 110px;width:100%;display:flex;flex-direction:column;gap:28px}
+.demo-section{background:var(--white);border-radius:22px;border:2px solid var(--border);box-shadow:0 5px 0 var(--shadow);overflow:hidden;animation:fadeUp .5s ease}
+.demo-sec-head{padding:20px 24px 0;display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.demo-sec-icon{width:44px;height:44px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0}
+.demo-sec-head h3{font-size:1rem;font-weight:800;color:var(--navy)}
+.demo-sec-head p{font-size:.8rem;color:var(--mid)}
 
-        /* Tarjeta de menú 3D Duolingo */
-        .menu-card {
-            background: #ffffff; border: 2px solid #e5e5e5; border-bottom: 6px solid #e5e5e5;
-            border-radius: 20px; padding: 30px 20px; text-align: center; cursor: pointer;
-            transition: all 0.1s ease; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;
-        }
-        .menu-card i { font-size: 45px; margin-bottom: 15px; transition: transform 0.2s; }
-        .menu-card h3 { font-family: 'Poppins'; font-size: 22px; font-weight: 700; color: #1d2e5c; margin-bottom: 6px; }
-        .menu-card p { font-size: 14px; color: #94a3b8; font-weight: bold; line-height: 1.3; }
-        
-        /* Variantes de Color por botón */
-        .card-guias { border-color: #58cc02; border-bottom-color: #46a302; } .card-guias i { color: #58cc02; }
-        .card-videos { border-color: #ffc800; border-bottom-color: #e6b400; } .card-videos i { color: #ffc800; }
-        .card-multi { border-color: #ff4b4b; border-bottom-color: #ea2b2b; } .card-multi i { color: #ff4b4b; }
-        .card-demo { border-color: #1cb0f6; border-bottom-color: #1899d6; width: 320px; } .card-demo i { color: #1cb0f6; }
-        .card-eje { border-color: #ff9600; border-bottom-color: #e68500; width: 320px; } .card-eje i { color: #ff9600; }
+/* Video player */
+.video-container{padding:0 20px 20px}
+video{width:100%;border-radius:14px;background:#000;display:block;box-shadow:0 4px 16px rgba(0,0,0,.15)}
 
-        .menu-card:hover { background-color: #fafafa; transform: translateY(-2px); border-bottom-width: 8px; }
-        .menu-card:active { transform: translateY(4px); border-bottom-width: 2px; }
+/* Flashcard slider */
+.slider-wrap{padding:0 20px 20px}
+.flashcard{background:linear-gradient(135deg,#f0f9ff,#e0f2fe);border:2px solid #bae6fd;border-radius:18px;padding:32px 24px;text-align:center;min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:16px;box-shadow:0 4px 0 #bfdbfe;transition:all .3s}
+.flashcard .fc-label{font-size:.7rem;font-weight:700;color:var(--blue);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:10px}
+.flashcard .fc-word{font-size:1.8rem;font-weight:800;color:var(--navy);margin-bottom:8px}
+.flashcard .fc-def{font-size:.9rem;color:var(--mid);line-height:1.5}
+.fc-controls{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.fc-arrow{width:48px;height:48px;border-radius:50%;border:2px solid var(--border);background:var(--white);box-shadow:0 4px 0 var(--shadow);font-size:1.1rem;color:var(--navy);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .1s;flex-shrink:0}
+.fc-arrow:hover{background:#f0f9ff;border-color:var(--blue)}
+.fc-arrow:active{transform:translateY(3px);box-shadow:0 1px 0 var(--shadow)}
+.fc-dots{display:flex;gap:6px}
+.fc-dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:background .2s}
+.fc-dot.active{background:var(--blue)}
 
-        /* Modales / Mensajes de Bloqueo Flotantes */
-        .modal-overlay {
-            display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(29, 46, 92, 0.6); z-index: 10000; justify-content: center; align-items: center;
-        }
-        .modal-box {
-            background: white; border-radius: 24px; padding: 40px; width: 500px; text-align: center;
-            border-bottom: 6px solid #cbd5e1; animation: popUp 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        @keyframes popUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        .modal-box h3 { font-family: 'Poppins'; font-size: 26px; color: #1d2e5c; margin-bottom: 12px; }
-        .modal-box p { font-size: 18px; color: #64748b; margin-bottom: 25px; line-height: 1.4; font-weight: bold; }
+/* Quiz CTA in demo */
+.quiz-cta-wrap{padding:0 20px 20px}
+.quiz-cta-card{background:linear-gradient(135deg,#fdf2f8,#fce7f3);border:2px solid #fbcfe8;border-radius:16px;padding:24px;text-align:center}
+.quiz-cta-card p{font-size:.88rem;color:var(--mid);margin-bottom:18px;line-height:1.5}
+.btn-quiz-demo{padding:15px 32px;border:none;border-radius:16px;background:var(--pink);box-shadow:0 5px 0 var(--pink-dk);color:#fff;font-size:1rem;font-weight:700;cursor:pointer;transition:all .1s;display:inline-flex;align-items:center;gap:8px}
+.btn-quiz-demo:hover{transform:translateY(-1px);box-shadow:0 6px 0 var(--pink-dk)}
+.btn-quiz-demo:active{transform:translateY(4px);box-shadow:0 1px 0 var(--pink-dk)}
 
-        /* ==========================================================================
-           4. SECCIÓN DE EJERCICIOS NATIVOS (SISTEMA DE RETOS INTERACTIVOS)
-           ========================================================================== */
-        .quiz-container { display: flex; flex-direction: column; height: 100%; justify-content: space-between; }
-        .quiz-header { display: flex; align-items: center; gap: 20px; width: 100%; margin-bottom: 20px; }
-        .quiz-progress-wrapper { flex-grow: 1; height: 16px; background: #e5e5e5; border-radius: 10px; overflow: hidden; }
-        .quiz-progress-bar { width: 0%; height: 100%; background: #58cc02; border-radius: 10px; transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
-        .quiz-counter { font-family: 'Poppins'; font-weight: 800; color: #afafaf; font-size: 18px; }
+/* Enroll CTA */
+.enroll-banner{background:linear-gradient(135deg,#1a2444,#253060);border-radius:22px;padding:36px 28px;text-align:center;margin-top:4px;border:2px solid #3a4a7a}
+.enroll-banner h3{font-size:1.3rem;font-weight:800;color:#fff;margin-bottom:10px}
+.enroll-banner p{color:#94a3b8;font-size:.88rem;margin-bottom:24px;line-height:1.6}
+.btn-enroll{padding:18px 32px;border:none;border-radius:16px;background:var(--green);box-shadow:0 6px 0 var(--green-dk);color:#fff;font-size:1.05rem;font-weight:800;cursor:pointer;transition:all .1s;width:100%;letter-spacing:.3px}
+.btn-enroll:hover{transform:translateY(-2px);box-shadow:0 8px 0 var(--green-dk)}
+.btn-enroll:active{transform:translateY(4px);box-shadow:0 2px 0 var(--green-dk)}
 
-        /* Pantalla Inicio Reto */
-        .quiz-welcome { text-align: center; margin: auto 0; }
-        .quiz-welcome h2 { font-family: 'Poppins'; font-size: 48px; font-weight: 900; color: #1d2e5c; text-transform: uppercase; margin-bottom: 10px; }
-        .quiz-welcome p { font-size: 22px; color: #777777; margin-bottom: 30px; font-weight: bold; }
+/* ══════════════════════════════════════
+   SCREEN 3 · DASHBOARD
+══════════════════════════════════════ */
+#screen-dash{background:var(--bg)}
+.dash-hero{display:flex;flex-direction:column;align-items:center;text-align:center;padding:44px 24px 36px}
+.hero-owl{width:120px;height:120px;box-shadow:0 8px 0 #0d1530,0 0 0 8px #eaffd0,0 0 0 13px rgba(88,204,2,.18);margin-bottom:24px;animation:owlBob 4s ease-in-out infinite}
+.dash-greeting{font-size:.8rem;font-weight:700;color:var(--green);letter-spacing:1.5px;margin-bottom:8px;text-transform:uppercase}
+.dash-hero h1{font-size:1.9rem;font-weight:800;color:var(--navy);margin-bottom:8px;line-height:1.2}
+.dash-hero p{color:var(--mid);font-size:.95rem}
+.menu-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:22px;padding:0 28px 80px;max-width:1100px;margin:0 auto;width:100%}
+.menu-card{background:var(--white);border-radius:20px;border:2px solid var(--border);box-shadow:0 6px 0 var(--shadow);padding:30px 24px 24px;display:flex;flex-direction:column;align-items:center;text-align:center;cursor:pointer;transition:transform .12s,box-shadow .12s;position:relative;overflow:hidden}
+.menu-card::before{content:'';position:absolute;top:0;left:0;right:0;height:6px;background:var(--mc-color,var(--green));border-radius:20px 20px 0 0}
+.menu-card:hover{transform:translateY(-5px);box-shadow:0 11px 0 #c5c5c5}
+.menu-card:active{transform:translateY(4px);box-shadow:0 2px 0 var(--shadow)}
+.mc-icon{width:68px;height:68px;border-radius:20px;background:var(--mc-bg,#ecfdf5);color:var(--mc-color,var(--green));display:flex;justify-content:center;align-items:center;font-size:1.9rem;margin-bottom:16px;box-shadow:0 5px 0 var(--mc-shadow,#b8f070)}
+.menu-card h3{font-size:1.08rem;font-weight:800;color:var(--navy);margin-bottom:7px}
+.menu-card p{color:var(--mid);font-size:.82rem;line-height:1.5;margin-bottom:20px;flex-grow:1}
+.mc-btn{width:100%;padding:12px;border:none;border-radius:16px;background:var(--mc-color,var(--green));box-shadow:0 4px 0 var(--mc-shadow,var(--green-dk));color:#fff;font-size:.88rem;font-weight:700;cursor:pointer;transition:all .1s;display:flex;align-items:center;justify-content:center;gap:8px}
+.mc-btn:hover{filter:brightness(1.06);transform:translateY(-1px)}
+.mc-btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--mc-shadow,var(--green-dk))}
+.mc-guides{--mc-color:#58cc02;--mc-bg:#f0fff0;--mc-shadow:#46a302}
+.mc-videos{--mc-color:#6366f1;--mc-bg:#eef2ff;--mc-shadow:#4f46e5}
+.mc-multi{--mc-color:#f59e0b;--mc-bg:#fff7ed;--mc-shadow:#d97706}
+.mc-quiz{--mc-color:#ec4899;--mc-bg:#fdf2f8;--mc-shadow:#be185d}
 
-        /* Cuerpo Preguntas */
-        .quiz-body { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; max-width: 800px; margin: 0 auto; width: 100%; }
-        .quiz-question { font-family: 'Poppins'; font-size: 32px; font-weight: 700; color: #3c3c3c; margin-bottom: 30px; }
-        
-        .quiz-options { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 20px; }
-        .option-btn {
-            background: #ffffff; border: 2px solid #e5e5e5; border-bottom: 5px solid #e5e5e5;
-            border-radius: 16px; padding: 20px; font-size: 22px; font-weight: 700; color: #3c3c3c;
-            cursor: pointer; text-align: left; display: flex; align-items: center; gap: 15px; transition: all 0.1s;
-        }
-        .option-number { width: 30px; height: 30px; border: 2px solid #e5e5e5; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #afafaf; font-family: 'Poppins'; }
-        .option-btn:hover { background-color: #f7f7f7; }
-        .option-btn.selected { background-color: #ddf4ff; border-color: #84d8ff; border-bottom-color: #1cb0f6; color: #1899d6; }
-        .option-btn.selected .option-number { border-color: #1cb0f6; background-color: #1cb0f6; color: white; }
+/* ══════════════════════════════════════
+   SECTION HEADERS
+══════════════════════════════════════ */
+.sec-header{display:flex;flex-direction:column;align-items:center;text-align:center;padding:40px 24px 32px}
+.sec-badge{background:var(--green);color:#fff;font-size:.72rem;font-weight:700;padding:4px 14px;border-radius:20px;letter-spacing:1px;margin-bottom:12px;box-shadow:0 3px 0 var(--green-dk)}
+.sec-header h2{font-size:1.8rem;font-weight:800;color:var(--navy);margin-bottom:6px}
+.sec-header p{color:var(--mid);font-size:.95rem}
 
-        /* Panel de comprobación inferior (Duolingo Style Footer) */
-        .quiz-footer {
-            margin: 0 -60px -40px -60px; padding: 30px 60px; background: #ffffff;
-            border-top: 2px solid #e5e5e5; display: flex; justify-content: space-between; align-items: center;
-        }
-        .quiz-footer.status-correct { background-color: #d7ffb7; border-top-color: #b8f28b; }
-        .quiz-footer.status-wrong { background-color: #ffdfe0; border-top-color: #ffb8b8; }
-        
-        .footer-message { display: none; align-items: center; gap: 15px; font-family: 'Poppins'; font-weight: 800; font-size: 20px; }
-        .quiz-footer.status-correct .footer-message.correct { display: flex; color: #58a700; }
-        .quiz-footer.status-wrong .footer-message.wrong { display: flex; color: #ea2b2b; }
+/* ══════════════════════════════════════
+   MODULE CARDS (Guides)
+══════════════════════════════════════ */
+.mod-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:22px;padding:0 28px 100px;max-width:1100px;margin:0 auto;width:100%}
+.card{background:var(--white);border-radius:20px;border:2px solid var(--border);box-shadow:0 5px 0 var(--shadow);padding:28px;display:flex;flex-direction:column;transition:transform .15s,box-shadow .15s;position:relative;overflow:hidden}
+.card::after{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:var(--stripe,#e5e5e5);border-radius:20px 20px 0 0;transition:height .2s}
+.card:hover{transform:translateY(-4px);box-shadow:0 9px 0 #c5c5c5}
+.card:hover::after{height:7px}
+.card:hover .card-btn{background:var(--green);color:#fff;box-shadow:0 4px 0 var(--green-dk);border-color:var(--green)}
+.card:hover .card-btn i{transform:translateX(4px)}
+.card-top{display:flex;align-items:center;gap:14px;margin:6px 0 16px}
+.card-icon{width:56px;height:56px;border-radius:16px;flex-shrink:0;display:flex;justify-content:center;align-items:center;font-size:1.4rem;box-shadow:0 4px 0 rgba(0,0,0,.12)}
+.card-meta h3{font-size:1.05rem;font-weight:700;color:var(--navy);margin-bottom:2px}
+.card-level{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 9px;border-radius:10px;letter-spacing:.5px}
+.card>p{color:var(--mid);font-size:.875rem;line-height:1.6;flex-grow:1;margin-bottom:18px}
+.prog-wrap{margin-bottom:16px}
+.prog-lbl{display:flex;justify-content:space-between;font-size:.72rem;font-weight:600;color:var(--light);margin-bottom:5px}
+.prog-track{height:8px;background:#f0f0f0;border-radius:10px;overflow:hidden}
+.prog-fill{height:100%;border-radius:10px;transition:width 1s ease .4s;width:0}
+.card-btn{width:100%;padding:12px;background:var(--white);border:2px solid var(--border);border-radius:16px;color:var(--navy);font-size:.88rem;font-weight:700;cursor:pointer;display:flex;justify-content:center;align-items:center;gap:8px;transition:all .15s;box-shadow:0 3px 0 var(--shadow)}
+.card-btn i{transition:transform .2s;font-size:.8rem}
+.c1{--stripe:#fbbf24}.c1 .card-icon{background:#fff7ed;color:#f59e0b;box-shadow:0 4px 0 #f0c060}.c1 .card-level{background:#fef3c7;color:#d97706}.c1 .prog-fill{background:#fbbf24}
+.c2{--stripe:#818cf8}.c2 .card-icon{background:#eef2ff;color:#6366f1;box-shadow:0 4px 0 #a5a8f0}.c2 .card-level{background:#e0e7ff;color:#4f46e5}.c2 .prog-fill{background:#818cf8}
+.c3{--stripe:#34d399}.c3 .card-icon{background:#ecfdf5;color:#10b981;box-shadow:0 4px 0 #6adbb4}.c3 .card-level{background:#d1fae5;color:#059669}.c3 .prog-fill{background:#34d399}
+.c4{--stripe:#f87171}.c4 .card-icon{background:#fef2f2;color:#ef4444;box-shadow:0 4px 0 #f9a8a8}.c4 .card-level{background:#fee2e2;color:#dc2626}.c4 .prog-fill{background:#f87171}
+.c5{--stripe:#60a5fa}.c5 .card-icon{background:#eff6ff;color:#3b82f6;box-shadow:0 4px 0 #93c5fd}.c5 .card-level{background:#dbeafe;color:#2563eb}.c5 .prog-fill{background:#60a5fa}
 
-        /* Pantalla Final: Informe de Diagnóstico */
-        .report-layout { display: grid; grid-template-columns: 1fr 1.2fr; gap: 40px; align-items: center; height: 100%; padding: 20px 0; }
-        .report-left { text-align: center; border-right: 2px solid #e5e5e5; padding-right: 40px; }
-        .report-title { font-family: 'Poppins'; font-size: 34px; font-weight: 900; color: #1d2e5c; text-transform: uppercase; margin-bottom: 15px; }
-        .score-circle { width: 150px; height: 150px; border-radius: 50%; border: 10px solid #58cc02; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 auto 20px auto; font-family: 'Poppins'; }
-        .score-circle h4 { font-size: 46px; font-weight: 900; color: #58cc02; line-height: 1; }
-        .score-circle p { font-size: 14px; color: #afafaf; font-weight: bold; }
-        
-        .roadmap-container { display: flex; flex-direction: column; gap: 12px; }
-        .roadmap-step { background: #f8fafc; border: 2px solid #e2e8f0; border-left: 6px solid #38bdf8; border-radius: 12px; padding: 12px 18px; text-align: left; }
-        .roadmap-step h5 { font-family: 'Poppins'; font-size: 16px; color: #1d2e5c; }
-        .roadmap-step p { font-size: 14px; color: #64748b; }
+/* ══════════════════════════════════════
+   COMING SOON
+══════════════════════════════════════ */
+.coming-wrap{display:flex;flex-direction:column;align-items:center;text-align:center;padding:20px 24px 80px}
+.coming-icon{width:100px;height:100px;border-radius:24px;margin-bottom:24px;display:flex;justify-content:center;align-items:center;font-size:3rem;box-shadow:0 6px 0 rgba(0,0,0,.1)}
+.coming-wrap h3{font-size:1.5rem;font-weight:800;color:var(--navy);margin-bottom:10px}
+.coming-wrap p{color:var(--mid);font-size:.95rem;max-width:380px;line-height:1.6;margin-bottom:28px}
+.coming-chips{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:32px}
+.chip{background:var(--white);border:2px solid var(--border);border-radius:20px;padding:7px 18px;font-size:.82rem;font-weight:600;color:var(--text);box-shadow:0 3px 0 var(--shadow)}
 
-        /* ==========================================================================
-           5. SECCIÓN DEMO (CONTENEDOR DE VÍDEO REAL REFUERZO)
-           ========================================================================== */
-        .demo-layout { text-align: center; max-width: 800px; margin: 0 auto; width: 100%; }
-        .demo-layout h2 { font-family: 'Poppins'; font-size: 38px; color: #1d2e5c; margin-bottom: 10px; }
-    </style>
+/* ══════════════════════════════════════
+   QUIZ
+══════════════════════════════════════ */
+#screen-quiz{background:var(--bg)}
+.quiz-wrap{max-width:640px;margin:0 auto;padding:32px 24px 100px;width:100%}
+.quiz-intro{display:flex;flex-direction:column;align-items:center;text-align:center;padding:20px 0}
+.q-owl-intro{width:110px;height:110px;box-shadow:0 6px 0 #0d1530,0 0 0 6px #eaffd0;margin-bottom:24px;animation:owlBob 3s ease-in-out infinite}
+.quiz-intro h2{font-size:2rem;font-weight:800;color:var(--navy);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px}
+.quiz-intro p{color:var(--mid);font-size:.95rem;max-width:360px;line-height:1.6;margin-bottom:32px}
+.btn-start{padding:18px 40px;font-size:1.1rem;border-radius:16px;background:var(--green);box-shadow:0 6px 0 var(--green-dk);border:none;color:#fff;font-weight:800;cursor:pointer;transition:all .1s;letter-spacing:.5px}
+.btn-start:hover{transform:translateY(-2px);box-shadow:0 8px 0 var(--green-dk)}
+.btn-start:active{transform:translateY(4px);box-shadow:0 2px 0 var(--green-dk)}
+.q-prog-bar{background:#e5e5e5;border-radius:10px;height:12px;margin-bottom:8px;overflow:hidden}
+.q-prog-fill{height:100%;border-radius:10px;background:var(--green);transition:width .4s ease}
+.q-prog-label{text-align:right;font-size:.78rem;font-weight:700;color:var(--mid);margin-bottom:24px}
+.q-card{background:var(--white);border-radius:24px;border:2px solid var(--border);box-shadow:0 6px 0 var(--shadow);padding:32px;margin-bottom:20px}
+.q-num{font-size:.75rem;font-weight:700;color:var(--green);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px}
+.q-text{font-size:1.2rem;font-weight:700;color:var(--navy);line-height:1.5;margin-bottom:8px}
+.q-blank{color:var(--green);border-bottom:3px solid var(--green);padding:0 6px}
+.q-hint{font-size:.82rem;color:var(--mid);margin-bottom:24px}
+.q-options{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+.q-opt{padding:14px 10px;border:2.5px solid var(--border);border-radius:16px;background:var(--white);font-size:.95rem;font-weight:600;color:var(--navy);cursor:pointer;transition:all .15s;box-shadow:0 4px 0 var(--shadow);text-align:center}
+.q-opt:hover{border-color:var(--blue);background:#f0fbff}
+.q-opt.selected{border-color:var(--blue);background:#e0f4ff;box-shadow:0 4px 0 var(--blue-dk)}
+.q-opt.correct{border-color:var(--green);background:#f0fff0;box-shadow:0 4px 0 var(--green-dk);color:var(--green-dk)}
+.q-opt.wrong{border-color:#ef4444;background:#fff1f1;box-shadow:0 4px 0 #dc2626;color:#dc2626}
+.q-opt:disabled{cursor:default}
+.q-feedback{border-radius:14px;padding:12px 16px;font-size:.9rem;font-weight:600;margin-bottom:16px;display:none}
+.q-feedback.correct{background:#f0fff0;color:#059669;border:2px solid #d1fae5}
+.q-feedback.wrong{background:#fff1f1;color:#dc2626;border:2px solid #fecaca}
+.btn-check{width:100%;padding:15px;border:none;border-radius:16px;background:var(--green);box-shadow:0 5px 0 var(--green-dk);color:#fff;font-size:1rem;font-weight:700;cursor:pointer;transition:all .1s;opacity:.45;pointer-events:none}
+.btn-check.ready{opacity:1;pointer-events:all}
+.btn-check.ready:hover{transform:translateY(-1px);box-shadow:0 6px 0 var(--green-dk)}
+.btn-check.ready:active{transform:translateY(4px);box-shadow:0 1px 0 var(--green-dk)}
+.q-results{display:flex;flex-direction:column;align-items:center;text-align:center}
+.r-owl{width:120px;height:120px;box-shadow:0 8px 0 #0d1530,0 0 0 8px #eaffd0;margin-bottom:20px;animation:owlBob 4s ease-in-out infinite}
+.score-ring{width:120px;height:120px;border-radius:50%;background:var(--green);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 6px 0 var(--green-dk);margin:0 auto 24px}
+.sc-num{font-size:2rem;font-weight:800;line-height:1}
+.sc-lbl{font-size:.7rem;font-weight:700;opacity:.85}
+.report-card{background:var(--white);border-radius:20px;border:2px solid var(--border);box-shadow:0 5px 0 var(--shadow);padding:28px;width:100%;text-align:left;margin-bottom:20px}
+.report-card h3{font-size:1rem;font-weight:800;color:var(--navy);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.report-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:.88rem}
+.report-row:last-child{border-bottom:none}
+.report-row .lbl{color:var(--mid);font-weight:600}
+.report-row .val{font-weight:700;color:var(--navy)}
+.roadmap{background:var(--white);border-radius:20px;border:2px solid var(--border);box-shadow:0 5px 0 var(--shadow);padding:28px;width:100%;margin-bottom:24px}
+.roadmap h3{font-size:1rem;font-weight:800;color:var(--navy);margin-bottom:18px;display:flex;align-items:center;gap:8px}
+.rm-item{display:flex;gap:14px;margin-bottom:16px;align-items:flex-start}
+.rm-dot{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:800;color:#fff;flex-shrink:0}
+.rm-dot.m1{background:#f59e0b;box-shadow:0 3px 0 #d97706}
+.rm-dot.m2{background:#6366f1;box-shadow:0 3px 0 #4f46e5}
+.rm-dot.m3{background:var(--green);box-shadow:0 3px 0 var(--green-dk)}
+.rm-text h4{font-size:.9rem;font-weight:700;color:var(--navy);margin-bottom:3px}
+.rm-text p{font-size:.8rem;color:var(--mid);line-height:1.4}
+.btn-cta{width:100%;padding:18px;border:none;border-radius:16px;background:var(--pink);box-shadow:0 6px 0 var(--pink-dk);color:#fff;font-size:1.1rem;font-weight:800;cursor:pointer;transition:all .1s;letter-spacing:.5px}
+.btn-cta:hover{transform:translateY(-2px);box-shadow:0 8px 0 var(--pink-dk)}
+.btn-cta:active{transform:translateY(4px);box-shadow:0 2px 0 var(--pink-dk)}
+</style>
 </head>
 <body>
 
-<div class="app-container">
+<div id="toast"></div>
 
-    <div class="modal-overlay" id="blockModal">
-        <div class="modal-box">
-            <div style="font-size: 50px; margin-bottom: 10px;">🔒</div>
-            <h3>Contenido Exclusivo</h3>
-            <p>Esta sección está reservada únicamente para alumnos inscritos en nuestra academia.<br><br>¡Habla con tu asesor educativo hoy mismo para desbloquear tu acceso total!</p>
-            <button class="duo-btn" onclick="closeBlockModal()">Entendido 👍</button>
+<!-- ══════════════════════════════════════
+  SCREEN 1 · LOCK
+══════════════════════════════════════ -->
+<div id="screen-lock" class="screen active">
+  <div class="login-box">
+    <div class="owl-circ owl-login" style="width:110px;height:110px;box-shadow:0 6px 0 var(--navy-mid),0 0 0 5px #eaffd0,0 0 0 9px #d4f7a0;animation:owlBob 3s ease-in-out infinite;margin:0 auto 20px">
+      <img src="mascota.png" alt="Mascota">
+    </div>
+    <h2>LearnEnglish Academy</h2>
+    <p class="sub">Introduce tu clave de acceso para ingresar al portal educativo.</p>
+    <div class="inp-g">
+      <i class="fa-solid fa-key"></i>
+      <input type="password" id="pwd" placeholder="Clave de acceso…" onkeydown="if(event.key==='Enter')checkPwd()">
+    </div>
+    <button class="btn-3d" onclick="checkPwd()">
+      <i class="fa-solid fa-unlock-keyhole"></i> DESBLOQUEAR ACCESO
+    </button>
+    <div class="err-msg" id="err-msg">
+      <i class="fa-solid fa-circle-exclamation"></i> Contraseña incorrecta. Inténtalo de nuevo.
+    </div>
+    <div class="divider">o</div>
+    <button class="btn-3d btn-blue" onclick="enterDemo()">
+      ¿No eres alumno? Probar Demo Gratis 🚀
+    </button>
+    <div class="lock-badge"><i class="fa-solid fa-shield-halved"></i> Portal seguro · Solo alumnos</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+  SCREEN 2 · DEMO VITRINA
+══════════════════════════════════════ -->
+<div id="screen-demo-page" class="screen">
+  <nav class="navbar">
+    <span class="nav-logo">LearnEnglish<span>.com</span></span>
+    <div class="owl-circ nav-owl" style="width:44px;height:44px"><img src="mascota.png" alt="Mascota"></div>
+  </nav>
+
+  <div class="demo-hero">
+    <div class="owl-circ owl-hero-lg" style="width:130px;height:130px;box-shadow:0 8px 0 #0d1530,0 0 0 8px #eaffd0,0 0 0 13px rgba(88,204,2,.2);margin-bottom:22px;animation:owlBob 4s ease-in-out infinite">
+      <img src="mascota.png" alt="Mascota">
+    </div>
+    <div class="demo-free-badge">✦ ACCESO GRATUITO</div>
+    <h1>Demo LearnEnglish</h1>
+    <p>Explora una muestra de nuestro portal educativo. Descubre el video, practica vocabulario y pon a prueba tu nivel.</p>
+  </div>
+
+  <div class="demo-sections">
+
+    <!-- Componente 1: Video -->
+    <div class="demo-section">
+      <div class="demo-sec-head">
+        <div class="demo-sec-icon" style="background:#eef2ff;color:#6366f1;box-shadow:0 3px 0 #a5a8f0"><i class="fa-solid fa-circle-play"></i></div>
+        <div>
+          <h3>Lección en Video</h3>
+          <p>Aprende con explicaciones visuales paso a paso</p>
         </div>
+      </div>
+      <div class="video-container">
+        <video controls preload="metadata" poster="">
+          <source src="video_demo.mp4" type="video/mp4">
+          Tu navegador no soporta el reproductor de video.
+        </video>
+      </div>
     </div>
 
-    <div class="view active" id="view-lockscreen">
-        <div class="owl-mascot">
-            <div class="owl-eyes"><div class="owl-eye"><div class="owl-pupil"></div></div><div class="owl-eye"><div class="owl-pupil"></div></div></div>
-            <div class="owl-beak"></div><div class="owl-chest"></div>
+    <!-- Componente 2: Flashcard Slider -->
+    <div class="demo-section">
+      <div class="demo-sec-head">
+        <div class="demo-sec-icon" style="background:#fff7ed;color:#f59e0b;box-shadow:0 3px 0 #f0c060"><i class="fa-solid fa-layer-group"></i></div>
+        <div>
+          <h3>Vocabulario Interactivo</h3>
+          <p>Desliza las tarjetas para estudiar palabras clave</p>
         </div>
-        <h1 class="lock-title">LearnEnglish Academy</h1>
-        <p class="lock-subtitle">Grammar Mastery Dashboard</p>
-        
-        <div class="login-box">
-            <input type="password" id="passInput" placeholder="Introduce tu contraseña">
-            <button class="duo-btn" style="width: 100%;" onclick="attemptUnlock()">Desbloquear Acceso <i class="fa-solid fa-lock-open"></i></button>
+      </div>
+      <div class="slider-wrap">
+        <div class="flashcard" id="fc-card">
+          <div class="fc-label" id="fc-label"></div>
+          <div class="fc-word" id="fc-word"></div>
+          <div class="fc-def" id="fc-def"></div>
         </div>
-        
-        <a class="demo-link" onclick="enterAsDemo()">¿No eres alumno? Probar Demo Gratis 🚀</a>
+        <div class="fc-controls">
+          <button class="fc-arrow" onclick="fcNav(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+          <div class="fc-dots" id="fc-dots"></div>
+          <button class="fc-arrow" onclick="fcNav(1)"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+      </div>
     </div>
 
-    <div class="view" id="view-dashboard">
-        <div class="dash-header">
-            <div class="dash-logo"><i class="fa-solid fa-graduation-cap" style="color: #38bdf8;"></i> LEARNENGLISH</div>
-            <div class="user-badge" id="userBadge"><i class="fa-solid fa-circle-user"></i> Alumno Premium</div>
+    <!-- Componente 3: Quiz CTA -->
+    <div class="demo-section">
+      <div class="demo-sec-head">
+        <div class="demo-sec-icon" style="background:#fdf2f8;color:#ec4899;box-shadow:0 3px 0 #fbcfe8"><i class="fa-solid fa-pen-to-square"></i></div>
+        <div>
+          <h3>Ejercicios Interactivos</h3>
+          <p>Pon a prueba tu nivel con nuestro desafío</p>
         </div>
-        
-        <div class="dashboard-grid">
-            <div class="menu-card card-guias" onclick="handleMenuClick('guias')">
-                <i class="fa-solid fa-book-bookmark"></i>
-                <h3>Guías Interactivas</h3>
-                <p>Módulos de gramática interactiva HD.</p>
-            </div>
-            <div class="menu-card card-videos" onclick="handleMenuClick('videos')">
-                <i class="fa-solid fa-circle-play"></i>
-                <h3>Videos Explicativos</h3>
-                <p>Clases grabadas y explicaciones en video.</p>
-            </div>
-            <div class="menu-card card-multi" onclick="handleMenuClick('multimedia')">
-                <i class="fa-solid fa-photo-film"></i>
-                <h3>Multimedia</h3>
-                <p>Contenido visual y láminas de apoyo.</p>
-            </div>
-            
-            <div class="grid-row-2">
-                <div class="menu-card card-demo" onclick="handleMenuClick('demo')">
-                    <i class="fa-solid fa-rocket"></i>
-                    <h3>Clase Demo</h3>
-                    <p>Conoce la metodología e instrucciones iniciales.</p>
-                </div>
-                <div class="menu-card card-eje" onclick="handleMenuClick('ejercicios')">
-                    <i class="fa-solid fa-pencil"></i>
-                    <h3>Ejercicios Interactivos</h3>
-                    <p>Desafíos nativos y pruebas en tiempo real.</p>
-                </div>
-            </div>
+      </div>
+      <div class="quiz-cta-wrap">
+        <div class="quiz-cta-card">
+          <p>Completa el <strong>Desafío de Pronombres</strong> de 5 preguntas y recibe tu Informe de Diagnóstico con Hoja de Ruta de 90 días personalizada.</p>
+          <button class="btn-quiz-demo" onclick="launchQuizFromDemo()">
+            📝 Probar Desafío de Pronombres
+          </button>
         </div>
+      </div>
     </div>
 
-    <div class="view" id="view-guias">
-        <div class="back-nav-bar"><button class="btn-back" onclick="navigateTo('dashboard')">⬅️ Volver al Menú Principal</button></div>
-        <div class="placeholder-view">
-            <i class="fa-solid fa-book-bookmark" style="font-size: 60px; color: #58cc02; margin-bottom: 15px;"></i>
-            <h2>Tus Guías de Estudio Activas</h2>
-            <p style="color: #777; font-weight: bold; margin-top: 10px;">Selecciona el módulo interactivo que deseas estudiar hoy:</p>
-            
-            <div style="display: flex; gap: 20px; justify-content: center; margin-top: 30px;">
-                <button class="duo-btn" onclick="window.open('verb_tenses_guide.html','_blank')">Guía de Verbos 📝</button>
-                <button class="duo-btn" style="background-color: #38bdf8; border-color: #0ea5e9;" onclick="window.open('pronouns_guide.html','_blank')">Guía de Pronombres 👤</button>
-                <button class="duo-btn" style="background-color: #ff9600; border-color: #e68500;" onclick="window.open('adjectives_guide.html','_blank')">Guía de Adjetivos 🎨</button>
-            </div>
-        </div>
+    <!-- Enroll Banner -->
+    <div class="enroll-banner">
+      <h3>🎓 ¿Te gustó la Demo?</h3>
+      <p>Obtén acceso completo a las 5 Guías Interactivas, todos los videos y recursos multimedia. ¡Habla con tu asesor hoy!</p>
+      <button class="btn-enroll" onclick="enrollClick()">
+        🔑 ¡Inscribirme a la Academia Completa!
+      </button>
     </div>
 
-    <div class="view" id="view-videos">
-        <div class="back-nav-bar"><button class="btn-back" onclick="navigateTo('dashboard')">⬅️ Volver al Menú Principal</button></div>
-        <div class="placeholder-view"><h2>Sección de Videos</h2><p>Contenido audiovisual exclusivo en desarrollo.</p></div>
+  </div>
+
+  <button class="back-btn" onclick="goTo('screen-lock')">
+    <i class="fa-solid fa-arrow-left"></i> Volver al Inicio
+  </button>
+</div>
+
+<!-- ══════════════════════════════════════
+  SCREEN 3 · DASHBOARD (Alumnos)
+══════════════════════════════════════ -->
+<div id="screen-dash" class="screen">
+  <nav class="navbar">
+    <span class="nav-logo">LearnEnglish<span>.com</span></span>
+    <div class="owl-circ nav-owl" style="width:44px;height:44px"><img src="mascota.png" alt="Mascota"></div>
+  </nav>
+  <div class="dash-hero">
+    <div class="owl-circ hero-owl" style="width:120px;height:120px;box-shadow:0 8px 0 #0d1530,0 0 0 8px #eaffd0,0 0 0 13px rgba(88,204,2,.18);margin-bottom:24px;animation:owlBob 4s ease-in-out infinite">
+      <img src="mascota.png" alt="Mascota">
     </div>
-    <div class="view" id="view-multimedia">
-        <div class="back-nav-bar"><button class="btn-back" onclick="navigateTo('dashboard')">⬅️ Volver al Menú Principal</button></div>
-        <div class="placeholder-view"><h2>Sección Multimedia</h2><p>Láminas interactivas y recursos digitales en camino.</p></div>
+    <div class="dash-greeting">¡Bienvenido de vuelta!</div>
+    <h1>¡Hola, Estudiante!<br>¿Qué te gustaría practicar hoy?</h1>
+    <p>Elige una sección para comenzar tu sesión de estudio</p>
+  </div>
+  <div class="menu-grid">
+    <div class="menu-card mc-guides" onclick="goTo('screen-guides')">
+      <div class="mc-icon"><i class="fa-solid fa-book-open"></i></div>
+      <h3>Guías Interactivas 📘</h3>
+      <p>Accede a los 5 módulos de gramática: verbos, tiempos, sustantivos, pronombres y adjetivos.</p>
+      <button class="mc-btn"><i class="fa-solid fa-arrow-right"></i> Entrar</button>
     </div>
-
-    <div class="view" id="view-demo">
-        <div class="back-nav-bar"><button class="btn-back" onclick="navigateTo('dashboard')">⬅️ Volver al Menú Principal</button></div>
-        <div class="demo-layout">
-            <h2>Clase Muestra e Introducción 🚀</h2>
-            <p style="color: #64748b; font-weight: bold; margin-bottom: 20px;">Descubre cómo funciona nuestro sistema interactivo acelerado.</p>
-            
-            <div style="position: relative; width: 100%; height: 380px; background: #000000; border-radius: 20px; border-bottom: 6px solid #0f172a; overflow: hidden; margin-bottom: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.25);">
-                <video controls style="width: 100%; height: 100%; object-fit: contain;">
-                    <source src="PRACTICO PIZZA.mp4" type="video/mp4">
-                    Tu navegador no soporta la reproducción de este video de forma nativa.
-                </video>
-            </div>
-            
-            <button class="duo-btn" onclick="navigateTo('ejercicios')">¡Ir a los Ejercicios Ahora! 🎯</button>
-        </div>
+    <div class="menu-card mc-videos" onclick="goTo('screen-videos')">
+      <div class="mc-icon"><i class="fa-solid fa-circle-play"></i></div>
+      <h3>Videos 🎬</h3>
+      <p>Lecciones en video explicadas paso a paso para reforzar lo que aprendes en las guías.</p>
+      <button class="mc-btn"><i class="fa-solid fa-arrow-right"></i> Ver Videos</button>
     </div>
-
-    <div class="view" id="view-ejercicios">
-        <div class="back-nav-bar" id="quizBackNav"><button class="btn-back" onclick="navigateTo('dashboard')">⬅️ Volver al Menú Principal</button></div>
-        
-        <div class="quiz-container">
-            <div class="quiz-header" id="quizHeader" style="display: none;">
-                <div class="quiz-progress-wrapper"><div class="quiz-progress-bar" id="quizBar"></div></div>
-                <div class="quiz-counter" id="quizCounterText">0/5</div>
-            </div>
-
-            <div class="quiz-welcome" id="quiz-welcome-screen">
-                <div style="font-size: 70px; margin-bottom: 15px;">🏆</div>
-                <h2># ¡Desafío de Pronombres!</h2>
-                <p>Mide tu nivel en tiempo real y obtén un Plan de Ruta optimizado de 90 días.</p>
-                <button class="duo-btn" onclick="startQuizAssessment()">¡Comenzar Evaluación! 🚀</button>
-            </div>
-
-            <div class="quiz-body" id="quiz-question-screen" style="display: none;">
-                <h3 class="quiz-question" id="targetQuestionText">___ am learning English.</h3>
-                <div class="quiz-options" id="optionsBox">
-                    </div>
-            </div>
-
-            <div class="quiz-welcome" id="quiz-result-screen" style="display: none;">
-                <div class="report-layout">
-                    <div class="report-left">
-                        <div style="font-size: 50px; margin-bottom: 5px;">📊</div>
-                        <h3 class="report-title">Informe Oficial de Diagnóstico</h3>
-                        <div class="score-circle">
-                            <h4 id="finalScoreDisplay">5/5</h4>
-                            <p>Aciertos</p>
-                        </div>
-                        <p style="font-size: 18px; color: #1d2e5c; font-weight: 900; text-transform: uppercase;">Estatus: <span style="color: #58cc02;">¡Completado!</span></p>
-                        <p style="font-size: 15px; color: #64748b; font-weight: bold; margin-top: 5px;">Nivel Sugerido: <span id="suggestedLevelText" style="color: #1cb0f6;">B1 Intermedio</span></p>
-                    </div>
-                    <div>
-                        <h4 style="font-family: 'Poppins'; text-align: left; color: #1d2e5c; font-size: 20px; margin-bottom: 12px; text-transform: uppercase;">🗺️ Hoja de Ruta Personalizada (90 días)</h4>
-                        <div class="roadmap-container">
-                            <div class="roadmap-step"><h5>Mes 1: Cimientos de Estructura</h5><p>Dominio absoluto de pronombres personales de sujeto y objetos en oraciones compuestas.</p></div>
-                            <div class="roadmap-step"><h5>Mes 2: Pentágono Gramatical</h5><p>Diferenciación exacta entre adjetivos y pronombres posesivos en ambiente laboral.</p></div>
-                            <div class="roadmap-step"><h5>Mes 3: Fluidez Avanzada Automática</h5><p>Integración nativa de pronombres relativos avanzados (whom, whose, which) al hablar.</p></div>
-                        </div>
-                        <button class="duo-btn" style="width:100%; margin-top: 20px; background-color: #ff9600; border-color: #e68500;" onclick="window.open('https://wa.me/tu_numero_whatsapp','_blank')">¡Reclamar Mi Descuento Aquí! 🎁</button>
-                    </div>
-                </div>
-                <button class="duo-btn" style="background-color: #64748b; border-color: #475569; margin-top: 15px;" onclick="resetQuizFlow()">Reiniciar Prueba 🔄</button>
-            </div>
-
-            <div class="quiz-footer" id="quizFooter" style="display: none;">
-                <div class="footer-message correct">
-                    <i class="fa-solid fa-circle-check" style="font-size: 30px;"></i> ¡Excelente trabajo! Respuesta correcta.
-                </div>
-                <div class="footer-message wrong">
-                    <i class="fa-solid fa-circle-xmark" style="font-size: 30px;"></i> ¡Ups! Revisa las reglas gramaticales de este módulo.
-                </div>
-                <div></div> <button class="duo-btn" id="footerActionBtn" onclick="processFooterAction()" disabled>Comprobar Respuesta</button>
-            </div>
-        </div>
+    <div class="menu-card mc-multi" onclick="goTo('screen-multi')">
+      <div class="mc-icon"><i class="fa-solid fa-gamepad"></i></div>
+      <h3>Multimedia 🕹️</h3>
+      <p>Recursos interactivos, flashcards y mini-juegos de vocabulario para aprender divirtiéndote.</p>
+      <button class="mc-btn"><i class="fa-solid fa-arrow-right"></i> Explorar</button>
     </div>
+    <div class="menu-card mc-quiz" onclick="launchQuizFromDash()">
+      <div class="mc-icon"><i class="fa-solid fa-pen-to-square"></i></div>
+      <h3>Ejercicios Interactivos 📝</h3>
+      <p>Pon a prueba tu nivel con el Desafío de Pronombres y recibe tu informe de diagnóstico.</p>
+      <button class="mc-btn"><i class="fa-solid fa-arrow-right"></i> Comenzar</button>
+    </div>
+  </div>
+</div>
 
+<!-- ══════════════════════════════════════
+  SCREEN 4 · GUÍAS
+══════════════════════════════════════ -->
+<div id="screen-guides" class="screen">
+  <nav class="navbar">
+    <span class="nav-logo">LearnEnglish<span>.com</span></span>
+    <div class="owl-circ nav-owl" style="width:44px;height:44px"><img src="mascota.png" alt="Mascota"></div>
+  </nav>
+  <div class="sec-header">
+    <div class="sec-badge">✦ GUÍAS INTERACTIVAS</div>
+    <h2>Módulos de Aprendizaje</h2>
+    <p>Selecciona el módulo que deseas estudiar hoy</p>
+  </div>
+  <div class="mod-grid">
+    <div class="card c1"><div class="card-top"><div class="card-icon"><i class="fa-solid fa-bolt"></i></div><div class="card-meta"><h3>Verbs Mastery</h3><span class="card-level">NIVEL ESENCIAL</span></div></div><p>Domina los verbos esenciales en inglés, sus formas de conjugación y su uso práctico en conversaciones reales.</p><div class="prog-wrap"><div class="prog-lbl"><span>Progreso</span><span>72%</span></div><div class="prog-track"><div class="prog-fill" style="--fw:72%"></div></div></div><button class="card-btn" onclick="window.location.href='verbs_guide.html'">Estudiar Módulo <i class="fa-solid fa-arrow-right"></i></button></div>
+    <div class="card c2"><div class="card-top"><div class="card-icon"><i class="fa-solid fa-clock"></i></div><div class="card-meta"><h3>Verb Tenses</h3><span class="card-level">NIVEL INTERMEDIO</span></div></div><p>Línea de tiempo interactiva. Aprende a estructurar ideas en pasado, presente y futuro de forma intuitiva.</p><div class="prog-wrap"><div class="prog-lbl"><span>Progreso</span><span>45%</span></div><div class="prog-track"><div class="prog-fill" style="--fw:45%"></div></div></div><button class="card-btn" onclick="window.location.href='verb_tenses_guide.html'">Estudiar Módulo <i class="fa-solid fa-arrow-right"></i></button></div>
+    <div class="card c3"><div class="card-top"><div class="card-icon"><i class="fa-solid fa-font"></i></div><div class="card-meta"><h3>Interactive Nouns</h3><span class="card-level">NIVEL ESENCIAL</span></div></div><p>Aprende sustantivos contables e incontables, plurales irregulares y vocabulario cotidiano clave.</p><div class="prog-wrap"><div class="prog-lbl"><span>Progreso</span><span>88%</span></div><div class="prog-track"><div class="prog-fill" style="--fw:88%"></div></div></div><button class="card-btn" onclick="window.location.href='nouns_guide.html'">Estudiar Módulo <i class="fa-solid fa-arrow-right"></i></button></div>
+    <div class="card c4"><div class="card-top"><div class="card-icon"><i class="fa-solid fa-user-gear"></i></div><div class="card-meta"><h3>Pronouns Guide</h3><span class="card-level">NIVEL INTERMEDIO</span></div></div><p>Identifica y usa correctamente pronombres de sujeto, objeto, posesivos y reflexivos sin confundirlos.</p><div class="prog-wrap"><div class="prog-lbl"><span>Progreso</span><span>30%</span></div><div class="prog-track"><div class="prog-fill" style="--fw:30%"></div></div></div><button class="card-btn" onclick="window.location.href='pronouns_guide.html'">Estudiar Módulo <i class="fa-solid fa-arrow-right"></i></button></div>
+    <div class="card c5"><div class="card-top"><div class="card-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div><div class="card-meta"><h3>Adjectives</h3><span class="card-level">NIVEL AVANZADO</span></div></div><p>Mejora tus descripciones. Reglas de orden, comparativos y superlativos de nivel profesional.</p><div class="prog-wrap"><div class="prog-lbl"><span>Progreso</span><span>15%</span></div><div class="prog-track"><div class="prog-fill" style="--fw:15%"></div></div></div><button class="card-btn" onclick="window.location.href='adjectives_guide.html'">Estudiar Módulo <i class="fa-solid fa-arrow-right"></i></button></div>
+  </div>
+  <button class="back-btn" onclick="goTo('screen-dash')"><i class="fa-solid fa-arrow-left"></i> Volver al Menú Principal</button>
+</div>
+
+<!-- ══════════════════════════════════════
+  SCREEN 5 · VIDEOS
+══════════════════════════════════════ -->
+<div id="screen-videos" class="screen">
+  <nav class="navbar"><span class="nav-logo">LearnEnglish<span>.com</span></span><div class="owl-circ nav-owl" style="width:44px;height:44px"><img src="mascota.png" alt="Mascota"></div></nav>
+  <div class="sec-header"><div class="sec-badge" style="background:#6366f1;box-shadow:0 3px 0 #4f46e5">✦ VIDEOS EDUCATIVOS</div><h2>Lecciones en Video</h2><p>Aprende con explicaciones visuales y ejemplos en video</p></div>
+  <div class="coming-wrap"><div class="coming-icon" style="background:#eef2ff;color:#6366f1;box-shadow:0 6px 0 #a5a8f0"><i class="fa-solid fa-circle-play"></i></div><h3>¡Próximamente!</h3><p>Estamos produciendo videos educativos de alta calidad para complementar tus guías de estudio.</p><div class="coming-chips"><div class="chip">🎬 Verb Conjugation</div><div class="chip">🕐 Tense Timelines</div><div class="chip">📝 Noun Rules</div><div class="chip">👤 Pronoun Practice</div><div class="chip">✨ Adjective Order</div></div></div>
+  <button class="back-btn" onclick="goTo('screen-dash')"><i class="fa-solid fa-arrow-left"></i> Volver al Menú Principal</button>
+</div>
+
+<!-- ══════════════════════════════════════
+  SCREEN 6 · MULTIMEDIA
+══════════════════════════════════════ -->
+<div id="screen-multi" class="screen">
+  <nav class="navbar"><span class="nav-logo">LearnEnglish<span>.com</span></span><div class="owl-circ nav-owl" style="width:44px;height:44px"><img src="mascota.png" alt="Mascota"></div></nav>
+  <div class="sec-header"><div class="sec-badge" style="background:#f59e0b;box-shadow:0 3px 0 #d97706">✦ MULTIMEDIA</div><h2>Recursos Interactivos</h2><p>Juegos y actividades para practicar mientras te diviertes</p></div>
+  <div class="coming-wrap"><div class="coming-icon" style="background:#fff7ed;color:#f59e0b;box-shadow:0 6px 0 #f0c060"><i class="fa-solid fa-gamepad"></i></div><h3>¡En Construcción!</h3><p>Estamos diseñando flashcards, mini-juegos y actividades interactivas para aprender divirtiéndote.</p><div class="coming-chips"><div class="chip">🃏 Flashcards</div><div class="chip">🎯 Word Match</div><div class="chip">🧩 Fill the Gap</div><div class="chip">🔊 Pronunciation</div><div class="chip">⚡ Speed Quiz</div></div></div>
+  <button class="back-btn" onclick="goTo('screen-dash')"><i class="fa-solid fa-arrow-left"></i> Volver al Menú Principal</button>
+</div>
+
+<!-- ══════════════════════════════════════
+  SCREEN 7 · QUIZ
+══════════════════════════════════════ -->
+<div id="screen-quiz" class="screen">
+  <nav class="navbar"><span class="nav-logo">LearnEnglish<span>.com</span></span><div class="owl-circ nav-owl" style="width:44px;height:44px"><img src="mascota.png" alt="Mascota"></div></nav>
+  <div class="quiz-wrap">
+    <!-- INTRO -->
+    <div id="quiz-intro" class="quiz-intro">
+      <div class="owl-circ q-owl-intro" style="width:110px;height:110px"><img src="mascota.png" alt="Mascota"></div>
+      <h2>¡Desafío de Pronombres!</h2>
+      <p>Descubre tu nivel de inglés con esta evaluación de 5 preguntas y recibe tu plan de estudio personalizado.</p>
+      <button class="btn-start" onclick="startQuiz()">¡Comenzar Evaluación! 🚀</button>
+    </div>
+    <!-- QUESTION -->
+    <div id="quiz-question" style="display:none">
+      <div class="q-prog-bar"><div class="q-prog-fill" id="q-prog-fill"></div></div>
+      <div class="q-prog-label" id="q-prog-label">0 / 5</div>
+      <div class="q-card">
+        <div class="q-num" id="q-num"></div>
+        <div class="q-text" id="q-text"></div>
+        <div class="q-hint" id="q-hint"></div>
+        <div class="q-options" id="q-options"></div>
+        <div class="q-feedback" id="q-feedback"></div>
+        <button class="btn-check" id="btn-check" onclick="checkAnswer()">Comprobar respuesta ✓</button>
+      </div>
+    </div>
+    <!-- RESULTS -->
+    <div id="quiz-results" class="q-results" style="display:none">
+      <div class="owl-circ r-owl" style="width:120px;height:120px"><img src="mascota.png" alt="Mascota"></div>
+      <div class="sec-badge" style="margin-bottom:12px">📋 INFORME OFICIAL DE DIAGNÓSTICO</div>
+      <h2 style="font-size:1.6rem;font-weight:800;color:var(--navy);margin-bottom:6px" id="r-title"></h2>
+      <p style="color:var(--mid);margin-bottom:24px">Aquí tienes tu reporte personalizado</p>
+      <div class="score-ring"><span class="sc-num" id="r-score"></span><span class="sc-lbl">ACIERTOS</span></div>
+      <div class="report-card">
+        <h3><i class="fa-solid fa-chart-bar" style="color:var(--green)"></i> Resumen de Resultados</h3>
+        <div class="report-row"><span class="lbl">Preguntas respondidas</span><span class="val">5 / 5</span></div>
+        <div class="report-row"><span class="lbl">Respuestas correctas</span><span class="val" id="r-correct"></span></div>
+        <div class="report-row"><span class="lbl">Nivel sugerido</span><span class="val" id="r-level"></span></div>
+        <div class="report-row"><span class="lbl">Área de enfoque</span><span class="val">Pronombres en inglés</span></div>
+      </div>
+      <div class="roadmap">
+        <h3><i class="fa-solid fa-road" style="color:var(--blue)"></i> Hoja de Ruta — 90 Días</h3>
+        <div class="rm-item"><div class="rm-dot m1">M1</div><div class="rm-text"><h4>Mes 1 — Fundamentos</h4><p>Domina pronombres personales, posesivos y demostrativos. Ejercicios guiados de 20 min diarios.</p></div></div>
+        <div class="rm-item"><div class="rm-dot m2">M2</div><div class="rm-text"><h4>Mes 2 — Gramática Aplicada</h4><p>Verbos en presente y pasado simple, sustantivos y adjetivos en contexto. Conversaciones básicas.</p></div></div>
+        <div class="rm-item"><div class="rm-dot m3">M3</div><div class="rm-text"><h4>Mes 3 — Fluidez y Práctica</h4><p>Tiempos verbales avanzados, comprensión auditiva y producción escrita de nivel intermedio.</p></div></div>
+      </div>
+      <button class="btn-cta" onclick="enrollClick()">🎁 ¡Reclamar Mi Descuento Aquí!</button>
+    </div>
+  </div>
+  <button class="back-btn" id="quiz-back-btn" onclick="quizBack()"><i class="fa-solid fa-arrow-left"></i> Volver al Menú Principal</button>
 </div>
 
 <script>
-    // ==========================================================================
-    // SCRIPT DE LOGICA LOGSCREEN, BLOQUEOS Y CUESTIONARIO INTERACTIVO
-    // ==========================================================================
-    
-    let isDemoUser = false;
+/* ══════════ FLASHCARD DATA ══════════ */
+const CARDS = [
+  { label:'Pronombre Personal', word:'I / You / He', def:'"I" = yo · "You" = tú/usted · "He" = él\nSon los sujetos de la oración.' },
+  { label:'Pronombre Personal', word:'She / It / We', def:'"She" = ella · "It" = eso/él/ella (objeto) · "We" = nosotros' },
+  { label:'Pronombre Personal', word:'They / You (pl.)', def:'"They" = ellos/ellas · "You" también funciona como plural (ustedes).' },
+  { label:'Pronombre Posesivo', word:'My / Your / His', def:'"My" = mi · "Your" = tu/su · "His" = su (de él)' },
+  { label:'Pronombre Posesivo', word:'Her / Its / Our', def:'"Her" = su (de ella) · "Its" = su (de cosa) · "Our" = nuestro' },
+  { label:'Pronombre de Objeto', word:'Me / Him / Her', def:'"Me" = a mí · "Him" = a él · "Her" = a ella\nVan después del verbo.' },
+];
+let fcIdx = 0;
 
-    const questionBank = [
-        { q: "___ am learning English at LearnEnglish Academy.", options: ["Me", "I", "Him", "Us"], correct: 1 },
-        { q: "The teacher praised Jessica because ___ project was the best.", options: ["she", "hers", "her", "herself"], correct: 2 },
-        { q: "This classroom belongs to us. It is ___.", options: ["ours", "our", "us", "ourselves"], correct: 0 },
-        { q: "The student ___ won the academic award is from Mexico.", options: ["which", "who", "whose", "where"], correct: 1 },
-        { q: "Don't worry about us, we can complete the task by ___.", options: ["ourself", "ourselves", "themselves", "us"], correct: 1 }
-    ];
+function renderCard() {
+  const c = CARDS[fcIdx];
+  const card = document.getElementById('fc-card');
+  card.style.opacity = '0';
+  setTimeout(() => {
+    document.getElementById('fc-label').textContent = c.label;
+    document.getElementById('fc-word').textContent  = c.word;
+    document.getElementById('fc-def').textContent   = c.def;
+    card.style.opacity = '1';
+  }, 150);
+  const dots = document.getElementById('fc-dots');
+  dots.innerHTML = CARDS.map((_,i) =>
+    `<div class="fc-dot ${i===fcIdx?'active':''}"></div>`
+  ).join('');
+}
+function fcNav(dir) {
+  fcIdx = (fcIdx + dir + CARDS.length) % CARDS.length;
+  renderCard();
+}
 
-    let currentQIdx = 0;
-    let selectedOptIdx = null;
-    let quizScore = 0;
-    let quizState = "answering";
+/* ══════════ QUIZ DATA ══════════ */
+const QUESTIONS = [
+  { text:'<span class="q-blank">___</span> am learning English every day.', hint:'Elige el pronombre de sujeto correcto para la primera persona singular.', options:['He','I','They','We'], answer:'I' },
+  { text:'This is <span class="q-blank">___</span> book. I bought it yesterday.', hint:'Selecciona el pronombre posesivo correcto.', options:['my','me','I','mine'], answer:'my' },
+  { text:'<span class="q-blank">___</span> are going to the park this afternoon.', hint:'Pronombre de sujeto para segunda persona.', options:['She','He','You','It'], answer:'You' },
+  { text:'The dog lost <span class="q-blank">___</span> toy in the garden.', hint:'Pronombre posesivo para tercera persona singular (cosa/animal).', options:['his','her','its','their'], answer:'its' },
+  { text:'Maria called <span class="q-blank">___</span> last night. We talked for an hour.', hint:'Pronombre de objeto para primera persona singular.', options:['I','me','my','mine'], answer:'me' }
+];
 
-    function attemptUnlock() {
-        const inputVal = document.getElementById('passInput').value;
-        if(inputVal.trim() !== "") { 
-            isDemoUser = false;
-            setupDashboardUI();
-            navigateTo('dashboard');
-        } else {
-            alert("⚠️ Por favor introduce una contraseña válida asignada por tu asesor.");
-        }
-    }
+let qIndex=0, score=0, selected=null, answered=false;
+let quizFromDemo = false; // track origin screen
 
-    function enterAsDemo() {
-        isDemoUser = true;
-        setupDashboardUI();
-        navigateTo('dashboard');
-    }
+/* ══════════ NAV ══════════ */
+function goTo(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+  if (id === 'screen-guides') {
+    setTimeout(() => {
+      document.querySelectorAll('.prog-fill').forEach(el => {
+        const fw = getComputedStyle(el).getPropertyValue('--fw').trim();
+        if (fw) el.style.width = fw;
+      });
+    }, 300);
+  }
+}
 
-    function setupDashboardUI() {
-        const badge = document.getElementById('userBadge');
-        if (isDemoUser) {
-            badge.innerText = "Acceso: Demo Gratis 🚀";
-            badge.className = "user-badge";
-        } else {
-            badge.innerText = "Alumno Premium 🏆";
-            badge.className = "user-badge premium";
-        }
-    }
+/* ══════════ AUTH ══════════ */
+function checkPwd() {
+  const v = document.getElementById('pwd').value;
+  const e = document.getElementById('err-msg');
+  if (v === 'InglesOmar2024') {
+    e.style.display = 'none';
+    goTo('screen-dash');
+  } else {
+    e.style.display = 'block';
+    const box = document.querySelector('.login-box');
+    [0,1,2,3].forEach((_,i) => {
+      setTimeout(() => { box.style.transform = i%2===0?'translateX(-6px)':'translateX(6px)'; }, i*80);
+    });
+    setTimeout(() => box.style.transform='none', 340);
+  }
+}
 
-    function handleMenuClick(targetSection) {
-        if (targetSection === 'guias' && isDemoUser) {
-            document.getElementById('blockModal').style.display = 'flex';
-        } else {
-            navigateTo(targetSection);
-        }
-    }
+function enterDemo() {
+  renderCard();
+  goTo('screen-demo-page');
+}
 
-    function closeBlockModal() {
-        document.getElementById('blockModal').style.display = 'none';
-    }
+/* ══════════ QUIZ LAUNCHERS ══════════ */
+function launchQuizFromDemo() {
+  quizFromDemo = true;
+  resetQuiz();
+  goTo('screen-quiz');
+}
+function launchQuizFromDash() {
+  quizFromDemo = false;
+  resetQuiz();
+  goTo('screen-quiz');
+}
+function quizBack() {
+  resetQuiz();
+  goTo(quizFromDemo ? 'screen-demo-page' : 'screen-dash');
+}
 
-    function navigateTo(viewId) {
-        closeBlockModal();
-        const views = document.querySelectorAll('.view');
-        views.forEach(v => v.classList.remove('active'));
-        document.getElementById('view-' + viewId).classList.add('active');
-        if(viewId !== 'ejercicios') {
-            resetQuizFlow();
-        }
-    }
+/* ══════════ ENROLL ══════════ */
+function enrollClick() {
+  showToast('🎉 ¡Genial! Contacta a tu asesor para completar tu inscripción y reclamar tu descuento.');
+}
 
-    function startQuizAssessment() {
-        document.getElementById('quiz-welcome-screen').style.display = 'none';
-        document.getElementById('quizBackNav').style.display = 'none';
-        document.getElementById('quizHeader').style.display = 'flex';
-        document.getElementById('quiz-question-screen').style.display = 'flex';
-        document.getElementById('quizFooter').style.display = 'flex';
-        currentQIdx = 0;
-        quizScore = 0;
-        renderQuestion();
-    }
+/* ══════════ TOAST ══════════ */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 4000);
+}
 
-    function renderQuestion() {
-        quizState = "answering";
-        selectedOptIdx = null;
-        
-        const footer = document.getElementById('quizFooter');
-        footer.className = "quiz-footer";
-        const actionBtn = document.getElementById('footerActionBtn');
-        actionBtn.innerText = "Comprobar Respuesta";
-        actionBtn.disabled = true;
-        
-        const progressPercent = (currentQIdx / questionBank.length) * 100;
-        document.getElementById('quizBar').style.width = progressPercent + "%";
-        document.getElementById('quizCounterText').innerText = `${currentQIdx + 1}/${questionBank.length}`;
+/* ══════════ QUIZ LOGIC ══════════ */
+function resetQuiz() {
+  qIndex=0; score=0; selected=null; answered=false;
+  document.getElementById('quiz-intro').style.display    = 'flex';
+  document.getElementById('quiz-question').style.display = 'none';
+  document.getElementById('quiz-results').style.display  = 'none';
+  document.getElementById('btn-check').onclick = checkAnswer;
+}
 
-        const activeQData = questionBank[currentQIdx];
-        document.getElementById('targetQuestionText').innerText = activeQData.q;
+function startQuiz() {
+  qIndex=0; score=0;
+  document.getElementById('quiz-intro').style.display    = 'none';
+  document.getElementById('quiz-results').style.display  = 'none';
+  document.getElementById('quiz-question').style.display = 'block';
+  renderQuestion();
+}
 
-        const container = document.getElementById('optionsBox');
-        container.innerHTML = "";
-        
-        activeQData.options.forEach((optText, index) => {
-            const btn = document.createElement('button');
-            btn.className = "option-btn";
-            btn.innerHTML = `<span class="option-number">${String.fromCharCode(65 + index)}</span> <span style="flex-grow:1;">${optText}</span>`;
-            btn.onclick = () => selectOption(index);
-            container.appendChild(btn);
-        });
-    }
+function renderQuestion() {
+  const q = QUESTIONS[qIndex];
+  selected=null; answered=false;
+  document.getElementById('q-num').textContent  = `Pregunta ${qIndex+1} de ${QUESTIONS.length}`;
+  document.getElementById('q-text').innerHTML   = q.text;
+  document.getElementById('q-hint').textContent = q.hint;
+  document.getElementById('q-prog-label').textContent = `${qIndex} / ${QUESTIONS.length}`;
+  document.getElementById('q-prog-fill').style.width  = `${(qIndex/QUESTIONS.length)*100}%`;
+  const fb = document.getElementById('q-feedback');
+  fb.style.display='none'; fb.className='q-feedback';
+  const chk = document.getElementById('btn-check');
+  chk.className='btn-check'; chk.textContent='Comprobar respuesta ✓';
+  chk.onclick = checkAnswer;
+  const opts = document.getElementById('q-options');
+  opts.innerHTML='';
+  q.options.forEach(opt => {
+    const b = document.createElement('button');
+    b.className='q-opt'; b.textContent=opt;
+    b.onclick = () => selectOpt(b,opt);
+    opts.appendChild(b);
+  });
+}
 
-    function selectOption(idx) {
-        if (quizState !== "answering") return;
-        selectedOptIdx = idx;
-        const allButtons = document.querySelectorAll('.option-btn');
-        allButtons.forEach((b, i) => {
-            if(i === idx) b.classList.add('selected');
-            else b.classList.remove('selected');
-        });
-        document.getElementById('footerActionBtn').disabled = false;
-    }
+function selectOpt(btn,val) {
+  if(answered) return;
+  selected=val;
+  document.querySelectorAll('.q-opt').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  document.getElementById('btn-check').classList.add('ready');
+}
 
-    function processFooterAction() {
-        const actionBtn = document.getElementById('footerActionBtn');
-        if (quizState === "answering") {
-            quizState = "evaluated";
-            const activeQData = questionBank[currentQIdx];
-            const allButtons = document.querySelectorAll('.option-btn');
-            const footer = document.getElementById('quizFooter');
-            
-            allButtons.forEach(b => b.style.pointerEvents = "none");
+function checkAnswer() {
+  if(!selected||answered) return;
+  answered=true;
+  const q=QUESTIONS[qIndex];
+  const fb=document.getElementById('q-feedback');
+  const chk=document.getElementById('btn-check');
+  document.querySelectorAll('.q-opt').forEach(b => {
+    b.disabled=true;
+    if(b.textContent===q.answer) b.classList.add('correct');
+    else if(b.textContent===selected) b.classList.add('wrong');
+  });
+  if(selected===q.answer){ score++; fb.className='q-feedback correct'; fb.innerHTML='✅ ¡Correcto! Muy bien hecho.'; }
+  else { fb.className='q-feedback wrong'; fb.innerHTML=`❌ Incorrecto. La respuesta es <strong>${q.answer}</strong>.`; }
+  fb.style.display='block';
+  chk.textContent = qIndex<QUESTIONS.length-1 ? 'Siguiente pregunta →':'Ver mis resultados 📋';
+  chk.className='btn-check ready';
+  chk.onclick=nextQuestion;
+}
 
-            if (selectedOptIdx === activeQData.correct) {
-                quizScore++;
-                footer.classList.add('status-correct');
-                allButtons[selectedOptIdx].style.borderColor = "#58cc02";
-                allButtons[selectedOptIdx].style.backgroundColor = "#d7ffb7";
-            } else {
-                footer.classList.add('status-wrong');
-                allButtons[selectedOptIdx].style.borderColor = "#ea2b2b";
-                allButtons[selectedOptIdx].style.backgroundColor = "#ffdfe0";
-                allButtons[activeQData.correct].style.borderColor = "#58cc02";
-            }
-            actionBtn.innerText = "Continuar";
-        } else if (quizState === "evaluated") {
-            currentQIdx++;
-            if (currentQIdx < questionBank.length) {
-                renderQuestion();
-            } else {
-                displayQuizMetrics();
-            }
-        }
-    }
+function nextQuestion() {
+  qIndex++;
+  if(qIndex<QUESTIONS.length){ document.getElementById('btn-check').onclick=checkAnswer; renderQuestion(); }
+  else showResults();
+}
 
-    function displayQuizMetrics() {
-        document.getElementById('quizBar').style.width = "100%";
-        document.getElementById('quiz-question-screen').style.display = 'none';
-        document.getElementById('quizHeader').style.display = 'none';
-        document.getElementById('quizFooter').style.display = 'none';
-        document.getElementById('quiz-result-screen').style.display = 'block';
-        document.getElementById('quizBackNav').style.display = 'flex';
-        
-        document.getElementById('finalScoreDisplay').innerText = `${quizScore}/${questionBank.length}`;
-        const lvlText = document.getElementById('suggestedLevelText');
-        if(quizScore === 5) { lvlText.innerText = "B1+ - Intermedio Alto 🚀"; lvlText.style.color = "#58cc02"; }
-        else if(quizScore >= 3) { lvlText.innerText = "B1 - Intermedio Seguro 📈"; lvlText.style.color = "#1cb0f6"; }
-        else { lvlText.innerText = "A2 - Principiante Avanzado 📘"; lvlText.style.color = "#ff9600"; }
-    }
-
-    function resetQuizFlow() {
-        document.getElementById('quiz-welcome-screen').style.display = 'block';
-        document.getElementById('quizBackNav').style.display = 'flex';
-        document.getElementById('quizHeader').style.display = 'none';
-        document.getElementById('quiz-question-screen').style.display = 'none';
-        document.getElementById('quiz-result-screen').style.display = 'none';
-        document.getElementById('quizFooter').style.display = 'none';
-        currentQIdx = 0;
-        quizScore = 0;
-    }
-
-    function autoFitScreen() {
-        const viewer = document.querySelector('.app-container');
-        const scaleWidth = (window.innerWidth - 40) / 1280;
-        const scaleHeight = (window.innerHeight - 40) / 720;
-        const scale = Math.min(scaleWidth, scaleHeight);
-        if (scale < 1) viewer.style.transform = `scale(${scale})`;
-        else viewer.style.transform = 'scale(1)';
-    }
-    window.addEventListener('resize', autoFitScreen);
-    autoFitScreen();
+function showResults() {
+  document.getElementById('quiz-question').style.display='none';
+  document.getElementById('quiz-results').style.display='flex';
+  const pct=score/QUESTIONS.length;
+  let level,title;
+  if(pct===1)      {level='Intermedio Alto (B1+)';title='¡Puntaje Perfecto! 🏆';}
+  else if(pct>=.8) {level='Intermedio (B1)';      title='¡Excelente trabajo! 🎉';}
+  else if(pct>=.6) {level='Pre-Intermedio (A2+)'; title='¡Buen esfuerzo! 💪';}
+  else if(pct>=.4) {level='Básico (A2)';           title='¡Sigue practicando! 📚';}
+  else             {level='Principiante (A1)';      title='¡Aquí comienza tu viaje! 🌱';}
+  document.getElementById('r-title').textContent  =title;
+  document.getElementById('r-score').textContent  =`${score}/${QUESTIONS.length}`;
+  document.getElementById('r-correct').textContent=`${score} de ${QUESTIONS.length}`;
+  document.getElementById('r-level').textContent  =level;
+  document.getElementById('q-prog-fill').style.width='100%';
+  document.getElementById('q-prog-label').textContent=`${QUESTIONS.length} / ${QUESTIONS.length}`;
+}
 </script>
 </body>
 </html>
