@@ -91,7 +91,7 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
 
 /* Video player */
 .video-container{padding:0 20px 20px}
-video{width:100%;border-radius:14px;background:#000;display:block;box-shadow:0 4px 16px rgba(0,0,0,.15)}
+.video-container iframe{width:100%;border-radius:14px;display:block;box-shadow:0 4px 16px rgba(0,0,0,.15);aspect-ratio:16/9;border:none}
 
 /* Flashcard slider */
 .slider-wrap{padding:0 20px 20px}
@@ -304,7 +304,7 @@ video{width:100%;border-radius:14px;background:#000;display:block;box-shadow:0 4
 
   <div class="demo-sections">
 
-    <!-- Componente 1: Video -->
+    <!-- Componente 1: Video (YouTube embed) -->
     <div class="demo-section">
       <div class="demo-sec-head">
         <div class="demo-sec-icon" style="background:#eef2ff;color:#6366f1;box-shadow:0 3px 0 #a5a8f0"><i class="fa-solid fa-circle-play"></i></div>
@@ -314,10 +314,12 @@ video{width:100%;border-radius:14px;background:#000;display:block;box-shadow:0 4
         </div>
       </div>
       <div class="video-container">
-        <video controls preload="metadata" poster="">
-          <source src="video_demo.mp4" type="video/mp4">
-          Tu navegador no soporta el reproductor de video.
-        </video>
+        <iframe
+          src="https://www.youtube.com/embed/o2VBbPuhtCA"
+          title="Lección en Video – LearnEnglish Academy"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen>
+        </iframe>
       </div>
     </div>
 
@@ -534,17 +536,18 @@ function renderCard() {
   const c = CARDS[fcIdx];
   const card = document.getElementById('fc-card');
   card.style.opacity = '0';
-  setTimeout(() => {
+  setTimeout(function() {
     document.getElementById('fc-label').textContent = c.label;
     document.getElementById('fc-word').textContent  = c.word;
     document.getElementById('fc-def').textContent   = c.def;
     card.style.opacity = '1';
   }, 150);
   const dots = document.getElementById('fc-dots');
-  dots.innerHTML = CARDS.map((_,i) =>
-    `<div class="fc-dot ${i===fcIdx?'active':''}"></div>`
-  ).join('');
+  dots.innerHTML = CARDS.map(function(_,i) {
+    return '<div class="fc-dot ' + (i===fcIdx ? 'active' : '') + '"></div>';
+  }).join('');
 }
+
 function fcNav(dir) {
   fcIdx = (fcIdx + dir + CARDS.length) % CARDS.length;
   renderCard();
@@ -559,17 +562,20 @@ const QUESTIONS = [
   { text:'Maria called <span class="q-blank">___</span> last night. We talked for an hour.', hint:'Pronombre de objeto para primera persona singular.', options:['I','me','my','mine'], answer:'me' }
 ];
 
-let qIndex=0, score=0, selected=null, answered=false;
-let quizFromDemo = false; // track origin screen
+let qIndex = 0, score = 0, selected = null, answered = false;
+let quizFromDemo = false;
 
 /* ══════════ NAV ══════════ */
 function goTo(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  window.scrollTo(0,0);
+  document.querySelectorAll('.screen').forEach(function(s) {
+    s.classList.remove('active');
+  });
+  const target = document.getElementById(id);
+  if (target) target.classList.add('active');
+  window.scrollTo(0, 0);
   if (id === 'screen-guides') {
-    setTimeout(() => {
-      document.querySelectorAll('.prog-fill').forEach(el => {
+    setTimeout(function() {
+      document.querySelectorAll('.prog-fill').forEach(function(el) {
         const fw = getComputedStyle(el).getPropertyValue('--fw').trim();
         if (fw) el.style.width = fw;
       });
@@ -587,10 +593,12 @@ function checkPwd() {
   } else {
     e.style.display = 'block';
     const box = document.querySelector('.login-box');
-    [0,1,2,3].forEach((_,i) => {
-      setTimeout(() => { box.style.transform = i%2===0?'translateX(-6px)':'translateX(6px)'; }, i*80);
+    [0,1,2,3].forEach(function(_,i) {
+      setTimeout(function() {
+        box.style.transform = i % 2 === 0 ? 'translateX(-6px)' : 'translateX(6px)';
+      }, i * 80);
     });
-    setTimeout(() => box.style.transform='none', 340);
+    setTimeout(function() { box.style.transform = 'none'; }, 340);
   }
 }
 
@@ -625,98 +633,142 @@ function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 4000);
+  setTimeout(function() { t.classList.remove('show'); }, 4000);
 }
 
 /* ══════════ QUIZ LOGIC ══════════ */
 function resetQuiz() {
-  qIndex=0; score=0; selected=null; answered=false;
-  document.getElementById('quiz-intro').style.display    = 'flex';
-  document.getElementById('quiz-question').style.display = 'none';
-  document.getElementById('quiz-results').style.display  = 'none';
-  document.getElementById('btn-check').onclick = checkAnswer;
+  qIndex = 0; score = 0; selected = null; answered = false;
+  const intro    = document.getElementById('quiz-intro');
+  const question = document.getElementById('quiz-question');
+  const results  = document.getElementById('quiz-results');
+  const btnCheck = document.getElementById('btn-check');
+  if (intro)    intro.style.display    = 'flex';
+  if (question) question.style.display = 'none';
+  if (results)  results.style.display  = 'none';
+  if (btnCheck) btnCheck.onclick = checkAnswer;
 }
 
 function startQuiz() {
-  qIndex=0; score=0;
-  document.getElementById('quiz-intro').style.display    = 'none';
-  document.getElementById('quiz-results').style.display  = 'none';
-  document.getElementById('quiz-question').style.display = 'block';
+  qIndex = 0; score = 0;
+  const intro    = document.getElementById('quiz-intro');
+  const question = document.getElementById('quiz-question');
+  const results  = document.getElementById('quiz-results');
+  if (intro)    intro.style.display    = 'none';
+  if (results)  results.style.display  = 'none';
+  if (question) question.style.display = 'block';
   renderQuestion();
 }
 
 function renderQuestion() {
   const q = QUESTIONS[qIndex];
-  selected=null; answered=false;
-  document.getElementById('q-num').textContent  = `Pregunta ${qIndex+1} de ${QUESTIONS.length}`;
-  document.getElementById('q-text').innerHTML   = q.text;
-  document.getElementById('q-hint').textContent = q.hint;
-  document.getElementById('q-prog-label').textContent = `${qIndex} / ${QUESTIONS.length}`;
-  document.getElementById('q-prog-fill').style.width  = `${(qIndex/QUESTIONS.length)*100}%`;
-  const fb = document.getElementById('q-feedback');
-  fb.style.display='none'; fb.className='q-feedback';
-  const chk = document.getElementById('btn-check');
-  chk.className='btn-check'; chk.textContent='Comprobar respuesta ✓';
-  chk.onclick = checkAnswer;
-  const opts = document.getElementById('q-options');
-  opts.innerHTML='';
-  q.options.forEach(opt => {
-    const b = document.createElement('button');
-    b.className='q-opt'; b.textContent=opt;
-    b.onclick = () => selectOpt(b,opt);
-    opts.appendChild(b);
-  });
+  selected = null; answered = false;
+
+  const qNum      = document.getElementById('q-num');
+  const qText     = document.getElementById('q-text');
+  const qHint     = document.getElementById('q-hint');
+  const qProgLbl  = document.getElementById('q-prog-label');
+  const qProgFill = document.getElementById('q-prog-fill');
+  const fb        = document.getElementById('q-feedback');
+  const chk       = document.getElementById('btn-check');
+  const opts      = document.getElementById('q-options');
+
+  if (qNum)     qNum.textContent  = 'Pregunta ' + (qIndex + 1) + ' de ' + QUESTIONS.length;
+  if (qText)    qText.innerHTML   = q.text;
+  if (qHint)    qHint.textContent = q.hint;
+  if (qProgLbl) qProgLbl.textContent = qIndex + ' / ' + QUESTIONS.length;
+  if (qProgFill) qProgFill.style.width = ((qIndex / QUESTIONS.length) * 100) + '%';
+
+  if (fb) { fb.style.display = 'none'; fb.className = 'q-feedback'; }
+  if (chk) { chk.className = 'btn-check'; chk.textContent = 'Comprobar respuesta ✓'; chk.onclick = checkAnswer; }
+
+  if (opts) {
+    opts.innerHTML = '';
+    q.options.forEach(function(opt) {
+      const b = document.createElement('button');
+      b.className = 'q-opt';
+      b.textContent = opt;
+      b.onclick = function() { selectOpt(b, opt); };
+      opts.appendChild(b);
+    });
+  }
 }
 
-function selectOpt(btn,val) {
-  if(answered) return;
-  selected=val;
-  document.querySelectorAll('.q-opt').forEach(b => b.classList.remove('selected'));
+function selectOpt(btn, val) {
+  if (answered) return;
+  selected = val;
+  document.querySelectorAll('.q-opt').forEach(function(b) { b.classList.remove('selected'); });
   btn.classList.add('selected');
-  document.getElementById('btn-check').classList.add('ready');
+  const chk = document.getElementById('btn-check');
+  if (chk) chk.classList.add('ready');
 }
 
 function checkAnswer() {
-  if(!selected||answered) return;
-  answered=true;
-  const q=QUESTIONS[qIndex];
-  const fb=document.getElementById('q-feedback');
-  const chk=document.getElementById('btn-check');
-  document.querySelectorAll('.q-opt').forEach(b => {
-    b.disabled=true;
-    if(b.textContent===q.answer) b.classList.add('correct');
-    else if(b.textContent===selected) b.classList.add('wrong');
+  if (!selected || answered) return;
+  answered = true;
+  const q   = QUESTIONS[qIndex];
+  const fb  = document.getElementById('q-feedback');
+  const chk = document.getElementById('btn-check');
+
+  document.querySelectorAll('.q-opt').forEach(function(b) {
+    b.disabled = true;
+    if (b.textContent === q.answer) b.classList.add('correct');
+    else if (b.textContent === selected) b.classList.add('wrong');
   });
-  if(selected===q.answer){ score++; fb.className='q-feedback correct'; fb.innerHTML='✅ ¡Correcto! Muy bien hecho.'; }
-  else { fb.className='q-feedback wrong'; fb.innerHTML=`❌ Incorrecto. La respuesta es <strong>${q.answer}</strong>.`; }
-  fb.style.display='block';
-  chk.textContent = qIndex<QUESTIONS.length-1 ? 'Siguiente pregunta →':'Ver mis resultados 📋';
-  chk.className='btn-check ready';
-  chk.onclick=nextQuestion;
+
+  if (selected === q.answer) {
+    score++;
+    if (fb) { fb.className = 'q-feedback correct'; fb.innerHTML = '✅ ¡Correcto! Muy bien hecho.'; }
+  } else {
+    if (fb) { fb.className = 'q-feedback wrong'; fb.innerHTML = '❌ Incorrecto. La respuesta es <strong>' + q.answer + '</strong>.'; }
+  }
+  if (fb) fb.style.display = 'block';
+
+  if (chk) {
+    chk.textContent = qIndex < QUESTIONS.length - 1 ? 'Siguiente pregunta →' : 'Ver mis resultados 📋';
+    chk.className = 'btn-check ready';
+    chk.onclick = nextQuestion;
+  }
 }
 
 function nextQuestion() {
   qIndex++;
-  if(qIndex<QUESTIONS.length){ document.getElementById('btn-check').onclick=checkAnswer; renderQuestion(); }
-  else showResults();
+  if (qIndex < QUESTIONS.length) {
+    const chk = document.getElementById('btn-check');
+    if (chk) chk.onclick = checkAnswer;
+    renderQuestion();
+  } else {
+    showResults();
+  }
 }
 
 function showResults() {
-  document.getElementById('quiz-question').style.display='none';
-  document.getElementById('quiz-results').style.display='flex';
-  const pct=score/QUESTIONS.length;
-  let level,title;
-  if(pct===1)      {level='Intermedio Alto (B1+)';title='¡Puntaje Perfecto! 🏆';}
-  else if(pct>=.8) {level='Intermedio (B1)';      title='¡Excelente trabajo! 🎉';}
-  else if(pct>=.6) {level='Pre-Intermedio (A2+)'; title='¡Buen esfuerzo! 💪';}
-  else if(pct>=.4) {level='Básico (A2)';           title='¡Sigue practicando! 📚';}
-  else             {level='Principiante (A1)';      title='¡Aquí comienza tu viaje! 🌱';}
-  document.getElementById('r-title').textContent  =title;
-  document.getElementById('r-score').textContent  =`${score}/${QUESTIONS.length}`;
-  document.getElementById('r-correct').textContent=`${score} de ${QUESTIONS.length}`;
-  document.getElementById('r-level').textContent  =level;
-  document.getElementById('q-prog-fill').style.width='100%';
-  document.getElementById('q-prog-label').textContent=`${QUESTIONS.length} / ${QUESTIONS.length}`;
+  const question = document.getElementById('quiz-question');
+  const results  = document.getElementById('quiz-results');
+  if (question) question.style.display = 'none';
+  if (results)  results.style.display  = 'flex';
+
+  const pct = score / QUESTIONS.length;
+  let level, title;
+  if (pct === 1)     { level = 'Intermedio Alto (B1+)'; title = '¡Puntaje Perfecto! 🏆'; }
+  else if (pct >= .8){ level = 'Intermedio (B1)';       title = '¡Excelente trabajo! 🎉'; }
+  else if (pct >= .6){ level = 'Pre-Intermedio (A2+)';  title = '¡Buen esfuerzo! 💪'; }
+  else if (pct >= .4){ level = 'Básico (A2)';            title = '¡Sigue practicando! 📚'; }
+  else               { level = 'Principiante (A1)';      title = '¡Aquí comienza tu viaje! 🌱'; }
+
+  const rTitle   = document.getElementById('r-title');
+  const rScore   = document.getElementById('r-score');
+  const rCorrect = document.getElementById('r-correct');
+  const rLevel   = document.getElementById('r-level');
+  const progFill = document.getElementById('q-prog-fill');
+  const progLbl  = document.getElementById('q-prog-label');
+
+  if (rTitle)   rTitle.textContent   = title;
+  if (rScore)   rScore.textContent   = score + '/' + QUESTIONS.length;
+  if (rCorrect) rCorrect.textContent = score + ' de ' + QUESTIONS.length;
+  if (rLevel)   rLevel.textContent   = level;
+  if (progFill) progFill.style.width = '100%';
+  if (progLbl)  progLbl.textContent  = QUESTIONS.length + ' / ' + QUESTIONS.length;
 }
 </script>
 </body>
