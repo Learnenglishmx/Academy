@@ -20,12 +20,64 @@
 body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
 .screen{display:none;min-height:100vh;flex-direction:column}
 .screen.active{display:flex}
-@keyframes owlBob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-7px) rotate(2deg)}}
+
+/* ══ ANIMATIONS ══ */
+@keyframes owlBob{
+  0%,100%{transform:translateY(0) rotate(-2deg)}
+  50%{transform:translateY(-7px) rotate(2deg)}
+}
 @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+
+/* Parpadeo: párpados bajan desde arriba de cada ojo */
+@keyframes blinkL{
+  0%,88%,100%{transform:scaleY(0);opacity:0}
+  92%,96%{transform:scaleY(1);opacity:1}
+}
+@keyframes blinkR{
+  0%,88%,100%{transform:scaleY(0);opacity:0}
+  92%,96%{transform:scaleY(1);opacity:1}
+}
 
 /* ═══ SHARED OWL CIRCLES ═══ */
 .owl-circ{border-radius:50%;overflow:hidden;background:#1a2444;display:flex;align-items:center;justify-content:center}
 .owl-circ img{width:95%;height:95%;object-fit:contain}
+
+/* ═══ OWL LOGIN — wrapper con parpadeo ═══ */
+.owl-login-wrap{
+  position:relative;
+  width:110px;height:110px;
+  margin:0 auto 20px;
+  border-radius:50%;
+  /* balanceo continuo */
+  animation:owlBob 3s ease-in-out infinite;
+  /* anillos decorativos */
+  box-shadow:0 6px 0 var(--navy-mid),0 0 0 5px #eaffd0,0 0 0 9px #d4f7a0;
+}
+.owl-login-wrap .owl-circ{
+  width:110px;height:110px;
+}
+/* Capa SVG de párpados — encima de la imagen, fuera del overflow:hidden */
+.owl-login-wrap .blink-layer{
+  position:absolute;
+  top:0;left:0;
+  width:100%;height:100%;
+  border-radius:50%;
+  pointer-events:none;
+  overflow:hidden; /* recorta el SVG al círculo */
+}
+.owl-login-wrap .blink-layer svg{
+  width:100%;height:100%;
+  display:block;
+}
+/* Cada párpado se posiciona con transform-origin en el borde superior del ojo */
+.lid-l{
+  transform-origin:50% 0%;
+  animation:blinkL 5s ease-in-out infinite;
+}
+.lid-r{
+  transform-origin:50% 0%;
+  animation:blinkR 5s ease-in-out infinite;
+}
 
 /* ═══ TOAST ═══ */
 #toast{position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-20px);background:var(--navy);color:#fff;padding:14px 24px;border-radius:16px;font-size:.9rem;font-weight:600;box-shadow:0 6px 20px rgba(0,0,0,.25);z-index:9999;opacity:0;pointer-events:none;transition:all .3s;text-align:center;max-width:360px;line-height:1.5}
@@ -58,7 +110,6 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
 ══════════════════════════════════════ */
 #screen-lock{background:linear-gradient(160deg,#eaffd0 0%,#d0f0ff 45%,#e8eeff 100%);justify-content:center;align-items:center}
 .login-box{background:var(--white);border-radius:24px;padding:44px 40px 40px;width:100%;max-width:420px;box-shadow:0 8px 0 var(--shadow),0 20px 50px rgba(0,0,0,.1);text-align:center;border:2px solid var(--border)}
-.owl-login{width:110px;height:110px;margin:0 auto 20px;box-shadow:0 6px 0 var(--navy-mid),0 0 0 5px #eaffd0,0 0 0 9px #d4f7a0;animation:owlBob 3s ease-in-out infinite}
 .login-box h2{font-size:1.75rem;font-weight:800;color:var(--navy);margin-bottom:6px}
 .login-box .sub{color:var(--mid);font-size:.9rem;margin-bottom:28px}
 .inp-g{position:relative;margin-bottom:16px}
@@ -72,7 +123,7 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
 .lock-badge i{color:var(--navy)}
 
 /* ══════════════════════════════════════
-   SCREEN 2 · DEMO PAGE (VITRINA)
+   SCREEN 2 · DEMO PAGE
 ══════════════════════════════════════ */
 #screen-demo-page{background:linear-gradient(180deg,#eaffd0 0%,#f7f7f7 260px)}
 .demo-hero{display:flex;flex-direction:column;align-items:center;text-align:center;padding:44px 24px 32px;animation:fadeUp .5s ease}
@@ -80,20 +131,14 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
 .demo-free-badge{background:var(--blue);color:#fff;font-size:.72rem;font-weight:700;padding:4px 14px;border-radius:20px;letter-spacing:1.2px;box-shadow:0 3px 0 var(--blue-dk);margin-bottom:12px}
 .demo-hero h1{font-size:2rem;font-weight:800;color:var(--navy);margin-bottom:8px;line-height:1.2}
 .demo-hero p{color:var(--mid);font-size:.95rem;max-width:500px}
-
-/* Demo section wrapper */
 .demo-sections{max-width:780px;margin:0 auto;padding:0 24px 110px;width:100%;display:flex;flex-direction:column;gap:28px}
 .demo-section{background:var(--white);border-radius:22px;border:2px solid var(--border);box-shadow:0 5px 0 var(--shadow);overflow:hidden;animation:fadeUp .5s ease}
 .demo-sec-head{padding:20px 24px 0;display:flex;align-items:center;gap:12px;margin-bottom:16px}
 .demo-sec-icon{width:44px;height:44px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0}
 .demo-sec-head h3{font-size:1rem;font-weight:800;color:var(--navy)}
 .demo-sec-head p{font-size:.8rem;color:var(--mid)}
-
-/* Video player */
 .video-container{padding:0 20px 20px}
 .video-container iframe{width:100%;border-radius:14px;display:block;box-shadow:0 4px 16px rgba(0,0,0,.15);aspect-ratio:16/9;border:none}
-
-/* Flashcard slider */
 .slider-wrap{padding:0 20px 20px}
 .flashcard{background:linear-gradient(135deg,#f0f9ff,#e0f2fe);border:2px solid #bae6fd;border-radius:18px;padding:32px 24px;text-align:center;min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:16px;box-shadow:0 4px 0 #bfdbfe;transition:all .3s}
 .flashcard .fc-label{font-size:.7rem;font-weight:700;color:var(--blue);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:10px}
@@ -106,22 +151,15 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
 .fc-dots{display:flex;gap:6px}
 .fc-dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:background .2s}
 .fc-dot.active{background:var(--blue)}
-
-/* Quiz CTA in demo */
 .quiz-cta-wrap{padding:0 20px 20px}
 .quiz-cta-card{background:linear-gradient(135deg,#fdf2f8,#fce7f3);border:2px solid #fbcfe8;border-radius:16px;padding:24px;text-align:center}
 .quiz-cta-card p{font-size:.88rem;color:var(--mid);margin-bottom:18px;line-height:1.5}
 .btn-quiz-demo{padding:15px 32px;border:none;border-radius:16px;background:var(--pink);box-shadow:0 5px 0 var(--pink-dk);color:#fff;font-size:1rem;font-weight:700;cursor:pointer;transition:all .1s;display:inline-flex;align-items:center;gap:8px}
 .btn-quiz-demo:hover{transform:translateY(-1px);box-shadow:0 6px 0 var(--pink-dk)}
 .btn-quiz-demo:active{transform:translateY(4px);box-shadow:0 1px 0 var(--pink-dk)}
-
-/* Enroll CTA */
 .enroll-banner{background:linear-gradient(135deg,#1a2444,#253060);border-radius:22px;padding:36px 28px;text-align:center;margin-top:4px;border:2px solid #3a4a7a}
 .enroll-banner h3{font-size:1.3rem;font-weight:800;color:#fff;margin-bottom:10px}
 .enroll-banner p{color:#94a3b8;font-size:.88rem;margin-bottom:24px;line-height:1.6}
-.btn-enroll{padding:18px 32px;border:none;border-radius:16px;background:var(--green);box-shadow:0 6px 0 var(--green-dk);color:#fff;font-size:1.05rem;font-weight:800;cursor:pointer;transition:all .1s;width:100%;letter-spacing:.3px}
-.btn-enroll:hover{transform:translateY(-2px);box-shadow:0 8px 0 var(--green-dk)}
-.btn-enroll:active{transform:translateY(4px);box-shadow:0 2px 0 var(--green-dk)}
 
 /* ══════════════════════════════════════
    SCREEN 3 · DASHBOARD
@@ -157,7 +195,7 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
 .sec-header p{color:var(--mid);font-size:.95rem}
 
 /* ══════════════════════════════════════
-   MODULE CARDS (Guides)
+   MODULE CARDS
 ══════════════════════════════════════ */
 .mod-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:22px;padding:0 28px 100px;max-width:1100px;margin:0 auto;width:100%}
 .card{background:var(--white);border-radius:20px;border:2px solid var(--border);box-shadow:0 5px 0 var(--shadow);padding:28px;display:flex;flex-direction:column;transition:transform .15s,box-shadow .15s;position:relative;overflow:hidden}
@@ -261,9 +299,43 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
 ══════════════════════════════════════ -->
 <div id="screen-lock" class="screen active">
   <div class="login-box">
-    <div class="owl-circ owl-login" style="width:110px;height:110px;box-shadow:0 6px 0 var(--navy-mid),0 0 0 5px #eaffd0,0 0 0 9px #d4f7a0;animation:owlBob 3s ease-in-out infinite;margin:0 auto 20px">
-      <img src="mascota.png" alt="Mascota">
+
+    <!--
+      BÚHO CON PARPADEO
+      ─────────────────────────────────────────────────────────────
+      Estructura:
+        .owl-login-wrap          → aplica box-shadow + owlBob
+          .owl-circ              → recorte circular de la imagen
+            img mascota.png
+          .blink-layer           → capa SVG encima, recortada al círculo
+            svg con 2 elipses    → párpados izquierdo y derecho
+      ─────────────────────────────────────────────────────────────
+      Los párpados usan el verde #58cc02 del anillo exterior
+      para que al cerrarse se fundan con el plumaje del búho.
+      Las coordenadas cx/cy están calibradas para los ojos grandes
+      del búho que se ve en la foto (ojos centrados, parte superior).
+
+      Si tus ojos están en una posición distinta ajusta cy="38"
+      subiendo o bajando el número en pasos de 2px.
+    -->
+    <div class="owl-login-wrap">
+      <div class="owl-circ" style="width:110px;height:110px">
+        <img src="mascota.png" alt="Búho LearnEnglish Academy">
+      </div>
+      <!-- Párpados animados — color verde del plumaje -->
+      <div class="blink-layer">
+        <svg viewBox="0 0 110 110" xmlns="http://www.w3.org/2000/svg">
+          <!--
+            Ojo izquierdo del búho (derecha en pantalla) cx≈38, cy≈40
+            Ojo derecho del búho  (izquierda en pantalla) cx≈72, cy≈40
+            rx/ry ajustados al tamaño visual de los ojos en la foto
+          -->
+          <ellipse class="lid-l" cx="38" cy="40" rx="13" ry="11" fill="#58cc02"/>
+          <ellipse class="lid-r" cx="72" cy="40" rx="13" ry="11" fill="#58cc02"/>
+        </svg>
+      </div>
     </div>
+
     <h2>LearnEnglish Academy</h2>
     <p class="sub">Introduce tu clave de acceso para ingresar al portal educativo.</p>
     <div class="inp-g">
@@ -292,7 +364,6 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
     <span class="nav-logo">LearnEnglish<span>.com</span></span>
     <div class="owl-circ nav-owl" style="width:44px;height:44px"><img src="mascota.png" alt="Mascota"></div>
   </nav>
-
   <div class="demo-hero">
     <div class="owl-circ owl-hero-lg" style="width:130px;height:130px;box-shadow:0 8px 0 #0d1530,0 0 0 8px #eaffd0,0 0 0 13px rgba(88,204,2,.2);margin-bottom:22px;animation:owlBob 4s ease-in-out infinite">
       <img src="mascota.png" alt="Mascota">
@@ -301,36 +372,23 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
     <h1>Demo LearnEnglish</h1>
     <p>Explora una muestra de nuestro portal educativo. Descubre el video, practica vocabulario y pon a prueba tu nivel.</p>
   </div>
-
   <div class="demo-sections">
-
-    <!-- Componente 1: Video (YouTube embed) -->
     <div class="demo-section">
       <div class="demo-sec-head">
         <div class="demo-sec-icon" style="background:#eef2ff;color:#6366f1;box-shadow:0 3px 0 #a5a8f0"><i class="fa-solid fa-circle-play"></i></div>
-        <div>
-          <h3>Lección en Video</h3>
-          <p>Aprende con explicaciones visuales paso a paso</p>
-        </div>
+        <div><h3>Lección en Video</h3><p>Aprende con explicaciones visuales paso a paso</p></div>
       </div>
       <div class="video-container">
-        <iframe
-          src="https://www.youtube.com/embed/o2VBbPuhtCA"
+        <iframe src="https://www.youtube.com/embed/o2VBbPuhtCA"
           title="Lección en Video – LearnEnglish Academy"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          allowfullscreen>
-        </iframe>
+          allowfullscreen></iframe>
       </div>
     </div>
-
-    <!-- Componente 2: Flashcard Slider -->
     <div class="demo-section">
       <div class="demo-sec-head">
         <div class="demo-sec-icon" style="background:#fff7ed;color:#f59e0b;box-shadow:0 3px 0 #f0c060"><i class="fa-solid fa-layer-group"></i></div>
-        <div>
-          <h3>Vocabulario Interactivo</h3>
-          <p>Desliza las tarjetas para estudiar palabras clave</p>
-        </div>
+        <div><h3>Vocabulario Interactivo</h3><p>Desliza las tarjetas para estudiar palabras clave</p></div>
       </div>
       <div class="slider-wrap">
         <div class="flashcard" id="fc-card">
@@ -345,45 +403,32 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
         </div>
       </div>
     </div>
-
-    <!-- Componente 3: Quiz CTA -->
     <div class="demo-section">
       <div class="demo-sec-head">
         <div class="demo-sec-icon" style="background:#fdf2f8;color:#ec4899;box-shadow:0 3px 0 #fbcfe8"><i class="fa-solid fa-pen-to-square"></i></div>
-        <div>
-          <h3>Ejercicios Interactivos</h3>
-          <p>Pon a prueba tu nivel con nuestro desafío</p>
-        </div>
+        <div><h3>Ejercicios Interactivos</h3><p>Pon a prueba tu nivel con nuestro desafío</p></div>
       </div>
       <div class="quiz-cta-wrap">
         <div class="quiz-cta-card">
           <p>Completa el <strong>Desafío de Pronombres</strong> de 5 preguntas y recibe tu Informe de Diagnóstico con Hoja de Ruta de 90 días personalizada.</p>
-          <button class="btn-quiz-demo" onclick="launchQuizFromDemo()">
-            📝 Probar Desafío de Pronombres
-          </button>
+          <button class="btn-quiz-demo" onclick="launchQuizFromDemo()">📝 Probar Desafío de Pronombres</button>
         </div>
       </div>
     </div>
-
-    <!-- Enroll Banner -->
     <div class="enroll-banner">
       <h3>🎓 ¿Te gustó la Demo?</h3>
       <p>Obtén acceso completo a las 5 Guías Interactivas, todos los videos y recursos multimedia. ¡Habla con tu asesor hoy!</p>
-<a href="https://walink.co/zcdrsd" target="_blank" rel="noopener noreferrer" style="display: block; width: 100%; background-color: #25D366; color: white; text-align: center; padding: 15px; border-radius: 12px; font-size: 1.1rem; font-weight: bold; text-decoration: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-top: 15px; box-sizing: border-box;">
-  🔑 ¡Inscribirme a la Academia Completa!
-</a>
-
+      <a href="https://walink.co/zcdrsd" target="_blank" rel="noopener noreferrer"
+        style="display:block;width:100%;background-color:#25D366;color:#fff;text-align:center;padding:15px;border-radius:12px;font-size:1.1rem;font-weight:bold;text-decoration:none;box-shadow:0 4px 6px rgba(0,0,0,.1);margin-top:15px;box-sizing:border-box;">
+        🔑 ¡Inscribirme a la Academia Completa!
+      </a>
     </div>
-
   </div>
-
-  <button class="back-btn" onclick="goTo('screen-lock')">
-    <i class="fa-solid fa-arrow-left"></i> Volver al Inicio
-  </button>
+  <button class="back-btn" onclick="goTo('screen-lock')"><i class="fa-solid fa-arrow-left"></i> Volver al Inicio</button>
 </div>
 
 <!-- ══════════════════════════════════════
-  SCREEN 3 · DASHBOARD (Alumnos)
+  SCREEN 3 · DASHBOARD
 ══════════════════════════════════════ -->
 <div id="screen-dash" class="screen">
   <nav class="navbar">
@@ -475,14 +520,12 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
 <div id="screen-quiz" class="screen">
   <nav class="navbar"><span class="nav-logo">LearnEnglish<span>.com</span></span><div class="owl-circ nav-owl" style="width:44px;height:44px"><img src="mascota.png" alt="Mascota"></div></nav>
   <div class="quiz-wrap">
-    <!-- INTRO -->
     <div id="quiz-intro" class="quiz-intro">
       <div class="owl-circ q-owl-intro" style="width:110px;height:110px"><img src="mascota.png" alt="Mascota"></div>
       <h2>¡Desafío de Pronombres!</h2>
       <p>Descubre tu nivel de inglés con esta evaluación de 5 preguntas y recibe tu plan de estudio personalizado.</p>
       <button class="btn-start" onclick="startQuiz()">¡Comenzar Evaluación! 🚀</button>
     </div>
-    <!-- QUESTION -->
     <div id="quiz-question" style="display:none">
       <div class="q-prog-bar"><div class="q-prog-fill" id="q-prog-fill"></div></div>
       <div class="q-prog-label" id="q-prog-label">0 / 5</div>
@@ -495,7 +538,6 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
         <button class="btn-check" id="btn-check" onclick="checkAnswer()">Comprobar respuesta ✓</button>
       </div>
     </div>
-    <!-- RESULTS -->
     <div id="quiz-results" class="q-results" style="display:none">
       <div class="owl-circ r-owl" style="width:120px;height:120px"><img src="mascota.png" alt="Mascota"></div>
       <div class="sec-badge" style="margin-bottom:12px">📋 INFORME OFICIAL DE DIAGNÓSTICO</div>
@@ -515,7 +557,10 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
         <div class="rm-item"><div class="rm-dot m2">M2</div><div class="rm-text"><h4>Mes 2 — Gramática Aplicada</h4><p>Verbos en presente y pasado simple, sustantivos y adjetivos en contexto. Conversaciones básicas.</p></div></div>
         <div class="rm-item"><div class="rm-dot m3">M3</div><div class="rm-text"><h4>Mes 3 — Fluidez y Práctica</h4><p>Tiempos verbales avanzados, comprensión auditiva y producción escrita de nivel intermedio.</p></div></div>
       </div>
-<a href=" https://walink.co/zcdrsd " target="_blank" rel="noopener noreferrer" style="display: block; width: 100%; max-width: 350px; margin: 20px auto 0 auto; background-color: #25D366; color: white; text-align: center; padding: 15px; border-radius: 12px; font-size: 1.1rem; font-weight: bold; text-decoration: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1); box-sizing: border-box;"> 🎁 ¡Reclamar Mi Descuento Aquí! </a>
+      <a href="https://walink.co/zcdrsd" target="_blank" rel="noopener noreferrer"
+        style="display:block;width:100%;max-width:350px;margin:20px auto 0;background-color:#25D366;color:#fff;text-align:center;padding:15px;border-radius:12px;font-size:1.1rem;font-weight:bold;text-decoration:none;box-shadow:0 4px 6px rgba(0,0,0,.1);box-sizing:border-box;">
+        🎁 ¡Reclamar Mi Descuento Aquí!
+      </a>
     </div>
   </div>
   <button class="back-btn" id="quiz-back-btn" onclick="quizBack()"><i class="fa-solid fa-arrow-left"></i> Volver al Menú Principal</button>
@@ -548,7 +593,6 @@ function renderCard() {
     return '<div class="fc-dot ' + (i===fcIdx ? 'active' : '') + '"></div>';
   }).join('');
 }
-
 function fcNav(dir) {
   fcIdx = (fcIdx + dir + CARDS.length) % CARDS.length;
   renderCard();
@@ -568,9 +612,7 @@ let quizFromDemo = false;
 
 /* ══════════ NAV ══════════ */
 function goTo(id) {
-  document.querySelectorAll('.screen').forEach(function(s) {
-    s.classList.remove('active');
-  });
+  document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
   const target = document.getElementById(id);
   if (target) target.classList.add('active');
   window.scrollTo(0, 0);
@@ -596,38 +638,18 @@ function checkPwd() {
     const box = document.querySelector('.login-box');
     [0,1,2,3].forEach(function(_,i) {
       setTimeout(function() {
-        box.style.transform = i % 2 === 0 ? 'translateX(-6px)' : 'translateX(6px)';
-      }, i * 80);
+        box.style.transform = i%2===0 ? 'translateX(-6px)' : 'translateX(6px)';
+      }, i*80);
     });
     setTimeout(function() { box.style.transform = 'none'; }, 340);
   }
 }
-
-function enterDemo() {
-  renderCard();
-  goTo('screen-demo-page');
-}
+function enterDemo() { renderCard(); goTo('screen-demo-page'); }
 
 /* ══════════ QUIZ LAUNCHERS ══════════ */
-function launchQuizFromDemo() {
-  quizFromDemo = true;
-  resetQuiz();
-  goTo('screen-quiz');
-}
-function launchQuizFromDash() {
-  quizFromDemo = false;
-  resetQuiz();
-  goTo('screen-quiz');
-}
-function quizBack() {
-  resetQuiz();
-  goTo(quizFromDemo ? 'screen-demo-page' : 'screen-dash');
-}
-
-/* ══════════ ENROLL ══════════ */
-function enrollClick() {
-  showToast('🎉 ¡Genial! Contacta a tu asesor para completar tu inscripción y reclamar tu descuento.');
-}
+function launchQuizFromDemo() { quizFromDemo=true;  resetQuiz(); goTo('screen-quiz'); }
+function launchQuizFromDash()  { quizFromDemo=false; resetQuiz(); goTo('screen-quiz'); }
+function quizBack() { resetQuiz(); goTo(quizFromDemo ? 'screen-demo-page' : 'screen-dash'); }
 
 /* ══════════ TOAST ══════════ */
 function showToast(msg) {
@@ -639,137 +661,118 @@ function showToast(msg) {
 
 /* ══════════ QUIZ LOGIC ══════════ */
 function resetQuiz() {
-  qIndex = 0; score = 0; selected = null; answered = false;
-  const intro    = document.getElementById('quiz-intro');
-  const question = document.getElementById('quiz-question');
-  const results  = document.getElementById('quiz-results');
-  const btnCheck = document.getElementById('btn-check');
-  if (intro)    intro.style.display    = 'flex';
-  if (question) question.style.display = 'none';
-  if (results)  results.style.display  = 'none';
-  if (btnCheck) btnCheck.onclick = checkAnswer;
+  qIndex=0; score=0; selected=null; answered=false;
+  const intro=document.getElementById('quiz-intro');
+  const question=document.getElementById('quiz-question');
+  const results=document.getElementById('quiz-results');
+  const btnCheck=document.getElementById('btn-check');
+  if(intro)    intro.style.display    = 'flex';
+  if(question) question.style.display = 'none';
+  if(results)  results.style.display  = 'none';
+  if(btnCheck) btnCheck.onclick = checkAnswer;
 }
-
 function startQuiz() {
-  qIndex = 0; score = 0;
-  const intro    = document.getElementById('quiz-intro');
-  const question = document.getElementById('quiz-question');
-  const results  = document.getElementById('quiz-results');
-  if (intro)    intro.style.display    = 'none';
-  if (results)  results.style.display  = 'none';
-  if (question) question.style.display = 'block';
+  qIndex=0; score=0;
+  const intro=document.getElementById('quiz-intro');
+  const question=document.getElementById('quiz-question');
+  const results=document.getElementById('quiz-results');
+  if(intro)    intro.style.display    = 'none';
+  if(results)  results.style.display  = 'none';
+  if(question) question.style.display = 'block';
   renderQuestion();
 }
-
 function renderQuestion() {
   const q = QUESTIONS[qIndex];
-  selected = null; answered = false;
-
-  const qNum      = document.getElementById('q-num');
-  const qText     = document.getElementById('q-text');
-  const qHint     = document.getElementById('q-hint');
-  const qProgLbl  = document.getElementById('q-prog-label');
-  const qProgFill = document.getElementById('q-prog-fill');
-  const fb        = document.getElementById('q-feedback');
-  const chk       = document.getElementById('btn-check');
-  const opts      = document.getElementById('q-options');
-
-  if (qNum)     qNum.textContent  = 'Pregunta ' + (qIndex + 1) + ' de ' + QUESTIONS.length;
-  if (qText)    qText.innerHTML   = q.text;
-  if (qHint)    qHint.textContent = q.hint;
-  if (qProgLbl) qProgLbl.textContent = qIndex + ' / ' + QUESTIONS.length;
-  if (qProgFill) qProgFill.style.width = ((qIndex / QUESTIONS.length) * 100) + '%';
-
-  if (fb) { fb.style.display = 'none'; fb.className = 'q-feedback'; }
-  if (chk) { chk.className = 'btn-check'; chk.textContent = 'Comprobar respuesta ✓'; chk.onclick = checkAnswer; }
-
-  if (opts) {
-    opts.innerHTML = '';
+  selected=null; answered=false;
+  const qNum=document.getElementById('q-num');
+  const qText=document.getElementById('q-text');
+  const qHint=document.getElementById('q-hint');
+  const qProgLbl=document.getElementById('q-prog-label');
+  const qProgFill=document.getElementById('q-prog-fill');
+  const fb=document.getElementById('q-feedback');
+  const chk=document.getElementById('btn-check');
+  const opts=document.getElementById('q-options');
+  if(qNum)      qNum.textContent  = 'Pregunta '+(qIndex+1)+' de '+QUESTIONS.length;
+  if(qText)     qText.innerHTML   = q.text;
+  if(qHint)     qHint.textContent = q.hint;
+  if(qProgLbl)  qProgLbl.textContent = qIndex+' / '+QUESTIONS.length;
+  if(qProgFill) qProgFill.style.width = ((qIndex/QUESTIONS.length)*100)+'%';
+  if(fb)  { fb.style.display='none'; fb.className='q-feedback'; }
+  if(chk) { chk.className='btn-check'; chk.textContent='Comprobar respuesta ✓'; chk.onclick=checkAnswer; }
+  if(opts) {
+    opts.innerHTML='';
     q.options.forEach(function(opt) {
-      const b = document.createElement('button');
-      b.className = 'q-opt';
-      b.textContent = opt;
-      b.onclick = function() { selectOpt(b, opt); };
+      const b=document.createElement('button');
+      b.className='q-opt'; b.textContent=opt;
+      b.onclick=function(){ selectOpt(b,opt); };
       opts.appendChild(b);
     });
   }
 }
-
-function selectOpt(btn, val) {
-  if (answered) return;
-  selected = val;
-  document.querySelectorAll('.q-opt').forEach(function(b) { b.classList.remove('selected'); });
+function selectOpt(btn,val) {
+  if(answered) return;
+  selected=val;
+  document.querySelectorAll('.q-opt').forEach(function(b){ b.classList.remove('selected'); });
   btn.classList.add('selected');
-  const chk = document.getElementById('btn-check');
-  if (chk) chk.classList.add('ready');
+  const chk=document.getElementById('btn-check');
+  if(chk) chk.classList.add('ready');
 }
-
 function checkAnswer() {
-  if (!selected || answered) return;
-  answered = true;
-  const q   = QUESTIONS[qIndex];
-  const fb  = document.getElementById('q-feedback');
-  const chk = document.getElementById('btn-check');
-
-  document.querySelectorAll('.q-opt').forEach(function(b) {
-    b.disabled = true;
-    if (b.textContent === q.answer) b.classList.add('correct');
-    else if (b.textContent === selected) b.classList.add('wrong');
+  if(!selected||answered) return;
+  answered=true;
+  const q=QUESTIONS[qIndex];
+  const fb=document.getElementById('q-feedback');
+  const chk=document.getElementById('btn-check');
+  document.querySelectorAll('.q-opt').forEach(function(b){
+    b.disabled=true;
+    if(b.textContent===q.answer) b.classList.add('correct');
+    else if(b.textContent===selected) b.classList.add('wrong');
   });
-
-  if (selected === q.answer) {
+  if(selected===q.answer) {
     score++;
-    if (fb) { fb.className = 'q-feedback correct'; fb.innerHTML = '✅ ¡Correcto! Muy bien hecho.'; }
+    if(fb){ fb.className='q-feedback correct'; fb.innerHTML='✅ ¡Correcto! Muy bien hecho.'; }
   } else {
-    if (fb) { fb.className = 'q-feedback wrong'; fb.innerHTML = '❌ Incorrecto. La respuesta es <strong>' + q.answer + '</strong>.'; }
+    if(fb){ fb.className='q-feedback wrong'; fb.innerHTML='❌ Incorrecto. La respuesta es <strong>'+q.answer+'</strong>.'; }
   }
-  if (fb) fb.style.display = 'block';
-
-  if (chk) {
-    chk.textContent = qIndex < QUESTIONS.length - 1 ? 'Siguiente pregunta →' : 'Ver mis resultados 📋';
-    chk.className = 'btn-check ready';
-    chk.onclick = nextQuestion;
+  if(fb) fb.style.display='block';
+  if(chk){
+    chk.textContent = qIndex<QUESTIONS.length-1 ? 'Siguiente pregunta →' : 'Ver mis resultados 📋';
+    chk.className='btn-check ready';
+    chk.onclick=nextQuestion;
   }
 }
-
 function nextQuestion() {
   qIndex++;
-  if (qIndex < QUESTIONS.length) {
-    const chk = document.getElementById('btn-check');
-    if (chk) chk.onclick = checkAnswer;
+  if(qIndex<QUESTIONS.length){
+    const chk=document.getElementById('btn-check');
+    if(chk) chk.onclick=checkAnswer;
     renderQuestion();
-  } else {
-    showResults();
-  }
+  } else { showResults(); }
 }
-
 function showResults() {
-  const question = document.getElementById('quiz-question');
-  const results  = document.getElementById('quiz-results');
-  if (question) question.style.display = 'none';
-  if (results)  results.style.display  = 'flex';
-
-  const pct = score / QUESTIONS.length;
-  let level, title;
-  if (pct === 1)     { level = 'Intermedio Alto (B1+)'; title = '¡Puntaje Perfecto! 🏆'; }
-  else if (pct >= .8){ level = 'Intermedio (B1)';       title = '¡Excelente trabajo! 🎉'; }
-  else if (pct >= .6){ level = 'Pre-Intermedio (A2+)';  title = '¡Buen esfuerzo! 💪'; }
-  else if (pct >= .4){ level = 'Básico (A2)';            title = '¡Sigue practicando! 📚'; }
-  else               { level = 'Principiante (A1)';      title = '¡Aquí comienza tu viaje! 🌱'; }
-
-  const rTitle   = document.getElementById('r-title');
-  const rScore   = document.getElementById('r-score');
-  const rCorrect = document.getElementById('r-correct');
-  const rLevel   = document.getElementById('r-level');
-  const progFill = document.getElementById('q-prog-fill');
-  const progLbl  = document.getElementById('q-prog-label');
-
-  if (rTitle)   rTitle.textContent   = title;
-  if (rScore)   rScore.textContent   = score + '/' + QUESTIONS.length;
-  if (rCorrect) rCorrect.textContent = score + ' de ' + QUESTIONS.length;
-  if (rLevel)   rLevel.textContent   = level;
-  if (progFill) progFill.style.width = '100%';
-  if (progLbl)  progLbl.textContent  = QUESTIONS.length + ' / ' + QUESTIONS.length;
+  const question=document.getElementById('quiz-question');
+  const results=document.getElementById('quiz-results');
+  if(question) question.style.display='none';
+  if(results)  results.style.display='flex';
+  const pct=score/QUESTIONS.length;
+  let level,title;
+  if(pct===1)      {level='Intermedio Alto (B1+)';title='¡Puntaje Perfecto! 🏆';}
+  else if(pct>=.8) {level='Intermedio (B1)';      title='¡Excelente trabajo! 🎉';}
+  else if(pct>=.6) {level='Pre-Intermedio (A2+)'; title='¡Buen esfuerzo! 💪';}
+  else if(pct>=.4) {level='Básico (A2)';           title='¡Sigue practicando! 📚';}
+  else             {level='Principiante (A1)';      title='¡Aquí comienza tu viaje! 🌱';}
+  const rTitle=document.getElementById('r-title');
+  const rScore=document.getElementById('r-score');
+  const rCorrect=document.getElementById('r-correct');
+  const rLevel=document.getElementById('r-level');
+  const progFill=document.getElementById('q-prog-fill');
+  const progLbl=document.getElementById('q-prog-label');
+  if(rTitle)   rTitle.textContent   = title;
+  if(rScore)   rScore.textContent   = score+'/'+QUESTIONS.length;
+  if(rCorrect) rCorrect.textContent = score+' de '+QUESTIONS.length;
+  if(rLevel)   rLevel.textContent   = level;
+  if(progFill) progFill.style.width = '100%';
+  if(progLbl)  progLbl.textContent  = QUESTIONS.length+' / '+QUESTIONS.length;
 }
 </script>
 </body>
