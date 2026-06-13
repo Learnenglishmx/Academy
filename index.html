@@ -21,7 +21,16 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
 .screen{display:none;min-height:100vh;flex-direction:column}
 .screen.active{display:flex}
 @keyframes owlBob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-7px) rotate(2deg)}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}   
+/* ═══ ANIMACIÓN DE PARPADEO DEL BÚHO ═══ */
+@keyframes buhoParpadeo {
+  0%, 96%, 100% { transform: scaleY(1); }
+  98% { transform: scaleY(0.1); }
+}
+.hero-owl img, .owl-hero-lg img, .q-owl-intro img, .r-owl img, .owl-login img {
+  animation: buhoParpadeo 5s infinite ease-in-out;
+  transform-origin: center;
+}
 
 /* ═══ SHARED OWL CIRCLES ═══ */
 .owl-circ{border-radius:50%;overflow:hidden;background:#1a2444;display:flex;align-items:center;justify-content:center}
