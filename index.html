@@ -781,27 +781,6 @@ function showResults() {
   if (progFill) progFill.style.width = '100%';
   if (progLbl)  progLbl.textContent  = QUESTIONS.length + ' / ' + QUESTIONS.length;
 }
-/* ══════════ ANIMACIÓN COMPLETA DE PARPADEO REALISTA ══════════ */
-function iniciarParpadeoBuho() {
-  // Intervalo continuo cada 5 segundos (5000 milisegundos)
-  setInterval(() => {
-    // Seleccionamos todas las imágenes de la mascota en la página
-    const avatares = document.querySelectorAll('img[src*="101.png"], img[src*="101-closed.png"]');
-    
-    avatares.forEach(img => {
-      // Cambia a la imagen de ojos cerrados
-      img.src = "101-closed.png";
-      
-      // Tras 150 milisegundos (lo que dura un pestaña de verdad), vuelve a abrirlos
-      setTimeout(() => {
-        img.src = "101.png";
-      }, 150);
-    });
-  }, 5000);
-}
-
-// Ejecutamos la función en cuanto la página termine de cargar
-window.addEventListener('DOMContentLoaded', iniciarParpadeoBuho);
 </script>
 </body>
 </html>
