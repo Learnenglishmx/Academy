@@ -27,6 +27,26 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
 .owl-circ{border-radius:50%;overflow:hidden;background:#1a2444;display:flex;align-items:center;justify-content:center}
 .owl-circ img{width:95%;height:95%;object-fit:contain}
 
+/* ══════════ OWL BLINK ══════════ */
+@keyframes owlBlink {
+  0%, 87%, 100% { transform: scaleY(0); }
+  92%           { transform: scaleY(1); }
+  97%           { transform: scaleY(0); }
+}
+.owl-blink-l,
+.owl-blink-r {
+  position: absolute;
+  background: #1a2b52;
+  border-radius: 50%;
+  pointer-events: none;
+  transform-origin: top center;
+  transform: scaleY(0);
+  animation: owlBlink 5s ease-in-out infinite;
+  z-index: 10;
+}
+.owl-blink-l { left: 16%; top: 28%; width: 31%; height: 34%; }
+.owl-blink-r { left: 53%; top: 28%; width: 31%; height: 34%; }
+
 /* ═══ TOAST ═══ */
 #toast{position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-20px);background:var(--navy);color:#fff;padding:14px 24px;border-radius:16px;font-size:.9rem;font-weight:600;box-shadow:0 6px 20px rgba(0,0,0,.25);z-index:9999;opacity:0;pointer-events:none;transition:all .3s;text-align:center;max-width:360px;line-height:1.5}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -58,7 +78,7 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
 ══════════════════════════════════════ */
 #screen-lock{background:linear-gradient(160deg,#eaffd0 0%,#d0f0ff 45%,#e8eeff 100%);justify-content:center;align-items:center}
 .login-box{background:var(--white);border-radius:24px;padding:44px 40px 40px;width:100%;max-width:420px;box-shadow:0 8px 0 var(--shadow),0 20px 50px rgba(0,0,0,.1);text-align:center;border:2px solid var(--border)}
-.owl-login{width:110px;height:110px;margin:0 auto 20px;box-shadow:0 6px 0 var(--navy-mid),0 0 0 5px #eaffd0,0 0 0 9px #d4f7a0 }
+.owl-login{width:110px;height:110px;margin:0 auto 20px;box-shadow:0 6px 0 var(--navy-mid),0 0 0 5px #eaffd0,0 0 0 9px #d4f7a0}
 .login-box h2{font-size:1.75rem;font-weight:800;color:var(--navy);margin-bottom:6px}
 .login-box .sub{color:var(--mid);font-size:.9rem;margin-bottom:28px}
 .inp-g{position:relative;margin-bottom:16px}
@@ -76,13 +96,7 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
 ══════════════════════════════════════ */
 #screen-demo-page{background:linear-gradient(180deg,#eaffd0 0%,#f7f7f7 260px)}
 .demo-hero{display:flex;flex-direction:column;align-items:center;text-align:center;padding:44px 24px 32px;animation:fadeUp .5s ease}
-.demo-hero .owl-hero-lg {
-  width: 130px;
-  height: 130px;
-  box-shadow: 0 8px 0 #0d1530, 0 0 0 8px #eaffd0, 0 0 0 13px rgba(88,204,2,.2);
-  margin-bottom: 22px;
-  animation: none !important; /* <--- Cambiado aquí para eliminar el rebote */
-} 
+.demo-hero .owl-hero-lg{width:130px;height:130px;box-shadow:0 8px 0 #0d1530,0 0 0 8px #eaffd0,0 0 0 13px rgba(88,204,2,.2);margin-bottom:22px;animation:none !important}
 .demo-free-badge{background:var(--blue);color:#fff;font-size:.72rem;font-weight:700;padding:4px 14px;border-radius:20px;letter-spacing:1.2px;box-shadow:0 3px 0 var(--blue-dk);margin-bottom:12px}
 .demo-hero h1{font-size:2rem;font-weight:800;color:var(--navy);margin-bottom:8px;line-height:1.2}
 .demo-hero p{color:var(--mid);font-size:.95rem;max-width:500px}
@@ -134,13 +148,7 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
 ══════════════════════════════════════ */
 #screen-dash{background:var(--bg)}
 .dash-hero{display:flex;flex-direction:column;align-items:center;text-align:center;padding:44px 24px 36px}
-.hero-owl {
-  width: 120px;
-  height: 120px;
-  box-shadow: 0 8px 0 #0d1530, 0 0 0 8px #eaffd0, 0 0 0 13px rgba(88,204,2,.18);
-  margin-bottom: 24px;
-  animation: none !important; /* <--- Cambiado aquí para eliminar el rebote */
-}
+.hero-owl{width:120px;height:120px;box-shadow:0 8px 0 #0d1530,0 0 0 8px #eaffd0,0 0 0 13px rgba(88,204,2,.18);margin-bottom:24px;animation:none !important}
 .dash-greeting{font-size:.8rem;font-weight:700;color:var(--green);letter-spacing:1.5px;margin-bottom:8px;text-transform:uppercase}
 .dash-hero h1{font-size:1.9rem;font-weight:800;color:var(--navy);margin-bottom:8px;line-height:1.2}
 .dash-hero p{color:var(--mid);font-size:.95rem}
@@ -273,8 +281,8 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
 ══════════════════════════════════════ -->
 <div id="screen-lock" class="screen active">
   <div class="login-box">
-    <div class="owl-circ owl-login" style="width: 110px; height: 110px; box-shadow: 0 6px 0 var(--navy-mid), 0 0 0 5px #eaffd0, 0 0 0 9px #d4f7a0; margin: 0 auto 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #58cc02; overflow: hidden;">
-      <img src="101.png" alt="Mascota" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+    <div class="owl-circ owl-login" style="width:110px;height:110px;box-shadow:0 6px 0 var(--navy-mid),0 0 0 5px #eaffd0,0 0 0 9px #d4f7a0;margin:0 auto 20px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#58cc02;overflow:hidden;">
+      <img src="101.png" alt="Mascota" style="width:100%;height:100%;object-fit:cover;display:block;">
     </div>
     <h2>LearnEnglish Academy</h2>
     <p class="sub">Introduce tu clave de acceso para ingresar al portal educativo.</p>
@@ -302,11 +310,15 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
 <div id="screen-demo-page" class="screen">
   <nav class="navbar">
     <span class="nav-logo">LearnEnglish<span>.com</span></span>
-<div class="owl-circ nav-owl" style="width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #58cc02; overflow: hidden;"> <img src="101.png" alt="Mascota" style="width: 100%; height: 100%; object-fit: cover; display: block;"> </div>
+    <div class="owl-circ nav-owl" style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#58cc02;overflow:hidden;">
+      <img src="101.png" alt="Mascota" style="width:100%;height:100%;object-fit:cover;display:block;">
+    </div>
   </nav>
 
   <div class="demo-hero">
-<div class="owl-circ hero-owl" style="width: 120px; height: 120px; box-shadow: 0 8px 0 #0d1530, 0 0 0 8px #eaffd0, 0 0 0 13px rgba(88,204,2,.18); margin-bottom: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #58cc02; overflow: hidden;"> <img src="101.png" alt="Mascota" style="width: 100%; height: 100%; object-fit: cover; display: block;"> </div>
+    <div class="owl-circ hero-owl" style="width:120px;height:120px;box-shadow:0 8px 0 #0d1530,0 0 0 8px #eaffd0,0 0 0 13px rgba(88,204,2,.18);margin-bottom:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#58cc02;overflow:hidden;">
+      <img src="101.png" alt="Mascota" style="width:100%;height:100%;object-fit:cover;display:block;">
+    </div>
     <div class="demo-free-badge">✦ ACCESO GRATUITO</div>
     <h1>Demo LearnEnglish</h1>
     <p>Explora una muestra de nuestro portal educativo. Descubre el video, practica vocabulario y pon a prueba tu nivel.</p>
@@ -379,10 +391,9 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
     <div class="enroll-banner">
       <h3>🎓 ¿Te gustó la Demo?</h3>
       <p>Obtén acceso completo a las 5 Guías Interactivas, todos los videos y recursos multimedia. ¡Habla con tu asesor hoy!</p>
-<a href="https://walink.co/zcdrsd" target="_blank" rel="noopener noreferrer" style="display: block; width: 100%; background-color: #25D366; color: white; text-align: center; padding: 15px; border-radius: 12px; font-size: 1.1rem; font-weight: bold; text-decoration: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-top: 15px; box-sizing: border-box;">
-  🔑 ¡Inscribirme a la Academia Completa!
-</a>
-
+      <a href="https://walink.co/zcdrsd" target="_blank" rel="noopener noreferrer" style="display:block;width:100%;background-color:#25D366;color:white;text-align:center;padding:15px;border-radius:12px;font-size:1.1rem;font-weight:bold;text-decoration:none;box-shadow:0 4px 6px rgba(0,0,0,0.1);margin-top:15px;box-sizing:border-box;">
+        🔑 ¡Inscribirme a la Academia Completa!
+      </a>
     </div>
 
   </div>
@@ -398,12 +409,14 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
 <div id="screen-dash" class="screen">
   <nav class="navbar">
     <span class="nav-logo">LearnEnglish<span>.com</span></span>
-    <div class="owl-circ nav-owl" style="width:44px;height:44px"><img src="101.png" alt="Mascota"></div>
+    <div class="owl-circ nav-owl" style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#58cc02;overflow:hidden;">
+      <img src="101.png" alt="Mascota" style="width:100%;height:100%;object-fit:cover;display:block;">
+    </div>
   </nav>
   <div class="dash-hero">
-<div class="owl-circ hero-owl" style="width: 120px; height: 120px; box-shadow: 0 8px 0 #0d1530, 0 0 0 8px #eaffd0, 0 0 0 13px rgba(88,204,2,.18); margin-bottom: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #58cc02; overflow: hidden;">
-  <img src="101.png" alt="Mascota" style="width: 100%; height: 100%; object-fit: cover; display: block;">
-</div>
+    <div class="owl-circ hero-owl" style="width:120px;height:120px;box-shadow:0 8px 0 #0d1530,0 0 0 8px #eaffd0,0 0 0 13px rgba(88,204,2,.18);margin-bottom:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#58cc02;overflow:hidden;">
+      <img src="101.png" alt="Mascota" style="width:100%;height:100%;object-fit:cover;display:block;">
+    </div>
     <div class="dash-greeting">¡Bienvenido de vuelta!</div>
     <h1>¡Hola, Estudiante!<br>¿Qué te gustaría practicar hoy?</h1>
     <p>Elige una sección para comenzar tu sesión de estudio</p>
@@ -442,7 +455,9 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
 <div id="screen-guides" class="screen">
   <nav class="navbar">
     <span class="nav-logo">LearnEnglish<span>.com</span></span>
-    <div class="owl-circ nav-owl" style="width:44px;height:44px"><img src="101.png" alt="Mascota"></div>
+    <div class="owl-circ nav-owl" style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#58cc02;overflow:hidden;">
+      <img src="101.png" alt="Mascota" style="width:100%;height:100%;object-fit:cover;display:block;">
+    </div>
   </nav>
   <div class="sec-header">
     <div class="sec-badge">✦ GUÍAS INTERACTIVAS</div>
@@ -463,7 +478,12 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
   SCREEN 5 · VIDEOS
 ══════════════════════════════════════ -->
 <div id="screen-videos" class="screen">
-  <nav class="navbar"><span class="nav-logo">LearnEnglish<span>.com</span></span><div class="owl-circ nav-owl" style="width:44px;height:44px"><img src="101.png" alt="Mascota"></div></nav>
+  <nav class="navbar">
+    <span class="nav-logo">LearnEnglish<span>.com</span></span>
+    <div class="owl-circ nav-owl" style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#58cc02;overflow:hidden;">
+      <img src="101.png" alt="Mascota" style="width:100%;height:100%;object-fit:cover;display:block;">
+    </div>
+  </nav>
   <div class="sec-header"><div class="sec-badge" style="background:#6366f1;box-shadow:0 3px 0 #4f46e5">✦ VIDEOS EDUCATIVOS</div><h2>Lecciones en Video</h2><p>Aprende con explicaciones visuales y ejemplos en video</p></div>
   <div class="coming-wrap"><div class="coming-icon" style="background:#eef2ff;color:#6366f1;box-shadow:0 6px 0 #a5a8f0"><i class="fa-solid fa-circle-play"></i></div><h3>¡Próximamente!</h3><p>Estamos produciendo videos educativos de alta calidad para complementar tus guías de estudio.</p><div class="coming-chips"><div class="chip">🎬 Verb Conjugation</div><div class="chip">🕐 Tense Timelines</div><div class="chip">📝 Noun Rules</div><div class="chip">👤 Pronoun Practice</div><div class="chip">✨ Adjective Order</div></div></div>
   <button class="back-btn" onclick="goTo('screen-dash')"><i class="fa-solid fa-arrow-left"></i> Volver al Menú Principal</button>
@@ -473,7 +493,12 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
   SCREEN 6 · MULTIMEDIA
 ══════════════════════════════════════ -->
 <div id="screen-multi" class="screen">
-  <nav class="navbar"><span class="nav-logo">LearnEnglish<span>.com</span></span><div class="owl-circ nav-owl" style="width:44px;height:44px"><img src="101.png" alt="Mascota"></div></nav>
+  <nav class="navbar">
+    <span class="nav-logo">LearnEnglish<span>.com</span></span>
+    <div class="owl-circ nav-owl" style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#58cc02;overflow:hidden;">
+      <img src="101.png" alt="Mascota" style="width:100%;height:100%;object-fit:cover;display:block;">
+    </div>
+  </nav>
   <div class="sec-header"><div class="sec-badge" style="background:#f59e0b;box-shadow:0 3px 0 #d97706">✦ MULTIMEDIA</div><h2>Recursos Interactivos</h2><p>Juegos y actividades para practicar mientras te diviertes</p></div>
   <div class="coming-wrap"><div class="coming-icon" style="background:#fff7ed;color:#f59e0b;box-shadow:0 6px 0 #f0c060"><i class="fa-solid fa-gamepad"></i></div><h3>¡En Construcción!</h3><p>Estamos diseñando flashcards, mini-juegos y actividades interactivas para aprender divirtiéndote.</p><div class="coming-chips"><div class="chip">🃏 Flashcards</div><div class="chip">🎯 Word Match</div><div class="chip">🧩 Fill the Gap</div><div class="chip">🔊 Pronunciation</div><div class="chip">⚡ Speed Quiz</div></div></div>
   <button class="back-btn" onclick="goTo('screen-dash')"><i class="fa-solid fa-arrow-left"></i> Volver al Menú Principal</button>
@@ -483,11 +508,18 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
   SCREEN 7 · QUIZ
 ══════════════════════════════════════ -->
 <div id="screen-quiz" class="screen">
-  <nav class="navbar"><span class="nav-logo">LearnEnglish<span>.com</span></span><div class="owl-circ nav-owl" style="width:44px;height:44px"><img src="101.png" alt="Mascota"></div></nav>
+  <nav class="navbar">
+    <span class="nav-logo">LearnEnglish<span>.com</span></span>
+    <div class="owl-circ nav-owl" style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#58cc02;overflow:hidden;">
+      <img src="101.png" alt="Mascota" style="width:100%;height:100%;object-fit:cover;display:block;">
+    </div>
+  </nav>
   <div class="quiz-wrap">
     <!-- INTRO -->
     <div id="quiz-intro" class="quiz-intro">
-      <div class="owl-circ q-owl-intro" style="width:110px;height:110px"><img src="101.png" alt="Mascota"></div>
+      <div class="owl-circ q-owl-intro" style="width:110px;height:110px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#58cc02;overflow:hidden;">
+        <img src="101.png" alt="Mascota" style="width:100%;height:100%;object-fit:cover;display:block;">
+      </div>
       <h2>¡Desafío de Pronombres!</h2>
       <p>Descubre tu nivel de inglés con esta evaluación de 5 preguntas y recibe tu plan de estudio personalizado.</p>
       <button class="btn-start" onclick="startQuiz()">¡Comenzar Evaluación! 🚀</button>
@@ -507,7 +539,9 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
     </div>
     <!-- RESULTS -->
     <div id="quiz-results" class="q-results" style="display:none">
-      <div class="owl-circ r-owl" style="width:120px;height:120px"><img src="101.png" alt="Mascota"></div>
+      <div class="owl-circ r-owl" style="width:120px;height:120px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#58cc02;overflow:hidden;">
+        <img src="101.png" alt="Mascota" style="width:100%;height:100%;object-fit:cover;display:block;">
+      </div>
       <div class="sec-badge" style="margin-bottom:12px">📋 INFORME OFICIAL DE DIAGNÓSTICO</div>
       <h2 style="font-size:1.6rem;font-weight:800;color:var(--navy);margin-bottom:6px" id="r-title"></h2>
       <p style="color:var(--mid);margin-bottom:24px">Aquí tienes tu reporte personalizado</p>
@@ -525,7 +559,9 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
         <div class="rm-item"><div class="rm-dot m2">M2</div><div class="rm-text"><h4>Mes 2 — Gramática Aplicada</h4><p>Verbos en presente y pasado simple, sustantivos y adjetivos en contexto. Conversaciones básicas.</p></div></div>
         <div class="rm-item"><div class="rm-dot m3">M3</div><div class="rm-text"><h4>Mes 3 — Fluidez y Práctica</h4><p>Tiempos verbales avanzados, comprensión auditiva y producción escrita de nivel intermedio.</p></div></div>
       </div>
-<a href=" https://walink.co/zcdrsd " target="_blank" rel="noopener noreferrer" style="display: block; width: 100%; max-width: 350px; margin: 20px auto 0 auto; background-color: #25D366; color: white; text-align: center; padding: 15px; border-radius: 12px; font-size: 1.1rem; font-weight: bold; text-decoration: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1); box-sizing: border-box;"> 🎁 ¡Reclamar Mi Descuento Aquí! </a>
+      <a href="https://walink.co/zcdrsd" target="_blank" rel="noopener noreferrer" style="display:block;width:100%;max-width:350px;margin:20px auto 0 auto;background-color:#25D366;color:white;text-align:center;padding:15px;border-radius:12px;font-size:1.1rem;font-weight:bold;text-decoration:none;box-shadow:0 4px 6px rgba(0,0,0,0.1);box-sizing:border-box;">
+        🎁 ¡Reclamar Mi Descuento Aquí!
+      </a>
     </div>
   </div>
   <button class="back-btn" id="quiz-back-btn" onclick="quizBack()"><i class="fa-solid fa-arrow-left"></i> Volver al Menú Principal</button>
@@ -581,29 +617,31 @@ function goTo(id) {
   document.querySelectorAll('.screen').forEach(function(s) {
     s.classList.remove('active');
   });
-  const target = document.getElementById(id);
+  var target = document.getElementById(id);
   if (target) target.classList.add('active');
   window.scrollTo(0, 0);
   if (id === 'screen-guides') {
     setTimeout(function() {
       document.querySelectorAll('.prog-fill').forEach(function(el) {
-        const fw = getComputedStyle(el).getPropertyValue('--fw').trim();
+        var fw = getComputedStyle(el).getPropertyValue('--fw').trim();
         if (fw) el.style.width = fw;
       });
     }, 300);
   }
+  /* Re-inicializar parpadeo por si la pantalla activa tiene búhos nuevos */
+  setTimeout(initOwlBlink, 50);
 }
 
 /* ══════════ AUTH ══════════ */
 function checkPwd() {
-  const v = document.getElementById('pwd').value;
-  const e = document.getElementById('err-msg');
+  var v = document.getElementById('pwd').value;
+  var e = document.getElementById('err-msg');
   if (v === 'InglesOmar2024') {
     e.style.display = 'none';
     goTo('screen-dash');
   } else {
     e.style.display = 'block';
-    const box = document.querySelector('.login-box');
+    var box = document.querySelector('.login-box');
     [0,1,2,3].forEach(function(_,i) {
       setTimeout(function() {
         box.style.transform = i % 2 === 0 ? 'translateX(-6px)' : 'translateX(6px)';
@@ -641,7 +679,7 @@ function enrollClick() {
 
 /* ══════════ TOAST ══════════ */
 function showToast(msg) {
-  const t = document.getElementById('toast');
+  var t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
   setTimeout(function() { t.classList.remove('show'); }, 4000);
@@ -650,10 +688,10 @@ function showToast(msg) {
 /* ══════════ QUIZ LOGIC ══════════ */
 function resetQuiz() {
   qIndex = 0; score = 0; selected = null; answered = false;
-  const intro    = document.getElementById('quiz-intro');
-  const question = document.getElementById('quiz-question');
-  const results  = document.getElementById('quiz-results');
-  const btnCheck = document.getElementById('btn-check');
+  var intro    = document.getElementById('quiz-intro');
+  var question = document.getElementById('quiz-question');
+  var results  = document.getElementById('quiz-results');
+  var btnCheck = document.getElementById('btn-check');
   if (intro)    intro.style.display    = 'flex';
   if (question) question.style.display = 'none';
   if (results)  results.style.display  = 'none';
@@ -662,9 +700,9 @@ function resetQuiz() {
 
 function startQuiz() {
   qIndex = 0; score = 0;
-  const intro    = document.getElementById('quiz-intro');
-  const question = document.getElementById('quiz-question');
-  const results  = document.getElementById('quiz-results');
+  var intro    = document.getElementById('quiz-intro');
+  var question = document.getElementById('quiz-question');
+  var results  = document.getElementById('quiz-results');
   if (intro)    intro.style.display    = 'none';
   if (results)  results.style.display  = 'none';
   if (question) question.style.display = 'block';
@@ -672,17 +710,17 @@ function startQuiz() {
 }
 
 function renderQuestion() {
-  const q = QUESTIONS[qIndex];
+  var q = QUESTIONS[qIndex];
   selected = null; answered = false;
 
-  const qNum      = document.getElementById('q-num');
-  const qText     = document.getElementById('q-text');
-  const qHint     = document.getElementById('q-hint');
-  const qProgLbl  = document.getElementById('q-prog-label');
-  const qProgFill = document.getElementById('q-prog-fill');
-  const fb        = document.getElementById('q-feedback');
-  const chk       = document.getElementById('btn-check');
-  const opts      = document.getElementById('q-options');
+  var qNum      = document.getElementById('q-num');
+  var qText     = document.getElementById('q-text');
+  var qHint     = document.getElementById('q-hint');
+  var qProgLbl  = document.getElementById('q-prog-label');
+  var qProgFill = document.getElementById('q-prog-fill');
+  var fb        = document.getElementById('q-feedback');
+  var chk       = document.getElementById('btn-check');
+  var opts      = document.getElementById('q-options');
 
   if (qNum)     qNum.textContent  = 'Pregunta ' + (qIndex + 1) + ' de ' + QUESTIONS.length;
   if (qText)    qText.innerHTML   = q.text;
@@ -696,7 +734,7 @@ function renderQuestion() {
   if (opts) {
     opts.innerHTML = '';
     q.options.forEach(function(opt) {
-      const b = document.createElement('button');
+      var b = document.createElement('button');
       b.className = 'q-opt';
       b.textContent = opt;
       b.onclick = function() { selectOpt(b, opt); };
@@ -710,16 +748,16 @@ function selectOpt(btn, val) {
   selected = val;
   document.querySelectorAll('.q-opt').forEach(function(b) { b.classList.remove('selected'); });
   btn.classList.add('selected');
-  const chk = document.getElementById('btn-check');
+  var chk = document.getElementById('btn-check');
   if (chk) chk.classList.add('ready');
 }
 
 function checkAnswer() {
   if (!selected || answered) return;
   answered = true;
-  const q   = QUESTIONS[qIndex];
-  const fb  = document.getElementById('q-feedback');
-  const chk = document.getElementById('btn-check');
+  var q   = QUESTIONS[qIndex];
+  var fb  = document.getElementById('q-feedback');
+  var chk = document.getElementById('btn-check');
 
   document.querySelectorAll('.q-opt').forEach(function(b) {
     b.disabled = true;
@@ -745,7 +783,7 @@ function checkAnswer() {
 function nextQuestion() {
   qIndex++;
   if (qIndex < QUESTIONS.length) {
-    const chk = document.getElementById('btn-check');
+    var chk = document.getElementById('btn-check');
     if (chk) chk.onclick = checkAnswer;
     renderQuestion();
   } else {
@@ -754,25 +792,25 @@ function nextQuestion() {
 }
 
 function showResults() {
-  const question = document.getElementById('quiz-question');
-  const results  = document.getElementById('quiz-results');
+  var question = document.getElementById('quiz-question');
+  var results  = document.getElementById('quiz-results');
   if (question) question.style.display = 'none';
   if (results)  results.style.display  = 'flex';
 
-  const pct = score / QUESTIONS.length;
-  let level, title;
+  var pct = score / QUESTIONS.length;
+  var level, title;
   if (pct === 1)     { level = 'Intermedio Alto (B1+)'; title = '¡Puntaje Perfecto! 🏆'; }
   else if (pct >= .8){ level = 'Intermedio (B1)';       title = '¡Excelente trabajo! 🎉'; }
   else if (pct >= .6){ level = 'Pre-Intermedio (A2+)';  title = '¡Buen esfuerzo! 💪'; }
   else if (pct >= .4){ level = 'Básico (A2)';            title = '¡Sigue practicando! 📚'; }
   else               { level = 'Principiante (A1)';      title = '¡Aquí comienza tu viaje! 🌱'; }
 
-  const rTitle   = document.getElementById('r-title');
-  const rScore   = document.getElementById('r-score');
-  const rCorrect = document.getElementById('r-correct');
-  const rLevel   = document.getElementById('r-level');
-  const progFill = document.getElementById('q-prog-fill');
-  const progLbl  = document.getElementById('q-prog-label');
+  var rTitle   = document.getElementById('r-title');
+  var rScore   = document.getElementById('r-score');
+  var rCorrect = document.getElementById('r-correct');
+  var rLevel   = document.getElementById('r-level');
+  var progFill = document.getElementById('q-prog-fill');
+  var progLbl  = document.getElementById('q-prog-label');
 
   if (rTitle)   rTitle.textContent   = title;
   if (rScore)   rScore.textContent   = score + '/' + QUESTIONS.length;
@@ -780,7 +818,25 @@ function showResults() {
   if (rLevel)   rLevel.textContent   = level;
   if (progFill) progFill.style.width = '100%';
   if (progLbl)  progLbl.textContent  = QUESTIONS.length + ' / ' + QUESTIONS.length;
+
+  /* Inyectar parpadeo en el búho de resultados recién visible */
+  setTimeout(initOwlBlink, 50);
 }
+
+/* ══════════ OWL BLINK ══════════ */
+function initOwlBlink() {
+  document.querySelectorAll('.owl-circ').forEach(function(owl) {
+    if (owl.querySelector('.owl-blink-l')) return; /* evita duplicados */
+    owl.style.position = 'relative';
+    ['owl-blink-l', 'owl-blink-r'].forEach(function(cls) {
+      var d = document.createElement('div');
+      d.className = cls;
+      owl.appendChild(d);
+    });
+  });
+}
+
+document.addEventListener('DOMContentLoaded', initOwlBlink);
 </script>
 </body>
 </html>
