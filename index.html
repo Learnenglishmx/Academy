@@ -513,59 +513,281 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
   <button class="back-btn" id="quiz-back-btn" onclick="quizBack()"><i class="fa-solid fa-arrow-left"></i> Volver al Menú Principal</button>
 </div>
 
-    <!-- ========================================================================= -->
-    <!-- SCRIPT DE CONTROL CORREGIDO - ENTORNO LIVE (COMPATIBLE CON CELULARES)     -->
-    <!-- ========================================================================= -->
-    <script>
-        // 1. Simulación limpia del desbloqueo (Usa localStorage nativo del celular)
-        function verificarAcceso() {
-            const nombreInput = document.getElementById('inputNombre'); 
-            const claveInput = document.getElementById('inputClave');   
-            const errorMsg = document.getElementById('mensajeError');
-            
-            if (!nombreInput || !claveInput) return; 
+<script>
+/* ══════════ FLASHCARD DATA ══════════ */
+const CARDS = [
+  { label:'Pronombre Personal', word:'I / You / He', def:'"I" = yo · "You" = tú/usted · "He" = él\nSon los sujetos de la oración.' },
+  { label:'Pronombre Personal', word:'She / It / We', def:'"She" = ella · "It" = eso/él/ella (objeto) · "We" = nosotros' },
+  { label:'Pronombre Personal', word:'They / You (pl.)', def:'"They" = ellos/ellas · "You" también funciona como plural (ustedes).' },
+  { label:'Pronombre Posesivo', word:'My / Your / His', def:'"My" = mi · "Your" = tu/su · "His" = su (de él)' },
+  { label:'Pronombre Posesivo', word:'Her / Its / Our', def:'"Her" = su (de ella) · "Its" = su (de cosa) · "Our" = nuestro' },
+  { label:'Pronombre de Objeto', word:'Me / Him / Her', def:'"Me" = a mí · "Him" = a él · "Her" = a ella\nVan después del verbo.' },
+];
+let fcIdx = 0;
 
-            const nombre = nombreInput.value.trim();
-            const clave = claveInput.value.trim();
+function renderCard() {
+  const c = CARDS[fcIdx];
+  const card = document.getElementById('fc-card');
+  card.style.opacity = '0';
+  setTimeout(function() {
+    document.getElementById('fc-label').textContent = c.label;
+    document.getElementById('fc-word').textContent  = c.word;
+    document.getElementById('fc-def').textContent   = c.def;
+    card.style.opacity = '1';
+  }, 150);
+  const dots = document.getElementById('fc-dots');
+  dots.innerHTML = CARDS.map(function(_,i) {
+    return '<div class="fc-dot ' + (i===fcIdx ? 'active' : '') + '"></div>';
+  }).join('');
+}
 
-            // Reemplaza "alumno123" por la contraseña que quieras usar para tus estudiantes
-            if (nombre !== "" && clave === "alumno123") {
-                if (errorMsg) errorMsg.style.display = 'none';
-                
-                // Guarda la sesión en el teléfono para evitar congelamientos de red
-                localStorage.setItem('usuarioLogueado', nombre);
-                
-                // Oculta la pantalla de acceso y despliega el menú de la escuela
-                const loginDiv = document.getElementById('seccionLogin') || document.querySelector('.login-container');
-                const menuDiv = document.getElementById('seccionMenu') || document.querySelector('.menu-container');
-                
-                if (loginDiv) loginDiv.style.display = 'none';
-                if (menuDiv) menuDiv.style.display = 'block';
-            } else {
-                if (errorMsg) errorMsg.style.display = 'block';
-            }
-        }
+function fcNav(dir) {
+  fcIdx = (fcIdx + dir + CARDS.length) % CARDS.length;
+  renderCard();
+}
 
-        // 2. Redirección segura a tu Bot de WhatsApp (Corregido con la ruta /webhook interna)
-        function contactarAsesor() {
-            // Pon aquí tu número de WhatsApp real con la clave de país de México (52) o el de tu negocio
-            const telefonoConfigurado = "5215500000000"; 
-            
-            // Este es el mensaje exacto que tu archivo index.js de Render configuró como disparador
-            const mensajeDisparador = "¡Hola, LearnEnglish.com! ¿Me dan informes del curso completo para hablar fluido?";
-            const mensajeEncriptado = encodeURIComponent(mensajeDisparador);
-            
-            // Enlace nativo oficial que abre WhatsApp directamente en teléfonos Android y iPhone
-            const urlSeguraWhatsapp = `https://wa.me{telefonoConfigurado}?text=${mensajeEncriptado}`;
-            window.open(urlSeguraWhatsapp, '_blank');
-        }
+/* ══════════ QUIZ DATA ══════════ */
+const QUESTIONS = [
+  { text:'<span class="q-blank">___</span> am learning English every day.', hint:'Elige el pronombre de sujeto correcto para la primera persona singular.', options:['He','I','They','We'], answer:'I' },
+  { text:'This is <span class="q-blank">___</span> book. I bought it yesterday.', hint:'Selecciona el pronombre posesivo correcto.', options:['my','me','I','mine'], answer:'my' },
+  { text:'<span class="q-blank">___</span> are going to the park this afternoon.', hint:'Pronombre de sujeto para segunda persona.', options:['She','He','You','It'], answer:'You' },
+  { text:'The dog lost <span class="q-blank">___</span> toy in the garden.', hint:'Pronombre posesivo para tercera persona singular (cosa/animal).', options:['his','her','its','their'], answer:'its' },
+  { text:'Maria called <span class="q-blank">___</span> last night. We talked for an hour.', hint:'Pronombre de objeto para primera persona singular.', options:['I','me','my','mine'], answer:'me' }
+];
 
-        // 3. Inicializadores del DOM de tu proyecto
-        document.addEventListener('DOMContentLoaded', function() {
-            if (typeof initOwlBlink === 'function') initOwlBlink();
-            if (typeof updateStudentNameDisplay === 'function') updateStudentNameDisplay();
-        });
-    </script>
+let qIndex = 0, score = 0, selected = null, answered = false;
+let quizFromDemo = false;
+
+/* ══════════ NAV ══════════ */
+function goTo(id) {
+  document.querySelectorAll('.screen').forEach(function(s) {
+    s.classList.remove('active');
+  });
+  var target = document.getElementById(id);
+  if (target) target.classList.add('active');
+  window.scrollTo(0, 0);
+  if (id === 'screen-guides') {
+    setTimeout(function() {
+      document.querySelectorAll('.prog-fill').forEach(function(el) {
+        var fw = getComputedStyle(el).getPropertyValue('--fw').trim();
+        if (fw) el.style.width = fw;
+      });
+    }, 300);
+  }
+  setTimeout(initOwlBlink, 50);
+}
+
+/* ══════════ AUTH ══════════ */
+function checkPwd() {
+  var user = document.getElementById('username').value;
+  var pass = document.getElementById('pwd').value;
+  var e = document.getElementById('err-msg');
+  if (pass === 'InglesOmar2024' && user !== "") {
+    e.style.display = 'none';
+    localStorage.setItem('learnEnglishStudentName', user);
+    updateStudentNameDisplay();
+    goTo('screen-dash');
+  } else {
+    e.style.display = 'block';
+    var box = document.querySelector('.login-box');
+    [0,1,2,3].forEach(function(_,i) {
+      setTimeout(function() {
+        box.style.transform = i % 2 === 0 ? 'translateX(-6px)' : 'translateX(6px)';
+      }, i * 80);
+    });
+    setTimeout(function() { box.style.transform = 'none'; }, 340);
+  }
+}
+
+function enterDemo() {
+  renderCard();
+  goTo('screen-demo-page');
+}
+
+/* ══════════ QUIZ LAUNCHERS ══════════ */
+function launchQuizFromDemo() {
+  quizFromDemo = true;
+  resetQuiz();
+  goTo('screen-quiz');
+}
+function launchQuizFromDash() {
+  quizFromDemo = false;
+  resetQuiz();
+  goTo('screen-quiz');
+}
+function quizBack() {
+  resetQuiz();
+  goTo(quizFromDemo ? 'screen-demo-page' : 'screen-dash');
+}
+
+/* ══════════ TOAST ══════════ */
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(function() { t.classList.remove('show'); }, 4000);
+}
+
+/* ══════════ QUIZ LOGIC ══════════ */
+function resetQuiz() {
+  qIndex = 0; score = 0; selected = null; answered = false;
+  var intro    = document.getElementById('quiz-intro');
+  var question = document.getElementById('quiz-question');
+  var results  = document.getElementById('quiz-results');
+  var btnCheck = document.getElementById('btn-check');
+  if (intro)    intro.style.display    = 'flex';
+  if (question) question.style.display = 'none';
+  if (results)  results.style.display  = 'none';
+  if (btnCheck) btnCheck.onclick = checkAnswer;
+}
+
+function startQuiz() {
+  qIndex = 0; score = 0;
+  var intro    = document.getElementById('quiz-intro');
+  var question = document.getElementById('quiz-question');
+  var results  = document.getElementById('quiz-results');
+  if (intro)    intro.style.display    = 'none';
+  if (results)  results.style.display  = 'none';
+  if (question) question.style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  var q = QUESTIONS[qIndex];
+  selected = null; answered = false;
+
+  var qNum      = document.getElementById('q-num');
+  var qText     = document.getElementById('q-text');
+  var qHint     = document.getElementById('q-hint');
+  var qProgLbl  = document.getElementById('q-prog-label');
+  var qProgFill = document.getElementById('q-prog-fill');
+  var fb        = document.getElementById('q-feedback');
+  var chk       = document.getElementById('btn-check');
+  var opts      = document.getElementById('q-options');
+
+  if (qNum)     qNum.textContent  = 'Pregunta ' + (qIndex + 1) + ' de ' + QUESTIONS.length;
+  if (qText)    qText.innerHTML   = q.text;
+  if (qHint)    qHint.textContent = q.hint;
+  if (qProgLbl) qProgLbl.textContent = qIndex + ' / ' + QUESTIONS.length;
+  if (qProgFill) qProgFill.style.width = ((qIndex / QUESTIONS.length) * 100) + '%';
+
+  if (fb) { fb.style.display = 'none'; fb.className = 'q-feedback'; }
+  if (chk) { chk.className = 'btn-check'; chk.textContent = 'Comprobar respuesta ✓'; chk.onclick = checkAnswer; }
+
+  if (opts) {
+    opts.innerHTML = '';
+    q.options.forEach(function(opt) {
+      var b = document.createElement('button');
+      b.className = 'q-opt';
+      b.textContent = opt;
+      b.onclick = function() { selectOpt(b, opt); };
+      opts.appendChild(b);
+    });
+  }
+}
+
+function selectOpt(btn, val) {
+  if (answered) return;
+  selected = val;
+  document.querySelectorAll('.q-opt').forEach(function(b) { b.classList.remove('selected'); });
+  btn.classList.add('selected');
+  var chk = document.getElementById('btn-check');
+  if (chk) chk.classList.add('ready');
+}
+
+function checkAnswer() {
+  if (!selected || answered) return;
+  answered = true;
+  var q   = QUESTIONS[qIndex];
+  var fb  = document.getElementById('q-feedback');
+  var chk = document.getElementById('btn-check');
+
+  document.querySelectorAll('.q-opt').forEach(function(b) {
+    b.disabled = true;
+    if (b.textContent === q.answer) b.classList.add('correct');
+    else if (b.textContent === selected) b.classList.add('wrong');
+  });
+
+  if (selected === q.answer) {
+    score++;
+    if (fb) { fb.className = 'q-feedback correct'; fb.textContent = '✅ ¡Correcto! Muy bien hecho.'; }
+  } else {
+    if (fb) { fb.className = 'q-feedback wrong'; fb.innerHTML = '❌ Incorrecto. La respuesta es <strong>' + q.answer + '</strong>.'; }
+  }
+  if (fb) fb.style.display = 'block';
+
+  if (chk) {
+    chk.textContent = qIndex < QUESTIONS.length - 1 ? 'Siguiente pregunta →' : 'Ver mis resultados 📋';
+    chk.className = 'btn-check ready';
+    chk.onclick = nextQuestion;
+  }
+}
+
+function nextQuestion() {
+  qIndex++;
+  if (qIndex < QUESTIONS.length) {
+    var chk = document.getElementById('btn-check');
+    if (chk) chk.onclick = checkAnswer;
+    renderQuestion();
+  } else {
+    showResults();
+  }
+}
+
+function showResults() {
+  var question = document.getElementById('quiz-question');
+  var results  = document.getElementById('quiz-results');
+  if (question) question.style.display = 'none';
+  if (results)  results.style.display  = 'flex';
+
+  var rScore   = document.getElementById('r-score');
+  var rCorrect = document.getElementById('r-correct');
+  var rLevel   = document.getElementById('r-level');
+  var progFill = document.getElementById('q-prog-fill');
+  var progLbl  = document.getElementById('q-prog-label');
+
+  if (rScore)   rScore.textContent   = score + '/5';
+  if (rCorrect) rCorrect.textContent = score + ' de 5 aciertos';
+  
+  var level;
+  if (score === 5) level = 'AVANZADO (C1 sugerido)';
+  else if (score >= 3) level = 'INTERMEDIO (B1/B2 sugerido)';
+  else level = 'PRINCIPIANTE (A1/A2 sugerido)';
+  
+  if (rLevel) rLevel.textContent = level;
+  
+  if (progFill) progFill.style.width = '100%';
+  if (progLbl) progLbl.textContent = '5 / 5';
+
+  setTimeout(initOwlBlink, 50);
+}
+
+/* ══════════ OWL BLINK ══════════ */
+function initOwlBlink() {
+  document.querySelectorAll('.owl-circ').forEach(function(owl) {
+    if (owl.querySelector('.owl-blink-l')) return;
+    owl.style.position = 'relative';
+    ['owl-blink-l', 'owl-blink-r'].forEach(function(cls) {
+      var d = document.createElement('div');
+      d.className = cls;
+      owl.appendChild(d);
+    });
+  });
+}
+
+/* ══════════ STUDENT NAME DISPLAY ══════════ */
+function updateStudentNameDisplay() {
+  var storedName = localStorage.getItem('learnEnglishStudentName');
+  var nameElement = document.getElementById('studentNameDisplay');
+  if (storedName && nameElement) {
+    nameElement.textContent = storedName;
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  initOwlBlink();
+  updateStudentNameDisplay();
+});
+</script>
 </body>
 </html>
-
